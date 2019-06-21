@@ -4,6 +4,7 @@ import random
 class Person:
     def __init__(self, name):
         self.name = name
+        self.type = 'Base NPC'
         self.max_health = 20
         self.health = self.max_health
         self.attack_dmg = 5
@@ -34,9 +35,16 @@ class Person:
         self.health += amount
         if self.health > self.max_health:
             self.health = self.max_health
+            print(self, 'is fully Healed!')
+        else:
+            print(self, 'healed for', amount, 'hp')
         return amount
 
     def change_gold(self, gold_amount):
+        #  check if person has enough gold might be better in merchant class
+        if self.gold + gold_amount < 0:
+            print('Not enough gold!')
+            return 'Error'
         self.gold += gold_amount
         return gold_amount
 
@@ -56,6 +64,7 @@ class Hero(Person):
     def __init__(self, name):
         super().__init__(name)
         # overwrite stats here
+        self.type = 'Hero'
 
     def choose_target(self, target_party):
         print('Choose a target:')
@@ -72,9 +81,15 @@ class Hero(Person):
 class Vampire(Person):
     def __init__(self, name):
         super().__init__(name)
+        self.type = 'Vampire'
         self.vampirism = 50
+
+    def calc_vamp_heal(self, dealt_dmg):
+        return dealt_dmg // (100 // self.vampirism)
 
     def deal_dmg(self, target):
         dealt_dmg = super().deal_dmg(target)
-        self.heal(dealt_dmg // (100 // self.vampirism))
+        self.heal(self.calc_vamp_heal(dealt_dmg))
         return dealt_dmg
+
+
