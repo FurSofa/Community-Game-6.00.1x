@@ -42,7 +42,6 @@ class Person:
 
     def choose_target(self, target_party):
         choice = random.randrange(len(target_party)-1)
-        print(target_party[choice])
         return target_party[choice]
 
     def attack_target(self, target_party):
@@ -69,3 +68,13 @@ class Hero(Person):
         return target_party[int(choice)-1]
 
 
+#  example on how to modify methods
+class Vampire(Person):
+    def __init__(self, name):
+        super().__init__(name)
+        self.vampirism = 50
+
+    def deal_dmg(self, target):
+        dealt_dmg = super().deal_dmg(target)
+        self.heal(dealt_dmg // (100 // self.vampirism))
+        return dealt_dmg
