@@ -8,12 +8,15 @@ class Person:
         self.max_health = 20
         self.health = self.max_health
         self.attack_dmg = 5
-        self.defence = 2
+        self.defence = 1
         self.inventory = []
         self.gold = 0
+        self.crit_chance = 5
+        self.crit_dmg = 150
+        self.party = None
 
     def __repr__(self):
-        return self.name
+        return self.name + ', ' + self.type
 
     @property
     def is_alive(self) -> bool:
@@ -26,8 +29,15 @@ class Person:
         self.health -= dmg_taken
         return dmg_taken
 
+    def calculate_dmg(self):
+        dmg = self.attack_dmg
+        if random.randrange(100) < self.crit_chance:
+            dmg = dmg * self.crit_dmg // 100
+            print(self, 'lands a critical strik!')
+        return dmg
+
     def deal_dmg(self, target):
-        dealt_dmg = self.attack_dmg
+        dealt_dmg = self.calculate_dmg()
         dmg_dealt = target.take_dmg(dealt_dmg)
         return dmg_dealt
 
@@ -49,8 +59,11 @@ class Person:
         return gold_amount
 
     def choose_target(self, target_party):
-        choice = random.randrange(len(target_party)-1)
-        return target_party[choice]
+        if len(target_party.members) > 1:
+            choice = random.randrange(len(target_party.members)-1)
+        else:
+            choice = 0
+        return target_party.members[choice]
 
     def attack_target(self, target_party):
         target = self.choose_target(target_party)
@@ -64,17 +77,22 @@ class Hero(Person):
     def __init__(self, name):
         super().__init__(name)
         # overwrite stats here
+        self.max_health = 40
+        self.health = self.max_health
         self.type = 'Hero'
+        self.crit_chance = 10
+        self.attack_dmg = 6
+        self.defence += 1
 
     def choose_target(self, target_party):
         print('Choose a target:')
-        for i, member in enumerate(target_party):
+        for i, member in enumerate(target_party.members):
             print(i+1, member)
         choice = input('Target number: ')
-        if not choice.isdigit() or not 0 < int(choice) < len(target_party) + 1:
+        if not choice.isdigit() or not 0 < int(choice) < len(target_party.members) + 1:
             print('Enter the number of the target!')
-            self.choose_target(target_party)
-        return target_party[int(choice)-1]
+            self.choose_target(target_party.members)
+        return target_party.members[int(choice)-1]
 
 
 #  example on how to modify methods
@@ -83,6 +101,7 @@ class Vampire(Person):
         super().__init__(name)
         self.type = 'Vampire'
         self.vampirism = 50
+        self.defence = 0
 
     def calc_vamp_heal(self, dealt_dmg):
         return dealt_dmg // (100 // self.vampirism)
@@ -93,3 +112,8 @@ class Vampire(Person):
         return dealt_dmg
 
 
+class Blocker(Person):
+    def __init__(self, name):
+        super().__init__(name)
+        self.defence = 4
+        self.type = 'Blocker'
