@@ -6,18 +6,18 @@ class Weapon:
         self.defence = defence
         self.holder = None
 
+    def deal_dmg(self, target):
+        dmg_dealt = self.holder.calculate_dmg()
+        dmg_enemy_received = target.take_dmg(dmg_dealt)
+        print(self.holder, 'deals', dmg_enemy_received, 'dmg to', target)
+        return dmg_enemy_received
+
 
 class Sword(Weapon):
     def __init__(self, dmg, defence):
         super().__init__(dmg, defence)
         self.attack_dmg = dmg
         self.defence = defence
-
-    def deal_dmg(self, target):
-        dmg_dealt = self.holder.calculate_dmg()
-        dmg_enemy_received = target.take_dmg(dmg_dealt)
-        print(self.holder, 'deals', dmg_enemy_received, 'dmg to', target)
-        return dmg_enemy_received
 
 
 class Axe(Weapon):
