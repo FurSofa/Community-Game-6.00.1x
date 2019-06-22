@@ -1,4 +1,5 @@
 import random
+from helper_functions import player_choose_from_list
 
 
 class Person:
@@ -10,6 +11,7 @@ class Person:
         self.attack_dmg = 5
         self.defence = 1
         self.inventory = []
+        self.equipment = []
         self.gold = 0
         self.crit_chance = 5
         self.crit_dmg = 150
@@ -37,9 +39,9 @@ class Person:
         return dmg
 
     def deal_dmg(self, target):
-        dealt_dmg = self.calculate_dmg()
-        dmg_dealt = target.take_dmg(dealt_dmg)
-        return dmg_dealt
+        dmg_dealt = self.calculate_dmg()
+        dmg_received = target.take_dmg(dmg_dealt)
+        return dmg_received
 
     def heal(self, amount):
         self.health += amount
@@ -49,6 +51,12 @@ class Person:
         else:
             print(self, 'healed for', amount, 'hp')
         return amount
+
+
+    def use_weapon_attack(self, target):
+        dmg_received = self.weapons[0].deal_dmg(target)
+
+
 
     def change_gold(self, gold_amount):
         #  check if person has enough gold might be better in merchant class
@@ -86,13 +94,7 @@ class Hero(Person):
 
     def choose_target(self, target_party):
         print('Choose a target:')
-        for i, member in enumerate(target_party.members):
-            print(i+1, member)
-        choice = input('Target number: ')
-        if not choice.isdigit() or not 0 < int(choice) < len(target_party.members) + 1:
-            print('Enter the number of the target!')
-            self.choose_target(target_party.members)
-        return target_party.members[int(choice)-1]
+        return player_choose_from_list(target_party.members)
 
 
 #  example on how to modify methods
