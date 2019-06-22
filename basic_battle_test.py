@@ -1,4 +1,4 @@
-from person_class_testing import Person, Hero, Vampire, Blocker
+from person import Person, Hero, Vampire, Blocker
 from weapons import Weapon, Sword, Axe
 from game_classes import Party, battle
 
