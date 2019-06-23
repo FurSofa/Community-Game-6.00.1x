@@ -4,7 +4,7 @@ class Party:
         self.dead_members = []
         # inventory
         self.inventory = []
-        self.equipment = []
+        self.equipment = []  # used for armor and weapons
         self.gold = 0
 
     @property
@@ -33,6 +33,7 @@ class Party:
             return 'Error'
         self.gold += gold_amount
         return gold_amount
+
 
 class Battle:
     def __init__(self):
