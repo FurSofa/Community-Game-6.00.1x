@@ -71,6 +71,11 @@ class Person:
             elif weapon_slot == 1:
                 slot_to_change = 'off_hand'
             #  TODO: check if shield or armor
+        elif new_gear.gear_type == 'shield':
+            slot_to_change = 'off_hand'
+        elif new_gear.gear_type == 'armor':
+            slot_to_change = 'armor'
+
         if self.__dict__[slot_to_change]:
             old_item = self.__dict__[slot_to_change]
             old_item.holder = None
@@ -95,15 +100,12 @@ class Person:
             print(self, 'lands a critical strike!')
         return dmg
 
+    #  TODO: refactor deal_damage to general function with single and multi target
     def deal_dmg(self, target):
         dmg_dealt = self.calculate_dmg()
         dmg_enemy_received = target.take_dmg(dmg_dealt)
         print(self, 'deals', dmg_enemy_received, 'to', target)
         return dmg_enemy_received
-
-    #  TODO: check if needed, maybe refactor
-    def use_weapon_attack(self, target):
-        dmg_received = self.first_hand_weapon[0].deal_dmg(target)
 
     def choose_target(self, target_party):
         if len(target_party.members) > 1:
