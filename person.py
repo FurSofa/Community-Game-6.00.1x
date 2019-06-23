@@ -61,6 +61,7 @@ class Person:
             print('What item do you want to equip?')
             chosen_gear = player_choose_from_list(self.party.equipment)
             self.equip_gear(chosen_gear)
+            self.party.equipment.remove(chosen_gear)
 
     def equip_gear(self, new_gear):
         if new_gear.gear_type == 'weapon':

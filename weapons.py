@@ -6,6 +6,10 @@ class Weapon:
         self.defence = defence
         self.holder = None
         self.gear_type = 'weapon'
+        self.name = 'Basic Weapon'
+
+    def __repr__(self):
+        return self.name
 
     def deal_dmg(self, target):
         dmg_dealt = self.holder.calculate_dmg()
@@ -21,6 +25,7 @@ class Sword(Weapon):
         self.defence = defence
         self.crit_chance = 5
         self.crit_dmg = 25
+        self.name = 'Sword'
 
 
 class Axe(Weapon):
@@ -28,6 +33,7 @@ class Axe(Weapon):
         super().__init__(dmg, defence)
         self.attack_dmg = dmg
         self.defence = defence
+        self.name = 'Axe'
 
     def deal_dmg(self, target):
         dmg_dealt = self.holder.calculate_dmg()
