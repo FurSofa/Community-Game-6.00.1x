@@ -17,7 +17,7 @@ fighter4 = Person('More Cannon Fodder')
 # fighter6 = Person('and more Cannon Fodder')
 
 battle_axe = Axe(dmg=2, defence=0)
-fighter2.equip_weapon(battle_axe)
+fighter2.equip_gear(battle_axe)
 
 party1.add_member(enemy1)
 party1.add_member(enemy2)

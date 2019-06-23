@@ -2,6 +2,10 @@ class Party:
     def __init__(self):
         self.members = []
         self.dead_members = []
+        # inventory
+        self.inventory = []
+        self.equipment = []
+        self.gold = 0
 
     @property
     def has_units_left(self) -> bool:
@@ -21,12 +25,19 @@ class Party:
         member.party = self
         self.members.append(member)
 
+    #  inventory and trading
+    def change_gold(self, gold_amount):
+        #  check if person has enough gold might be better in merchant class
+        if self.gold + gold_amount < 0:
+            print('Not enough gold!')
+            return 'Error'
+        self.gold += gold_amount
+        return gold_amount
+
 
 def battle(party1, party2):
     rounds = 0
     print('A Battle has started!')
-    print('Party 1:', party1.members)
-    print('Party 2:', party2.members)
     while party1.has_units_left and party2.has_units_left:
         rounds += 1
         print('')
@@ -36,14 +47,14 @@ def battle(party1, party2):
         if party1.has_units_left:
             for member in party1.members:
                 print(member, 'has to choose an action.')
-                member.choose_action(party2)
+                member.choose_battle_action(party2)
                 party2.remove_dead()
                 if not party2.has_units_left:
                     break
                 input('just press enter')
         if party2.has_units_left:
             for member in party2.members:
-                member.choose_action(party1)
+                member.choose_battle_action(party1)
                 party1.remove_dead()
                 if not party1.has_units_left:
                     break

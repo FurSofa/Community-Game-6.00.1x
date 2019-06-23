@@ -5,6 +5,7 @@ class Weapon:
         self.attack_dmg = dmg
         self.defence = defence
         self.holder = None
+        self.gear_type = 'weapon'
 
     def deal_dmg(self, target):
         dmg_dealt = self.holder.calculate_dmg()
@@ -18,6 +19,8 @@ class Sword(Weapon):
         super().__init__(dmg, defence)
         self.attack_dmg = dmg
         self.defence = defence
+        self.crit_chance = 5
+        self.crit_dmg = 25
 
 
 class Axe(Weapon):
@@ -26,7 +29,6 @@ class Axe(Weapon):
         self.attack_dmg = dmg
         self.defence = defence
 
-    # TODO: test axe members list, test if this removes target from party
     def deal_dmg(self, target):
         dmg_dealt = self.holder.calculate_dmg()
         dmg_received = target.take_dmg(dmg_dealt)

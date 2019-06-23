@@ -1,5 +1,6 @@
 import random
 from helper_functions import player_choose_from_list
+from weapons import *
 
 
 class Person:
@@ -18,17 +19,20 @@ class Person:
 
         # damage relevant stats
         self.base_attack_dmg = 5
-        self.current_attack_dmg = self.base_attack_dmg
         self.base_crit_chance = 5
-        self.current_crit_chance = self.base_crit_chance
         self.base_crit_dmg = 150
+
+        self.current_attack_dmg = self.base_attack_dmg
+        self.current_crit_chance = self.base_crit_chance
         self.current_crit_dmg = self.base_crit_dmg
 
-        # inventory
-        self.weapons = []
-        self.inventory = []
-        self.equipment = []
-        self.gold = 0
+        # gear
+        self.first_hand_weapon = None
+        self.off_hand = None
+        self.armor = None
+        self.stat_relevant_gear = [self.first_hand_weapon, self.off_hand, self.armor]
+        self.not_relevant_stats = ['gear_slot', 'holder']
+
 
     def __repr__(self):
         return self.name + ', ' + self.type
@@ -37,35 +41,44 @@ class Person:
     def is_alive(self) -> bool:
         return self.health > 0
 
-    def calculate_stats_with_weapon(self):
-        combined_weapons = {}
-        for weapon in self.weapons:
-            weapon_stats = weapon.__dict__
-            for stat in weapon_stats.keys():
-                if stat == 'holder':
-                    continue
-                if stat in combined_weapons.keys():
-                    combined_weapons[stat] = combined_weapons[stat] + weapon_stats[stat]
-                else:
-                    combined_weapons[stat] = weapon_stats[stat]
-        for stat in combined_weapons.keys():
-            self.__dict__['current_'+stat] = self.__dict__['base_'+stat] + combined_weapons[stat]
+    def calculate_stats_with_gear(self):
+        combined_gear_stats = {}
+        for item in self.stat_relevant_gear:
+            if item:
+                gear_stats = item.__dict__
+                for stat in gear_stats.keys():
+                    if stat not in self.not_relevant_stats:
+                        if stat in combined_gear_stats.keys():
+                            combined_gear_stats[stat] = combined_gear_stats[stat] + gear_stats[stat]
+                        else:
+                            combined_gear_stats[stat] = gear_stats[stat]
+        for stat in combined_gear_stats.keys():
+            self.__dict__['current_'+stat] = self.__dict__['base_'+stat] + combined_gear_stats[stat]
 
-#  inventory and trading
-    def change_gold(self, gold_amount):
-        #  check if person has enough gold might be better in merchant class
-        if self.gold + gold_amount < 0:
-            print('Not enough gold!')
-            return 'Error'
-        self.gold += gold_amount
-        return gold_amount
+#  manage gear
+    def change_gear(self):
+        if len(self.party.equipment) > 0:
+            print('What item do you want to equip?')
+            chosen_gear = player_choose_from_list(self.party.equipment)
+            self.equip_gear(chosen_gear)
 
-    def equip_weapon(self, new_weapon):
-        self.weapons.append(new_weapon)
-        new_weapon.holder = self
-        self.calculate_stats_with_weapon()
-
-
+    def equip_gear(self, new_gear):
+        if new_gear.gear_type == 'weapon':
+            print('Where do you want to put it?')
+            weapon_slot = player_choose_from_list(['First hand', 'Off Hand'], index_pos=True)
+            if weapon_slot == 0:
+                slot_to_change = 'first_hand_weapon'
+            elif weapon_slot == 1:
+                slot_to_change = 'off_hand'
+            #  TODO: check if shield or armor
+        if self.__dict__[slot_to_change]:
+            old_item = self.__dict__[slot_to_change]
+            old_item.holder = None
+            self.party.equipment.append(old_item)
+        #  TODO: check and ask if switch weapon in slot
+        self.__dict__[slot_to_change] = new_gear
+        new_gear.holder = self
+        self.calculate_stats_with_gear()
 
 # battle relevant methods
     def take_dmg(self, dmg_amount):
@@ -79,7 +92,7 @@ class Person:
         dmg = self.current_attack_dmg
         if random.randrange(100) < self.current_crit_chance:
             dmg = dmg * self.current_crit_dmg // 100
-            print(self, 'lands a critical strik!')
+            print(self, 'lands a critical strike!')
         return dmg
 
     def deal_dmg(self, target):
@@ -90,7 +103,7 @@ class Person:
 
     #  TODO: check if needed, maybe refactor
     def use_weapon_attack(self, target):
-        dmg_received = self.weapons[0].deal_dmg(target)
+        dmg_received = self.first_hand_weapon[0].deal_dmg(target)
 
     def choose_target(self, target_party):
         if len(target_party.members) > 1:
@@ -101,13 +114,16 @@ class Person:
 
     #  TODO: maybe split up into smaller parts
     def attack_target(self, target_party, mode='basic attack'):
-        if mode == 'basic attack' or mode == 'weapon special attack':
+        physical_attack_modes = ['basic attack', 'main weapon attack', 'off hand weapon attack']
+        if mode in physical_attack_modes:
             target = self.choose_target(target_party)
             print('target:', target)
-            if mode == 'weapon special attack':
-                dmg_enemy_received = self.weapons[0].deal_dmg(target)
-            elif mode == 'basic attack':
+            if mode == 'basic attack':
                 dmg_enemy_received = self.deal_dmg(target)
+            elif mode == 'main weapon attack':
+                dmg_enemy_received = self.first_hand_weapon.deal_dmg(target)
+            elif mode == 'off hand weapon attack':
+                dmg_enemy_received = self.off_hand.deal_dmg(target)
             print(target, 'hp:', target.health)
 
     def heal(self, amount):
@@ -119,8 +135,8 @@ class Person:
             print(self, 'healed for', amount, 'hp')
         return amount
 
-    def choose_action(self, enemy_party):
-        possible_actions = ['basic attack', 'weapon special attack']
+    def choose_battle_action(self, enemy_party):
+        possible_actions = ['basic attack', 'main weapon attack']
         action = 'basic attack'
         self.attack_target(enemy_party, mode=action)
 
@@ -128,7 +144,7 @@ class Person:
 class Hero(Person):
     def __init__(self, name):
         super().__init__(name)
-        # overwrite stats here
+
         # defence stats
         self.base_max_health = 20
         self.current_max_health = self.base_max_health
@@ -146,16 +162,24 @@ class Hero(Person):
         print('Choose a target:')
         return player_choose_from_list(target_party.members)
 
-    def choose_action(self, enemy_party):
-        #  TODO: find a place to tore possible actions
+    def choose_battle_action(self, enemy_party):
+        #  TODO: find a place to store possible actions
         possible_actions = ['basic attack', ]
-        if len(self.weapons) > 0:
-            possible_actions.append('weapon special attack')
+        if self.first_hand_weapon:
+            possible_actions.append('main weapon attack')
+        if self.off_hand:
+            if self.off_hand.gear_type == 'weapon':
+                possible_actions.append('off hand weapon attack')
+        if len(self.party.equipment) > 0:
+            possible_actions.append('change gear')
         #  basic attack
-        #  weapon special attack
+        #  main weapon attack
         #  spell
         #  inventory
         action = player_choose_from_list(possible_actions)
+        if action == 'change gear':
+            self.change_gear()
+            self.choose_battle_action(enemy_party)
         self.attack_target(enemy_party, mode=action)
 
 
@@ -170,7 +194,6 @@ class Vampire(Person):
     def calc_vamp_heal(self, dealt_dmg):
         return dealt_dmg // (100 // self.base_vampirism)
 
-    #  TODO: needs to calculate dmg from super()
     def deal_dmg(self, target):
         dealt_dmg = super().deal_dmg(target)
         self.heal(self.calc_vamp_heal(dealt_dmg))
