@@ -34,32 +34,65 @@ class Party:
         self.gold += gold_amount
         return gold_amount
 
+class Battle:
+    def __init__(self):
+        pass
 
-def battle(party1, party2):
-    rounds = 0
-    print('A Battle has started!')
-    while party1.has_units_left and party2.has_units_left:
-        rounds += 1
-        print('')
-        print('Round:', rounds)
-        print('Party 1:', party1.members)
-        print('Party 2:', party2.members)
-        if party1.has_units_left:
-            for member in party1.members:
-                print(member, 'has to choose an action.')
-                member.choose_battle_action(party2)
-                party2.remove_dead()
-                if not party2.has_units_left:
-                    break
-                input('just press enter')
-        if party2.has_units_left:
-            for member in party2.members:
-                member.choose_battle_action(party1)
-                party1.remove_dead()
-                if not party1.has_units_left:
-                    break
-                input('just press enter')
-    if party1.has_units_left:
-        print('Party 1 has won the battle!')
-    else:
-        print('Party 2 has won the battle!')
+    def single_unit_turn(self, unit, enemy_party):
+        print(unit, 'has to choose an action.')
+        unit.choose_battle_action(enemy_party)
+        enemy_party.remove_dead()
+        return not enemy_party.has_units_left
+
+    def whole_party_turn_battle(self, party_1, party_2):
+        rounds = 0
+        print('A Battle has started!')
+        while party_1.has_units_left and party_2.has_units_left:
+            rounds += 1
+            print('')
+            print('Round:', rounds)
+            print('Party 1:', party_1.members)
+            print('Party 2:', party_2.members)
+            if party_1.has_units_left:
+                for member in party_1.members:
+                    no_enemies_left = self.single_unit_turn(member, party_2)
+                    if no_enemies_left:
+                        break
+                    input('just press enter')
+            if party_2.has_units_left:
+                for member in party_2.members:
+                    no_enemies_left = self.single_unit_turn(member, party_1)
+                    if no_enemies_left:
+                        break
+                    input('just press enter')
+        if party_1.has_units_left:
+            print('Party 1 has won the battle!')
+        else:
+            print('Party 2 has won the battle!')
+        return party_1.has_units_left
+
+    def alternating_turn_battle(self, party_1, party_2):
+        rounds = 0
+        print('A Battle has started!')
+        while party_1.has_units_left and party_2.has_units_left:
+            rounds += 1
+            print('')
+            print('Round:', rounds)
+            print('Party 1:', party_1.members)
+            print('Party 2:', party_2.members)
+            for i in range(max(len(party_1.members), len(party_2.members))):
+                if i < len(party_1.members):
+                    no_enemies_left = self.single_unit_turn(party_1.members[i], party_2)
+                    if no_enemies_left:
+                        break
+                    input('just press enter')
+                if i < len(party_2.members):
+                    no_enemies_left = self.single_unit_turn(party_2.members[i], party_1)
+                    if no_enemies_left:
+                        break
+                    input('just press enter')
+        if party_1.has_units_left:
+            print('Party 1 has won the battle!')
+        else:
+            print('Party 2 has won the battle!')
+        return party_1.has_units_left

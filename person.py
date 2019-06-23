@@ -33,7 +33,6 @@ class Person:
         self.stat_relevant_gear = [self.first_hand_weapon, self.off_hand, self.armor]
         self.not_relevant_stats = ['gear_slot', 'holder']
 
-
     def __repr__(self):
         return self.name + ', ' + self.type
 
@@ -145,6 +144,7 @@ class Person:
 class Hero(Person):
     def __init__(self, name):
         super().__init__(name)
+        self.type = 'Hero'
 
         # defence stats
         self.base_max_health = 20

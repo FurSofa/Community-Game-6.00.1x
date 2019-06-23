@@ -1,9 +1,10 @@
 from person import Person, Hero, Vampire, Blocker
 from weapons import Weapon, Sword, Axe
-from game_classes import Party, battle
+from game_classes import Party, Battle
 
 party1 = Party()
 party2 = Party()
+battle = Battle()
 
 enemy1 = Vampire('Blood Sucker')
 enemy2 = Blocker('Shield Man')
@@ -31,5 +32,5 @@ party2.add_member(fighter4)
 # party2.add_member(fighter6)
 
 if __name__ == '__main__':
-    battle(party1, party2)
+    battle.alternating_turn_battle(party1, party2)
 
