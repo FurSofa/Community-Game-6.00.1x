@@ -33,8 +33,9 @@ class Person:
         self.stat_relevant_gear = [self.first_hand_weapon, self.off_hand, self.armor]
         self.not_relevant_stats = ['gear_slot', 'holder']
 
-    def __repr__(self):
-        return self.name + ', ' + self.type
+    def __str__(self):
+        return str(self.name + ', ' + self.type)
+
 
     @property
     def is_alive(self) -> bool:
