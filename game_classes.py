@@ -11,6 +11,10 @@ class Party:
     def has_units_left(self) -> bool:
         return len(self.members) > 0
 
+    @property
+    def members_names(self):
+        return ', '.join(member.name for member in self.members)
+
     def remove_dead(self):
         delete_index = []
         for i, member in enumerate(self.members):
@@ -52,8 +56,8 @@ class Battle:
             rounds += 1
             print('')
             print('Round:', rounds)
-            print('Party 1:', party_1.members)
-            print('Party 2:', party_2.members)
+            print('Party 1:', party_1.members_names)
+            print('Party 2:', party_2.members_names)
             if party_1.has_units_left:
                 for member in party_1.members:
                     no_enemies_left = self.single_unit_turn(member, party_2)
@@ -79,8 +83,8 @@ class Battle:
             rounds += 1
             print('')
             print('Round:', rounds)
-            print('Party 1:', party_1.members)
-            print('Party 2:', party_2.members)
+            print('Party 1:', party_1.members_names)
+            print('Party 2:', party_2.members_names)
             for i in range(max(len(party_1.members), len(party_2.members))):
                 if i < len(party_1.members):
                     no_enemies_left = self.single_unit_turn(party_1.members[i], party_2)
