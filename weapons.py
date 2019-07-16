@@ -8,7 +8,7 @@ class Weapon:
         self.gear_type = 'weapon'
         self.name = 'Basic Weapon'
 
-    def __repr__(self):
+    def __str__(self):
         return self.name
 
     def deal_dmg(self, target):
