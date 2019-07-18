@@ -20,16 +20,27 @@ class Person:
         # damage relevant stats
         self.base_attack_dmg = 5
         self.base_crit_chance = 5
-        self.base_crit_dmg = 150
+        self.base_crit_dmg = self.base_attack_dmg * 2
 
         self.current_attack_dmg = self.base_attack_dmg
         self.current_crit_chance = self.base_crit_chance
         self.current_crit_dmg = self.base_crit_dmg
 
         # gear
+
+        # weapons
         self.first_hand_weapon = None
         self.off_hand = None
-        self.armor = None
+
+        # gear
+        self.chest = None
+        self.shoulders = None
+        self.legs = None
+        self.feet = None
+
+        # accessories
+        self.ring = None
+        self.necklace = None
         self.stat_relevant_gear = [self.first_hand_weapon, self.off_hand, self.armor]
         self.not_relevant_stats = ['gear_slot', 'holder']
 
@@ -53,7 +64,8 @@ class Person:
                         else:
                             combined_gear_stats[stat] = gear_stats[stat]
         for stat in combined_gear_stats.keys():
-            self.__dict__['current_'+stat] = self.__dict__['base_'+stat] + combined_gear_stats[stat]
+            self.__dict__['current_' + stat] = self.__dict__['base_' + stat] + combined_gear_stats[stat]
+
 
     def show_stats(self):
         relevant_stats = {
@@ -69,6 +81,9 @@ class Person:
             print(k, ': ', v)
 
 #  manage gear
+=======
+    #  manage gear
+
     def change_gear(self):
         if len(self.party.equipment) > 0:
             print('What item do you want to equip?')
@@ -122,7 +137,9 @@ class Person:
         new_gear.holder = self
         self.calculate_stats_with_gear()
 
-# battle
+
+    # battle
+
     def take_dmg(self, dmg_amount):
         dmg_taken = dmg_amount - self.current_defence
         if dmg_taken < 0:
@@ -146,7 +163,7 @@ class Person:
 
     def choose_target(self, target_party):
         if len(target_party.members) > 1:
-            choice = random.randrange(len(target_party.members)-1)
+            choice = random.randrange(len(target_party.members) - 1)
         else:
             choice = 0
         return target_party.members[choice]
