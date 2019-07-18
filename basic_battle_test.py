@@ -18,6 +18,8 @@ fighter4 = Person('More Cannon Fodder')
 # fighter6 = Person('and more Cannon Fodder')
 
 battle_axe = Axe(dmg=2, defence=0)
+longsword = Sword(dmg=4, defence=0)
+short_sword = Sword(dmg=3, defence=1)
 
 
 party1.add_member(enemy1)
@@ -32,7 +34,11 @@ party2.add_member(fighter4)
 # party2.add_member(fighter6)
 
 if __name__ == '__main__':
-    hero.equip_gear(battle_axe)
+    hero.pickup_gear(battle_axe)
+    hero.pickup_gear(longsword)
+    hero.pickup_gear(short_sword)
+    print('---------------------------------')
+    print()
 #     # battle.whole_party_turn_battle(party1, party2)
     battle.alternating_turn_battle(party1, party2)
 
