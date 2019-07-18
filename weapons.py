@@ -1,5 +1,6 @@
 import random
 
+
 class Weapon:
     def __init__(self, dmg, defence, crit_chance=0, crit_dmg=0 ):
         self.attack_dmg = dmg
@@ -10,7 +11,6 @@ class Weapon:
         self.gear_type = 'weapon'
         self.name = 'Basic Weapon'
 
-
     def __str__(self):
         return self.name
 
@@ -20,7 +20,7 @@ class Weapon:
         print(self.holder, 'deals', dmg_enemy_received, 'dmg to', target)
         return dmg_enemy_received
 
-    def get_stats(self):
+    def show_stats(self):
         relevant_stats = {
             'Name': self.name,
             'Attack Damage': self.attack_dmg,

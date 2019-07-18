@@ -55,6 +55,19 @@ class Person:
         for stat in combined_gear_stats.keys():
             self.__dict__['current_'+stat] = self.__dict__['base_'+stat] + combined_gear_stats[stat]
 
+    def show_stats(self):
+        relevant_stats = {
+            'Name': self.name,
+            'Max HP': self.current_max_health,
+            'HP': self.health,
+            'Attack Damage': self.current_attack_dmg,
+            'Defense': self.current_defence,
+            'Crit Chance': self.current_crit_chance,
+            'Crit Damage': self.current_crit_dmg
+        }
+        for k, v in relevant_stats.items():
+            print(k, ': ', v)
+
 #  manage gear
     def change_gear(self):
         if len(self.party.equipment) > 0:
@@ -66,7 +79,19 @@ class Person:
     def pickup_gear(self, new_gear):
         #  TODO: display new and old stats to compare (for item type)
         print('You found new equipment!')
-        new_gear.get_stats()
+        print('-----------------------')
+        new_gear.show_stats()
+        if new_gear.gear_type == 'weapon':
+
+            if self.first_hand_weapon:
+                print('-----------------------')
+                print('Current First Hand Weapon:')
+                self.first_hand_weapon.show_stats()
+            if self.off_hand:
+                print('-----------------------')
+                print('Current Off Hand Weapon:')
+                self.off_hand.show_stats()
+        print('-----------------------')
         print('Do you want to equip it now?')
         player_choice = player_choose_from_list(['Put on now', 'Put in inventory'], index_pos=True)
         if player_choice == 0:
@@ -191,9 +216,13 @@ class Hero(Person):
         #  main weapon attack
         #  spell
         #  inventory
+        possible_actions.append('Show Hero Stats')
         action = player_choose_from_list(possible_actions)
         if action == 'change gear':
             self.change_gear()
+            self.choose_battle_action(enemy_party)
+        elif action == 'Show Hero Stats':
+            self.show_stats()
             self.choose_battle_action(enemy_party)
         self.attack_target(enemy_party, mode=action)
 
