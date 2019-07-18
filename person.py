@@ -63,6 +63,17 @@ class Person:
             self.equip_gear(chosen_gear)
             self.party.equipment.remove(chosen_gear)
 
+    def pickup_gear(self, new_gear):
+        #  TODO: display new and old stats to compare (for item type)
+        print('You found new equipment!')
+        new_gear.get_stats()
+        print('Do you want to equip it now?')
+        player_choice = player_choose_from_list(['Put on now', 'Put in inventory'], index_pos=True)
+        if player_choice == 0:
+            self.equip_gear(new_gear)
+        elif player_choice == 1:
+            self.party.equipment.append(new_gear)
+
     def equip_gear(self, new_gear):
         if new_gear.gear_type == 'weapon':
             print('Where do you want to put it?')
@@ -86,7 +97,7 @@ class Person:
         new_gear.holder = self
         self.calculate_stats_with_gear()
 
-# battle relevant methods
+# battle
     def take_dmg(self, dmg_amount):
         dmg_taken = dmg_amount - self.current_defence
         if dmg_taken < 0:
