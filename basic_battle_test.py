@@ -1,6 +1,8 @@
 from person import Person, Hero, Vampire, Blocker
 from weapons import Weapon, Sword, Axe
-from party import Party, Battle
+from party import Party
+from battle import Battle
+
 
 party1 = Party()
 party2 = Party()

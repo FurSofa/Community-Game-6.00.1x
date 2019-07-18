@@ -26,8 +26,6 @@ class Person:
         self.current_crit_chance = self.base_crit_chance
         self.current_crit_dmg = self.base_crit_dmg
 
-        # gear
-
         # weapons
         self.first_hand_weapon = None
         self.off_hand = None
@@ -41,13 +39,14 @@ class Person:
         # accessories
         self.ring = None
         self.necklace = None
-        self.stat_relevant_gear = [self.first_hand_weapon, self.off_hand, self.armor]
+        self.stat_relevant_gear = [self.first_hand_weapon, self.off_hand, self.chest, self.shoulders,
+                                   self.legs, self.feet, self.ring, self.necklace]
         self.not_relevant_stats = ['gear_slot', 'holder']
 
     def __str__(self):
         return str(self.name + ', ' + self.type)
 
-
+# stats
     @property
     def is_alive(self) -> bool:
         return self.health > 0
@@ -66,7 +65,6 @@ class Person:
         for stat in combined_gear_stats.keys():
             self.__dict__['current_' + stat] = self.__dict__['base_' + stat] + combined_gear_stats[stat]
 
-
     def show_stats(self):
         relevant_stats = {
             'Name': self.name,
@@ -81,9 +79,6 @@ class Person:
             print(k, ': ', v)
 
 #  manage gear
-=======
-    #  manage gear
-
     def change_gear(self):
         if len(self.party.equipment) > 0:
             print('What item do you want to equip?')
@@ -137,9 +132,7 @@ class Person:
         new_gear.holder = self
         self.calculate_stats_with_gear()
 
-
-    # battle
-
+# battle
     def take_dmg(self, dmg_amount):
         dmg_taken = dmg_amount - self.current_defence
         if dmg_taken < 0:
