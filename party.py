@@ -11,6 +11,10 @@ class Party:
     def has_units_left(self) -> bool:
         return len(self.members) > 0
 
+    @property
+    def members_names(self):
+        return ', '.join(member.name for member in self.members)
+
     def remove_dead(self):
         delete_index = []
         for i, member in enumerate(self.members):
