@@ -10,12 +10,22 @@ class Person:
         self.type = 'Base NPC'
         self.party = None
 
-        # defence stats
-        self.base_max_health = 20
-        self.current_max_health = self.base_max_health
-        self.health = self.current_max_health
-        self.base_defence = 0
-        self.current_defence = self.base_defence
+        # Experience and Level
+        self.level = 1
+        self.exp_current = 0
+        self.exp_to_level = 100
+
+        # Basic Stats
+        self.str = 5
+        self.dex = 5
+        self.int = 5
+
+        # New Defence Stats
+        self.base_health = 20
+        self.max_health = 20
+        self.current_health = self.max_health
+        self.base_defence = 1
+        self.defense = self.base_defence
 
         # damage relevant stats
         self.base_attack_dmg = 5
