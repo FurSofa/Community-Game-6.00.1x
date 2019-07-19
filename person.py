@@ -4,6 +4,11 @@ from weapons import *
 
 
 class Person:
+    """
+    access points:
+    pickup_gear() to give the player a new weapon
+    choose_battle_action() to start a battle turn (choosing actions and executing the appropriate methods)
+    """
     def __init__(self, name):
         # general stats
         self.name = name
@@ -20,17 +25,18 @@ class Person:
         # damage relevant stats
         self.base_attack_dmg = 5
         self.base_crit_chance = 5
-        self.base_crit_dmg = self.base_attack_dmg * 2
+        self.base_crit_modifier = 150
 
+        self.current_crit_modifier = 0
+        self.current_crit_dmg = 0
         self.current_attack_dmg = self.base_attack_dmg
         self.current_crit_chance = self.base_crit_chance
-        self.current_crit_dmg = self.base_crit_dmg
 
         # weapons
         self.first_hand_weapon = None
         self.off_hand = None
 
-        # gear
+        # armor
         self.chest = None
         self.shoulders = None
         self.legs = None
@@ -42,6 +48,7 @@ class Person:
         self.stat_relevant_gear = [self.first_hand_weapon, self.off_hand, self.chest, self.shoulders,
                                    self.legs, self.feet, self.ring, self.necklace]
         self.not_relevant_stats = ['gear_slot', 'holder']
+        self.calculate_stats_with_gear()
 
     def __str__(self):
         return str(self.name + ', ' + self.type)
@@ -51,9 +58,35 @@ class Person:
     def is_alive(self) -> bool:
         return self.health > 0
 
+    def get_eqipped_items(self):
+        """
+
+        :return: list of currently by the player equipped items
+        """
+        items = [self.first_hand_weapon, self.off_hand, self.chest, self.shoulders,
+                 self.legs, self.feet, self.ring, self.necklace]
+        return [item for item in items if item]
+
     def calculate_stats_with_gear(self):
+        """
+        updates playerstats based on equipped items
+        :return: -
+        """
+        stats = {
+            'max_health': self.base_max_health,
+            'defence': self.base_defence,
+            'attack_dmg': self.base_attack_dmg,
+            'crit_chance': self.base_crit_chance,
+            'crit_modifier': self.base_crit_modifier,
+            }
+        gear = self.get_eqipped_items()
+        for key in stats.keys():
+            self.__dict__['current_'+key] = stats[key] + sum([item.__dict__[key] for item in gear])
+        self.current_crit_dmg = int(self.current_attack_dmg * (self.current_crit_modifier / 100))
+
+    def calculate_stats_with_gear_old(self):
         combined_gear_stats = {}
-        for item in self.stat_relevant_gear:
+        for item in self.get_eqipped_items():
             if item:
                 gear_stats = item.__dict__
                 for stat in gear_stats.keys():
@@ -66,6 +99,10 @@ class Person:
             self.__dict__['current_' + stat] = self.__dict__['base_' + stat] + combined_gear_stats[stat]
 
     def show_stats(self):
+        """
+        Prints out Stats for the person
+        :return: -
+        """
         relevant_stats = {
             'Name': self.name,
             'Max HP': self.current_max_health,
@@ -73,7 +110,7 @@ class Person:
             'Attack Damage': self.current_attack_dmg,
             'Defense': self.current_defence,
             'Crit Chance': self.current_crit_chance,
-            'Crit Damage': self.current_crit_dmg
+            'Crit Damage %': self.current_crit_modifier
         }
         for k, v in relevant_stats.items():
             print(k, ': ', v)
@@ -87,6 +124,11 @@ class Person:
             self.party.equipment.remove(chosen_gear)
 
     def pickup_gear(self, new_gear):
+        """
+        ENDPOINT to get new items to the player
+        :param new_gear: a new item
+        :return:
+        """
         #  TODO: display new and old stats to compare (for item type)
         print('You found new equipment!')
         print('-----------------------')
@@ -97,6 +139,9 @@ class Person:
                 print('-----------------------')
                 print('Current First Hand Weapon:')
                 self.first_hand_weapon.show_stats()
+            else:
+                self.equip_gear(new_gear)
+                return
             if self.off_hand:
                 print('-----------------------')
                 print('Current Off Hand Weapon:')
@@ -110,6 +155,12 @@ class Person:
             self.party.equipment.append(new_gear)
 
     def equip_gear(self, new_gear):
+        """
+        changes/fills an item in an equipment slot
+        puts old item into party inventory
+        :param new_gear:  new item to be equipped
+        :return: -
+        """
         if new_gear.gear_type == 'weapon':
             print('Where do you want to put it?')
             weapon_slot = player_choose_from_list(['First hand', 'Off Hand'], index_pos=True)
@@ -133,28 +184,48 @@ class Person:
         self.calculate_stats_with_gear()
 
 # battle
-    def take_dmg(self, dmg_amount):
+    def take_dmg(self, dmg_amount) -> int:
+        """
+        reduces person hp by dmg_amount
+        :param dmg_amount: int
+        :return: dmg_taken: int
+        """
         dmg_taken = dmg_amount - self.current_defence
         if dmg_taken < 0:
             dmg_taken = 0
         self.health -= dmg_taken
         return dmg_taken
 
-    def calculate_dmg(self):
+    def calculate_dmg(self) -> int:
+        """
+        generates dmg
+        determines hit is critical
+        :return: dmg int
+        """
         dmg = self.current_attack_dmg
         if random.randrange(100) < self.current_crit_chance:
-            dmg = dmg * self.current_crit_dmg // 100
+            dmg = self.current_crit_dmg
             print(self, 'lands a critical strike!')
         return dmg
 
     #  TODO: refactor deal_damage to general function with single and multi target
-    def deal_dmg(self, target):
+    def deal_dmg(self, target) -> int:
+        """
+        generates dmg and lets target take dmg
+        :param target: person instance
+        :return: actual dmg dealt -> int
+        """
         dmg_dealt = self.calculate_dmg()
         dmg_enemy_received = target.take_dmg(dmg_dealt)
         print(self, 'deals', dmg_enemy_received, 'to', target)
         return dmg_enemy_received
 
     def choose_target(self, target_party):
+        """
+        picks random target from target_party.members
+        :param target_party: party instance
+        :return: person from party
+        """
         if len(target_party.members) > 1:
             choice = random.randrange(len(target_party.members) - 1)
         else:
@@ -163,6 +234,13 @@ class Person:
 
     #  TODO: maybe split up into smaller parts
     def attack_target(self, target_party, mode='basic attack'):
+        """
+        chooses deal_dmg func, based on mode
+        executes chosen deal_dmg
+        :param target_party: party instance
+        :param mode: str
+        :return:
+        """
         physical_attack_modes = ['basic attack', 'main weapon attack', 'off hand weapon attack']
         if mode in physical_attack_modes:
             target = self.choose_target(target_party)
@@ -175,16 +253,29 @@ class Person:
                 dmg_enemy_received = self.off_hand.deal_dmg(target)
             print(target, 'hp:', target.health)
 
-    def heal(self, amount):
+    def heal(self, amount) -> int:
+        """
+        heals self for amount
+        :param amount: int
+        :return: amount healed for: int
+        """
         self.health += amount
-        if self.health > self.base_max_health:
-            self.health = self.base_max_health
+        if self.health > self.current_max_health:
+            healed_amount = self.current_max_health - self.health
+            self.health = self.current_max_health
             print(self, 'is fully Healed!')
         else:
+            healed_amount = amount
             print(self, 'healed for', amount, 'hp')
-        return amount
+        return healed_amount
 
     def choose_battle_action(self, enemy_party):
+        """
+        ENDPOINT for battle
+        npc will always choose basic attack
+        :param enemy_party:
+        :return: -
+        """
         possible_actions = ['basic attack', 'main weapon attack']
         action = 'basic attack'
         self.attack_target(enemy_party, mode=action)
@@ -205,14 +296,25 @@ class Hero(Person):
         # damage relevant stats
         self.base_attack_dmg = 5
         self.current_attack_dmg = self.base_attack_dmg
-        self.crit_chance = 10
-        self.crit_dmg = 150
+        self.base_crit_chance = 10
+        self.base_crit_modifier = 150
 
     def choose_target(self, target_party):
+        """
+        chooses a person to attack
+        :param target_party: party instance
+        :return: person instance
+        """
         print('Choose a target:')
         return player_choose_from_list(target_party.members)
 
     def choose_battle_action(self, enemy_party):
+        """
+        ENDPOINT for battle
+        lets player choose what to do in their turn and calls appropriate methods
+        :param enemy_party: party instance
+        :return: -
+        """
         #  TODO: find a place to store possible actions
         possible_actions = ['basic attack', ]
         if self.first_hand_weapon:
