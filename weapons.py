@@ -2,14 +2,15 @@ import random
 
 
 class Weapon:
-    def __init__(self, dmg, defence, crit_chance=0, crit_dmg=0 ):
+    def __init__(self, dmg, defence, crit_chance=0, crit_dmg=0, health=0):
         self.attack_dmg = dmg
         self.defence = defence
         self.crit_chance = crit_chance
-        self.crit_dmg = crit_dmg
+        self.crit_modifier = crit_dmg
         self.holder = None
         self.gear_type = 'weapon'
         self.name = 'Basic Weapon'
+        self.max_health = health
 
     def __str__(self):
         return self.name
@@ -26,7 +27,7 @@ class Weapon:
             'Attack Damage': self.attack_dmg,
             'Defense': self.defence,
             'Crit Chance': self.crit_chance,
-            'Crit Damage': self.crit_dmg
+            'Crit Damage': self.crit_modifier
         }
         for k, v in relevant_stats.items():
             print(k, ': ', v)

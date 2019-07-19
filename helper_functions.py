@@ -14,7 +14,7 @@ def player_choose_from_list(iterable, index_pos=False):
     choice = input('Number of choice: ')
     if not choice.isdigit() or not 0 < int(choice) < (len(iterable) + 1):
         print('Enter the number of the target!')
-        choice_index = player_choose_from_list(iterable)
+        choice_index = player_choose_from_list(iterable, index_pos=True)
     else:
         choice_index = int(choice) - 1
     if index_pos:
