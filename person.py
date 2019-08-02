@@ -109,7 +109,7 @@ class Person:
             'HP': self.health,
             'Attack Damage': self.current_attack_dmg,
             'Defense': self.current_defence,
-            'Crit Chance': self.current_crit_chance,
+            'Crit Chance %': self.current_crit_chance,
             'Crit Damage %': self.current_crit_modifier
         }
         for k, v in relevant_stats.items():
