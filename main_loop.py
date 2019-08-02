@@ -7,10 +7,11 @@ from weapons import Sword
 
 # TODO: make this a class?
 
+player_name = input('What is your name, Traveler?')
 
 hero_party = Party()
 
-hero = Hero('Player One')  # todo: make stats args
+hero = Hero(player_name)  # todo: make stats args
 
 hero_party.add_member(hero)
 
