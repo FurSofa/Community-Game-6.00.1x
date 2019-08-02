@@ -16,7 +16,7 @@ hero = Hero(player_name)  # todo: make stats args
 hero_party.add_member(hero)
 
 while hero_party.has_units_left:
-    print('What would you like to do?')
+    print('What would you like to do, ' + str(hero.name) + '?')
     player_action = player_choose_from_list(['BATTLE!', 'camp'])
     if player_action == 'BATTLE!':
 
