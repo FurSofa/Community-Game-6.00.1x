@@ -9,10 +9,11 @@ class Person:
     pickup_gear() to give the player a new weapon
     choose_battle_action() to start a battle turn (choosing actions and executing the appropriate methods)
     """
-    def __init__(self, name):
+
+    def __init__(self, name, class_type='Warror'):
         # general stats
         self.name = name
-        self.type = 'Base NPC'
+        self.type = class_type
         self.party = None
 
         # Experience and Level
@@ -25,12 +26,13 @@ class Person:
         self.dex = 5
         self.int = 5
 
-        # New Defence Stats
+        # defense Stats
         self.base_health = 20
         self.max_health = 20
         self.current_health = self.max_health
-        self.base_defence = 1
-        self.defense = self.base_defence
+
+        self.base_defense = 1
+        self.defense = self.base_defense
 
         # damage relevant stats
         self.base_attack_dmg = 5
@@ -43,7 +45,7 @@ class Person:
         self.current_crit_chance = self.base_crit_chance
 
         # weapons
-        self.first_hand_weapon = None
+        self.main_hand = None
         self.off_hand = None
 
         # armor
@@ -55,26 +57,38 @@ class Person:
         # accessories
         self.ring = None
         self.necklace = None
-        self.stat_relevant_gear = [self.first_hand_weapon, self.off_hand, self.chest, self.shoulders,
-                                   self.legs, self.feet, self.ring, self.necklace]
+        self.stat_relevant_gear = [self.main_hand,
+                                   self.off_hand,
+                                   self.chest,
+                                   self.shoulders,
+                                   self.legs,
+                                   self.feet,
+                                   self.ring,
+                                   self.necklace]
+
         self.not_relevant_stats = ['gear_slot', 'holder']
         self.calculate_stats_with_gear()
 
     def __str__(self):
         return str(self.name + ', ' + self.type)
 
-# stats
+    # stats
     @property
     def is_alive(self) -> bool:
         return self.health > 0
 
     def get_eqipped_items(self):
         """
-
         :return: list of currently by the player equipped items
         """
-        items = [self.first_hand_weapon, self.off_hand, self.chest, self.shoulders,
-                 self.legs, self.feet, self.ring, self.necklace]
+        items = [self.main_hand,
+                 self.off_hand,
+                 self.chest,
+                 self.shoulders,
+                 self.legs,
+                 self.feet,
+                 self.ring,
+                 self.necklace]
         return [item for item in items if item]
 
     def calculate_stats_with_gear(self):
@@ -83,15 +97,15 @@ class Person:
         :return: -
         """
         stats = {
-            'max_health': self.base_max_health,
-            'defence': self.base_defence,
+            'max_health': self.max_health,
+            'defense': self.base_defense,
             'attack_dmg': self.base_attack_dmg,
             'crit_chance': self.base_crit_chance,
             'crit_modifier': self.base_crit_modifier,
-            }
+        }
         gear = self.get_eqipped_items()
         for key in stats.keys():
-            self.__dict__['current_'+key] = stats[key] + sum([item.__dict__[key] for item in gear])
+            self.__dict__['current_' + key] = stats[key] + sum([item.__dict__[key] for item in gear])
         self.current_crit_dmg = int(self.current_attack_dmg * (self.current_crit_modifier / 100))
 
     def calculate_stats_with_gear_old(self):
@@ -115,17 +129,17 @@ class Person:
         """
         relevant_stats = {
             'Name': self.name,
-            'Max HP': self.current_max_health,
+            'Max HP': self.max_health,
             'HP': self.health,
             'Attack Damage': self.current_attack_dmg,
-            'Defense': self.current_defence,
+            'Defense': self.defense,
             'Crit Chance %': self.current_crit_chance,
             'Crit Damage %': self.current_crit_modifier
         }
         for k, v in relevant_stats.items():
             print(k, ': ', v)
 
-#  manage gear
+    #  manage gear
     def change_gear(self):
         if len(self.party.equipment) > 0:
             print('What item do you want to equip?')
@@ -145,10 +159,10 @@ class Person:
         new_gear.show_stats()
         if new_gear.gear_type == 'weapon':
 
-            if self.first_hand_weapon:
+            if self.main_hand:
                 print('-----------------------')
                 print('Current First Hand Weapon:')
-                self.first_hand_weapon.show_stats()
+                self.main_hand.show_stats()
             else:
                 self.equip_gear(new_gear)
                 return
@@ -173,9 +187,9 @@ class Person:
         """
         if new_gear.gear_type == 'weapon':
             print('Where do you want to put it?')
-            weapon_slot = player_choose_from_list(['First hand', 'Off Hand'], index_pos=True)
+            weapon_slot = player_choose_from_list(['Main Hand', 'Off Hand'], index_pos=True)
             if weapon_slot == 0:
-                slot_to_change = 'first_hand_weapon'
+                slot_to_change = 'main_hand'
             elif weapon_slot == 1:
                 slot_to_change = 'off_hand'
             #  TODO: check if shield or armor
@@ -193,14 +207,14 @@ class Person:
         new_gear.holder = self
         self.calculate_stats_with_gear()
 
-# battle
+    # battle
     def take_dmg(self, dmg_amount) -> int:
         """
         reduces person hp by dmg_amount
         :param dmg_amount: int
         :return: dmg_taken: int
         """
-        dmg_taken = dmg_amount - self.current_defence
+        dmg_taken = dmg_amount - self.defense
         if dmg_taken < 0:
             dmg_taken = 0
         self.health -= dmg_taken
@@ -296,12 +310,12 @@ class Hero(Person):
         super().__init__(name)
         self.type = 'Hero'
 
-        # defence stats
+        # defense stats
         self.base_max_health = 20
         self.current_max_health = self.base_max_health
         self.health = self.current_max_health
-        self.base_defence = 0
-        self.current_defence = self.base_defence
+        self.base_defense = 0
+        self.current_defense = self.base_defense
 
         # damage relevant stats
         self.base_attack_dmg = 5
@@ -355,7 +369,7 @@ class Vampire(Person):
         super().__init__(name)
         self.type = 'Vampire'
         self.base_vampirism = 50
-        self.base_defence = 0
+        self.base_defense = 1
 
     def calc_vamp_heal(self, dealt_dmg):
         return dealt_dmg // (100 // self.base_vampirism)
@@ -369,5 +383,5 @@ class Vampire(Person):
 class Blocker(Person):
     def __init__(self, name):
         super().__init__(name)
-        self.defence = 4
+        self.defense = 4
         self.type = 'Blocker'
