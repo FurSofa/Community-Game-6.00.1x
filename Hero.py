@@ -6,14 +6,16 @@ class Hero(person.Person):
         super().__init__(name, profession)
         self.type = 'Hero'
 
-
     @classmethod
-    def generate(cls,name='Mr. Lazy',profession='Warrior'):
+    def generate(cls, name='Mr. Lazy', profession='Warrior'):
         return cls(name, profession)
 
     def __str__(self):
         return f'{super().name}'
 
+
+p = person.Person.generate('norb', 'mage')
+print(p)
 
 w = Hero.generate()
 print(w)

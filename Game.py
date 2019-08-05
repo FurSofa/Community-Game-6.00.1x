@@ -1,10 +1,8 @@
 # Game Class
 
 import person
-import Base_Item_Classes
-import Combat
-import helper_functions
-import party
+import Hero
+
 
 
 
@@ -29,6 +27,11 @@ class Game:
         print(our_hero)
         keep_hero = input('keep this guy? [Y]es or [R]eroll')
 
+    def gameloop(self):
+        self.new_hero()
+
+new_game = Game()
+new_game.gameloop()
 
 
 

@@ -23,17 +23,30 @@ class Person:
         self.exp = 0
         self.next_lvl_xp = 20
 
+        # Base Stats Section!
+        self.base_str = 5 + random.randint(0, 2)
+        self.base_dex = 5 + random.randint(0, 2)
+        self.base_int = 5 + random.randint(0, 2)
+        self.base_max_hp = 30 + (self.base_str * 5) + (self.level * 5)
+        self.base_defense = 1
+        self.base_damage = 5 + int((self.base_dex * 3) // 2)
+        self.base_crit_chance = 5
+        self.base_crit_muliplyer = 150
+
+        # Stats Section
         self.str = 5 + random.randint(0, 2)
         self.dex = 5 + random.randint(0, 2)
         self.int = 5 + random.randint(0, 2)
+        self.max_hp = 30 + (self.str * 5) + (self.level * 5)
+        self.defense = 1
+        self.damage = 5 + int((self.dex * 3) // 2)
+        self.crit_chance = 5
+        self.crit_muliplyer = 150
 
-        self.max_hp_base = 30 + (self.str * 5) + (self.level * 5)
-        self.max_hp = self.max_hp_base
+        self.max_hp = self.base_max_hp
         self.hp = self.max_hp
 
-        self.defense = 1
-        self.damage = 5 + int((self.str + self.dex) // 2)
-
+        # Inventory Section
         self.inventory = []
         self.money = money
 
@@ -68,25 +81,30 @@ class Person:
             self.str += random.randint(0, 3)
             self.dex += random.randint(0, 1)
             self.int -= random.randint(0, 3)
-            self.lvl_up_xp -= int(self.int * 2 // 4)
+            self.next_lvl_xp -= (self.int * 2 // 4)
 
         elif self.profession == 'Archer':
             self.str += random.randint(0, 1)
             self.dex += random.randint(0, 3)
             self.int += random.randint(0, 1)
-            self.lvl_up_xp -= int(self.int * 3 // 3)
+            self.next_lvl_xp -= (self.int * 3 // 3)
 
         elif self.profession == 'Mage':
             self.str -= random.randint(0, 3)
             self.dex += random.randint(0, 1)
             self.int += random.randint(0, 3)
-            self.lvl_up_xp -= int(self.int * 4 // 2)
+            self.next_lvl_xp -= (self.int * 4 // 2)
 
     def __repr__(self):
         pass
 
     def __str__(self):
-        return str(self.name + ', ' + self.profession)
+        return f'{self.name}, the {self.profession}\n' \
+            f'Health: {self.hp}/{self.max_hp}\n' \
+            f'Strength: {self.str}\nDexterity: {self.dex}\nIntelligence: {self.int}\n' \
+            f'Defence: {self.defense}\n' \
+            f'Damage: {self.base_damage} + {self.damage - self.base_damage}\n ' \
+            f'Critical Chance: {self.crit_chance} of dealing {self.crit_muliplyer}% more damage'
 
     def show_stats(self):
         """
@@ -316,8 +334,3 @@ class Person:
         possible_actions = ['basic attack', 'main weapon attack']
         action = 'basic attack'
         self.attack_target(enemy_party, mode=action)
-
-
-p = Person.generate('tod','Archer')
-
-print(p)
