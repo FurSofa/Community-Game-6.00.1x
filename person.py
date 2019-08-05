@@ -10,41 +10,30 @@ class Person:
     choose_battle_action() to start a battle turn (choosing actions and executing the appropriate methods)
     """
 
-    def __init__(self, name, class_type='Warror'):
-        # general stats
+    def __init__(self, name='Mr. Lazy', profession='Warrior', level=1, money=25):
+        """
+        Create new person """
+
         self.name = name
-        self.type_class = class_type
-        self.party = None
+        self.profession = profession
+        self.party = []
 
-        # Experience and Level
-        self.level = 1
-        self.exp_current = 0
-        self.exp_to_level = 100
+        self.level = level
+        self.exp = 0
+        self.next_lvl_xp = 20
 
-        # TODO: Add logci for class modifiers?
+        self.str = 5 + int(range(0, 2))
+        self.dex = 5 + int(range(0, 2))
+        self.int = 5 + int(range(0, 2))
 
-        # Basic Stats
-        self.str = 5
-        self.dex = 5
-        self.int = 5
+        self.max_hp = 30 + (self.str * 5)
+        self.hp = self.max_hp
 
-        # defense Stats
-        self.base_health = 20
-        self.max_health = 20
-        self.current_health = self.max_health
+        self.defense = 1
+        self.damage = 5 + int((self.str + self.dex) // 2)
 
-        self.base_defense = 1
-        self.defense = self.base_defense
-
-        # damage relevant stats
-        self.base_attack_dmg = 5
-        self.base_crit_chance = 5
-        self.base_crit_modifier = 150
-
-        self.current_crit_modifier = 0
-        self.current_crit_dmg = 0
-        self.current_attack_dmg = self.base_attack_dmg
-        self.current_crit_chance = self.base_crit_chance
+        self.inventory = []
+        self.money = money
 
         # weapons
         self.main_hand = None
@@ -52,33 +41,43 @@ class Person:
 
         # armor
         self.chest = None
-        self.shoulders = None
         self.legs = None
         self.feet = None
 
         # accessories
         self.ring = None
         self.necklace = None
-        self.stat_relevant_gear = [self.main_hand,
-                                   self.off_hand,
-                                   self.chest,
-                                   self.shoulders,
-                                   self.legs,
-                                   self.feet,
-                                   self.ring,
-                                   self.necklace]
+        self.relevant_gear = [self.main_hand,
+                              self.off_hand,
+                              self.chest,
+                              self.legs,
+                              self.feet,
+                              self.ring,
+                              self.necklace]
 
         self.not_relevant_stats = ['gear_slot', 'holder']
 
-        # TODO: give everyone a chance to have extra stuff?
-        self.inventory = []
-
-        # Todo: Add starting items to all NPC
-        # TODO: Add Gear recalculation method and call when new instance is created
-        # self.calculate_stats_with_gear()
+    def __repr__(self):
+        pass
 
     def __str__(self):
         return str(self.name + ', ' + self.type_class)
+
+    def show_stats(self):
+        """
+        Prints out Stats for the person
+        """
+        relevant_stats = {
+            'Name': self.name,
+            'Max HP': self.max_health,
+            'HP': self.health,
+            'Attack Damage': self.current_attack_dmg,
+            'Defense': self.defense,
+            'Crit Chance %': self.current_crit_chance,
+            'Crit Damage %': self.current_crit_modifier
+        }
+        for k, v in relevant_stats.items():
+            print(k, ': ', v)
 
     # stats
     @property
@@ -92,7 +91,6 @@ class Person:
         items = [self.main_hand,
                  self.off_hand,
                  self.chest,
-                 self.shoulders,
                  self.legs,
                  self.feet,
                  self.ring,
@@ -129,23 +127,6 @@ class Person:
                             combined_gear_stats[stat] = gear_stats[stat]
         for stat in combined_gear_stats.keys():
             self.__dict__['current_' + stat] = self.__dict__['base_' + stat] + combined_gear_stats[stat]
-
-    def show_stats(self):
-        """
-        Prints out Stats for the person
-        :return: -
-        """
-        relevant_stats = {
-            'Name': self.name,
-            'Max HP': self.max_health,
-            'HP': self.health,
-            'Attack Damage': self.current_attack_dmg,
-            'Defense': self.defense,
-            'Crit Chance %': self.current_crit_chance,
-            'Crit Damage %': self.current_crit_modifier
-        }
-        for k, v in relevant_stats.items():
-            print(k, ': ', v)
 
     #  manage gear
     def change_gear(self):
@@ -215,13 +196,13 @@ class Person:
         self.calculate_stats_with_gear()
 
     # battle
-    def take_dmg(self, dmg_amount) -> int:
+    def take_dmg(self, amount) -> int:
         """
         reduces person hp by dmg_amount
         :param dmg_amount: int
         :return: dmg_taken: int
         """
-        dmg_taken = dmg_amount - self.defense
+        dmg_taken = amount - self.defense
         if dmg_taken < 0:
             dmg_taken = 0
         self.health -= dmg_taken
@@ -314,7 +295,7 @@ class Person:
 
 class Hero(Person):
     def __init__(self, name):
-        super().__init__(name)
+        super().__init__(name,profession)
         self.type = 'Hero'
 
         # defense stats
@@ -330,65 +311,29 @@ class Hero(Person):
         self.base_crit_chance = 10
         self.base_crit_modifier = 150
 
-    def choose_target(self, target_party):
-        """
-        chooses a person to attack
-        :param target_party: party instance
-        :return: person instance
-        """
-        print('Choose a target:')
-        return player_choose_from_list(target_party.members)
+    @classmethod
+    def generate(cls):
+        return cls(name, profession)
 
-    def choose_battle_action(self, enemy_party):
-        """
-        ENDPOINT for battle
-        lets player choose what to do in their turn and calls appropriate methods
-        :param enemy_party: party instance
-        :return: -
-        """
-        #  TODO: find a place to store possible actions
-        possible_actions = ['basic attack', ]
-        if self.main_hand:
-            possible_actions.append('main weapon attack')
-        if self.off_hand:
-            if self.off_hand.gear_type == 'weapon':
-                possible_actions.append('off hand weapon attack')
-        if len(self.party.equipment) > 0:
-            possible_actions.append('change gear')
-        #  basic attack
-        #  main weapon attack
-        #  spell
-        #  inventory
-        possible_actions.append('Show Hero Stats')
-        action = player_choose_from_list(possible_actions)
-        if action == 'change gear':
-            self.change_gear()
-            self.choose_battle_action(enemy_party)
-        elif action == 'Show Hero Stats':
-            self.show_stats()
-            self.choose_battle_action(enemy_party)
-        self.attack_target(enemy_party, mode=action)
-
-
-#  example on how to modify methods
-class Vampire(Person):
-    def __init__(self, name):
-        super().__init__(name)
-        self.type = 'Vampire'
-        self.base_vampirism = 50
-        self.base_defense = 1
-
-    def calc_vamp_heal(self, dealt_dmg):
-        return dealt_dmg // (100 // self.base_vampirism)
-
-    def deal_dmg(self, target):
-        dealt_dmg = super().deal_dmg(target)
-        self.heal(self.calc_vamp_heal(dealt_dmg))
-        return dealt_dmg
-
-
-class Blocker(Person):
-    def __init__(self, name):
-        super().__init__(name)
-        self.defense = 4
-        self.type = 'Blocker'
+# example on how to modify methods
+# class Vampire(Person):
+#     def __init__(self, name):
+#         super().__init__(name)
+#         self.type = 'Vampire'
+#         self.base_vampirism = 50
+#         self.base_defense = 1
+#
+#     def calc_vamp_heal(self, dealt_dmg):
+#         return dealt_dmg // (100 // self.base_vampirism)
+#
+#     def deal_dmg(self, target):
+#         dealt_dmg = super().deal_dmg(target)
+#         self.heal(self.calc_vamp_heal(dealt_dmg))
+#         return dealt_dmg
+#
+#
+# class Blocker(Person):
+#     def __init__(self, name):
+#         super().__init__(name)
+#         self.defense = 4
+#         self.type = 'Blocker'
