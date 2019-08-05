@@ -19,9 +19,9 @@ fighter4 = Person('More Cannon Fodder')
 # fighter5 = Person('Even more Cannon Fodder')
 # fighter6 = Person('and more Cannon Fodder')
 
-battle_axe = Axe(dmg=2, defence=0)
-longsword = Sword(dmg=4, defence=0)
-short_sword = Sword(dmg=3, defence=1)
+battle_axe = Axe(dmg=2, defense=0)
+longsword = Sword(dmg=4, defense=0)
+short_sword = Sword(dmg=3, defense=1)
 
 
 party1.add_member(enemy1)
