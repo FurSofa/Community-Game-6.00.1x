@@ -13,13 +13,15 @@ class Person:
     def __init__(self, name, class_type='Warror'):
         # general stats
         self.name = name
-        self.type = class_type
+        self.type_class = class_type
         self.party = None
 
         # Experience and Level
         self.level = 1
         self.exp_current = 0
         self.exp_to_level = 100
+
+        # TODO: Add logci for class modifiers?
 
         # Basic Stats
         self.str = 5
@@ -67,10 +69,16 @@ class Person:
                                    self.necklace]
 
         self.not_relevant_stats = ['gear_slot', 'holder']
-        self.calculate_stats_with_gear()
+
+        # TODO: give everyone a chance to have extra stuff?
+        self.inventory = []
+
+        # Todo: Add starting items to all NPC
+        # TODO: Add Gear recalculation method and call when new instance is created
+        # self.calculate_stats_with_gear()
 
     def __str__(self):
-        return str(self.name + ', ' + self.type)
+        return str(self.name + ', ' + self.type_class)
 
     # stats
     @property
@@ -192,7 +200,6 @@ class Person:
                 slot_to_change = 'main_hand'
             elif weapon_slot == 1:
                 slot_to_change = 'off_hand'
-            #  TODO: check if shield or armor
         elif new_gear.gear_type == 'shield':
             slot_to_change = 'off_hand'
         elif new_gear.gear_type == 'armor':
@@ -232,7 +239,7 @@ class Person:
             print(self, 'lands a critical strike!')
         return dmg
 
-    #  TODO: refactor deal_damage to general function with single and multi target
+    #  TODO: refactor combat functions to Combat.py
     def deal_dmg(self, target) -> int:
         """
         generates dmg and lets target take dmg
@@ -272,7 +279,7 @@ class Person:
             if mode == 'basic attack':
                 dmg_enemy_received = self.deal_dmg(target)
             elif mode == 'main weapon attack':
-                dmg_enemy_received = self.first_hand_weapon.deal_dmg(target)
+                dmg_enemy_received = self.main_hand.deal_dmg(target)
             elif mode == 'off hand weapon attack':
                 dmg_enemy_received = self.off_hand.deal_dmg(target)
             print(target, 'hp:', target.health)
@@ -284,9 +291,9 @@ class Person:
         :return: amount healed for: int
         """
         self.health += amount
-        if self.health > self.current_max_health:
-            healed_amount = self.current_max_health - self.health
-            self.health = self.current_max_health
+        if self.health > self.max_health:
+            healed_amount = self.max_health - self.health
+            self.health = self.max_health
             print(self, 'is fully Healed!')
         else:
             healed_amount = amount
@@ -341,7 +348,7 @@ class Hero(Person):
         """
         #  TODO: find a place to store possible actions
         possible_actions = ['basic attack', ]
-        if self.first_hand_weapon:
+        if self.main_hand:
             possible_actions.append('main weapon attack')
         if self.off_hand:
             if self.off_hand.gear_type == 'weapon':

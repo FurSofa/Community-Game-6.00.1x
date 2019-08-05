@@ -5,13 +5,14 @@ from battle import Battle
 from weapons import Sword
 
 
-# TODO: make this a class?
+# TODO: Move this to Game.py and add if name == __Main__:
 
 player_name = input('What is your name, Traveler?')
 
+
 hero_party = Party()
 
-hero = Hero(player_name)  # todo: make stats args
+hero = Hero(player_name)  # todo: make stats args (name, class_type, ??)
 
 hero_party.add_member(hero)
 
