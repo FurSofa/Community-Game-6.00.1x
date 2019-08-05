@@ -1,6 +1,7 @@
 import random
 from helper_functions import player_choose_from_list
 from weapons import *
+import random
 
 
 class Person:
@@ -22,11 +23,12 @@ class Person:
         self.exp = 0
         self.next_lvl_xp = 20
 
-        self.str = 5 + int(range(0, 2))
-        self.dex = 5 + int(range(0, 2))
-        self.int = 5 + int(range(0, 2))
+        self.str = 5 + random.randint(0, 2)
+        self.dex = 5 + random.randint(0, 2)
+        self.int = 5 + random.randint(0, 2)
 
-        self.max_hp = 30 + (self.str * 5)
+        self.max_hp_base = 30 + (self.str * 5) + (self.level * 5)
+        self.max_hp = self.max_hp_base
         self.hp = self.max_hp
 
         self.defense = 1
@@ -57,11 +59,34 @@ class Person:
 
         self.not_relevant_stats = ['gear_slot', 'holder']
 
+    @classmethod
+    def generate(cls, name='Mr. Lazy', profession='Warrior'):
+        return cls(name, profession)
+
+    def profession_stat_augment(self):
+        if self.profession == 'Warrior':
+            self.str += random.randint(0, 3)
+            self.dex += random.randint(0, 1)
+            self.int -= random.randint(0, 3)
+            self.lvl_up_xp -= int(self.int * 2 // 4)
+
+        elif self.profession == 'Archer':
+            self.str += random.randint(0, 1)
+            self.dex += random.randint(0, 3)
+            self.int += random.randint(0, 1)
+            self.lvl_up_xp -= int(self.int * 3 // 3)
+
+        elif self.profession == 'Mage':
+            self.str -= random.randint(0, 3)
+            self.dex += random.randint(0, 1)
+            self.int += random.randint(0, 3)
+            self.lvl_up_xp -= int(self.int * 4 // 2)
+
     def __repr__(self):
         pass
 
     def __str__(self):
-        return str(self.name + ', ' + self.type_class)
+        return str(self.name + ', ' + self.profession)
 
     def show_stats(self):
         """
@@ -293,47 +318,6 @@ class Person:
         self.attack_target(enemy_party, mode=action)
 
 
-class Hero(Person):
-    def __init__(self, name):
-        super().__init__(name,profession)
-        self.type = 'Hero'
+p = Person.generate('tod','Archer')
 
-        # defense stats
-        self.base_max_health = 20
-        self.current_max_health = self.base_max_health
-        self.health = self.current_max_health
-        self.base_defense = 0
-        self.current_defense = self.base_defense
-
-        # damage relevant stats
-        self.base_attack_dmg = 5
-        self.current_attack_dmg = self.base_attack_dmg
-        self.base_crit_chance = 10
-        self.base_crit_modifier = 150
-
-    @classmethod
-    def generate(cls):
-        return cls(name, profession)
-
-# example on how to modify methods
-# class Vampire(Person):
-#     def __init__(self, name):
-#         super().__init__(name)
-#         self.type = 'Vampire'
-#         self.base_vampirism = 50
-#         self.base_defense = 1
-#
-#     def calc_vamp_heal(self, dealt_dmg):
-#         return dealt_dmg // (100 // self.base_vampirism)
-#
-#     def deal_dmg(self, target):
-#         dealt_dmg = super().deal_dmg(target)
-#         self.heal(self.calc_vamp_heal(dealt_dmg))
-#         return dealt_dmg
-#
-#
-# class Blocker(Person):
-#     def __init__(self, name):
-#         super().__init__(name)
-#         self.defense = 4
-#         self.type = 'Blocker'
+print(p)
