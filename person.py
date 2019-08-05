@@ -99,12 +99,12 @@ class Person:
         pass
 
     def __str__(self):
-        return f'{self.name}, the {self.profession}\n' \
+        return f'\n{self.name}, the {self.profession}\n' \
             f'Health: {self.hp}/{self.max_hp}\n' \
-            f'Strength: {self.str}\nDexterity: {self.dex}\nIntelligence: {self.int}\n' \
+            f'Str: {self.str}\nDex: {self.dex}\nInt: {self.int}\n' \
             f'Defence: {self.defense}\n' \
-            f'Damage: {self.base_damage} + {self.damage - self.base_damage}\n ' \
-            f'Critical Chance: {self.crit_chance} of dealing {self.crit_muliplyer}% more damage'
+            f'Damage: {self.damage} with {self.main_hand}\n' \
+            f'Critical Chance: {self.crit_chance}%chance to dealing {self.crit_muliplyer}% more damage'
 
     def show_stats(self):
         """
