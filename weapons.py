@@ -1,5 +1,5 @@
 import random
-import Base_Item_Classes
+import Equipable_Items
 
 # TODO: Add weapon variations based on the 'Weapon' class from Base_Item_classes
 
