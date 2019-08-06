@@ -1,4 +1,4 @@
-from helper_functions import player_choose_from_list
+from helper_functions import select_from_list
 
 
 class Party:
@@ -9,6 +9,38 @@ class Party:
         self.inventory = []
         self.equipment = []  # used for armor and weapons
         self.gold = 0
+
+    @classmethod
+    def generate(cls):
+        return cls()
+
+    def alive(self):
+        """ Checks if anyone is alive
+        :returns Ture if anyone is
+        """
+        for member in self.members:
+            if member.is_alive:
+                return True
+        return False
+
+    def kill_everyone(self):
+        delete_index = []
+        for i, member in enumerate(self.members):
+            delete_index.append(i)
+            print(f'{member.name}, the {member.profession} has been killed!')
+        for i in reversed(delete_index):
+            self.dead_members.append(self.members.pop(i))
+
+    def party_members_info(self):
+        for member in self.members:
+            party_member_info = ''.join(f'{member.name}, {member.profession} '
+                                        f'Lv: {member.level} {member.hp}/{member.max_hp}\n')
+        print(f'=====  Party Info  =====\n'
+              f'Gold: {self.gold}\t Items: {len(self.inventory) + len(self.equipment)}\n'
+              f'Party Members:\n {party_member_info}')
+
+    def party_info(self):
+        return f'Party Info:\nGold: {self.gold}\tItems: {len(self.inventory)}\nMembers:\n'
 
     @property
     def has_units_left(self) -> bool:
@@ -24,6 +56,13 @@ class Party:
         :return: string of active members separated my ','
         """
         return ', '.join(member.name for member in self.members)
+
+    @property
+    def party_leader(self):
+        """
+        :return: first party member. Used to access Character methods?
+        """
+        return self.members[0]
 
     def remove_dead(self):
         """
@@ -46,6 +85,7 @@ class Party:
         :return:
         """
         member.party = self
+        print(f'{member.name}, the {member.profession} joins the party!')
         self.members.append(member)
 
     #  inventory and trading
@@ -71,13 +111,13 @@ class Party:
         choices = self.members[:]
         choices.append('equipment')
         print('Where do you want to put it?')
-        choice = player_choose_from_list(choices)
+        choice = select_from_list(choices)
         if choice == 'equipment':
             self.equipment.append(new_gear)
         else:
             choice.pickup_gear(new_gear)
 
-    def get_equipment(self, equipped=True): #, holder=False):
+    def get_equipment(self, equipped=True):  # , holder=False):
         """
         :param equipped: -> bool: includes equipped items
         # :param holder: -> bool:
@@ -106,7 +146,7 @@ class Party:
 
     def sell_equipment(self):
         items = self.get_equipment(equipped=True)
-        choice = player_choose_from_list(self.get_equpiment_holder_list(), index_pos=True)
+        choice = select_from_list(self.get_equpiment_holder_list(), index_pos=True)
 
         item_to_sell = items[choice]
         self.gold += item_to_sell.value
@@ -114,4 +154,3 @@ class Party:
         if item_to_sell.holder:
             # uneqip item
             pass
-

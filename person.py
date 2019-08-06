@@ -1,5 +1,5 @@
 import random
-from helper_functions import player_choose_from_list
+from helper_functions import select_from_list
 import random
 import Equipable_Items
 
@@ -20,8 +20,8 @@ class Person:
         self.party = None  # Only one party at a time
 
         self.level = level
-        self.exp = 0
-        self.next_lvl_xp = 20
+        self.xp = 0
+        self.xp_to_lvl_up = 20
 
         # Base Stats Section!
         self.base_str = 5 + random.randint(0, 2)
@@ -64,6 +64,7 @@ class Person:
         self.off_hand = None
 
         # armor
+        self.head = None
         self.chest = None
         self.legs = None
         self.feet = None
@@ -73,6 +74,7 @@ class Person:
         self.necklace = None
         self.relevant_gear = [self.main_hand,
                               self.off_hand,
+                              self.head,
                               self.chest,
                               self.legs,
                               self.feet,
@@ -81,6 +83,8 @@ class Person:
 
     def test_equip(self):
         self.main_hand = Equipable_Items.create_random_equipable_item(1, 1)
+        self.off_hand = Equipable_Items.create_random_equipable_item(1, 1)
+        self.head = Equipable_Items.create_random_equipable_item(1, 2)
 
     @classmethod
     def generate(cls, name='Mr. Lazy', profession='Warrior'):
@@ -91,33 +95,41 @@ class Person:
             self.str += random.randint(0, 3)
             self.dex += random.randint(0, 1)
             self.int -= random.randint(0, 3)
-            self.next_lvl_xp -= (self.int * 2 // 4)
+            self.xp_to_lvl_up -= (self.int * 2 // 4)
 
         elif self.profession == 'Archer':
             self.str += random.randint(0, 1)
             self.dex += random.randint(0, 3)
             self.int += random.randint(0, 1)
-            self.next_lvl_xp -= (self.int * 3 // 3)
+            self.xp_to_lvl_up -= (self.int * 3 // 3)
 
         elif self.profession == 'Mage':
             self.str -= random.randint(0, 3)
             self.dex += random.randint(0, 1)
             self.int += random.randint(0, 3)
-            self.next_lvl_xp -= (self.int * 4 // 2)
+            self.xp_to_lvl_up -= (self.int * 4 // 2)
 
     def __repr__(self):
-        return f'{self.name}, the {self.profession}'
+        max_left = max(len(k) for k in self.__dict__.keys()) + 10
+        return '\n'.join(
+            [f"{k.title()}: {str(v).rjust(max_left - len(k), ' ')}"
+             for k, v in self.__dict__.items() if v and k[0] != '_'])
 
     def __str__(self):
-        return f'{self.name}, the {self.profession}'
+        return f'\n{self.name},the {self.profession}\n' \
+            f'Level:\t{self.level:>4}  XP: {self.xp:>6}/{self.xp_to_lvl_up}\n' \
+            f'HP:\t   {self.hp}/{self.max_hp:<4}\n' \
+            f'Str:\t   {self.str:<3}Damage: {self.damage:>6}\n' \
+            f'Dex:\t   {self.dex:<3}Crit:  {self.crit_chance}%/{self.crit_muliplier}%\n' \
+            f'Int:\t   {self.int:<3}Defence: {self.defense:>5}\n'
 
     def show_stats(self):
-        return f'\n{self.name}, the {self.profession}\n' \
-            f'Health:\t\t{self.hp}/{self.max_hp}\n' \
-            f'Str: {self.str}\t\tDamage: {self.damage}\n' \
-            f'Dex: {self.dex}\t\tCrit Chance: {self.crit_chance}%\n' \
-            f'Int: {self.int}\t\tDefence: {self.defense}\n' \
-            f'Crit damage Multiplier: {self.crit_muliplier}%\n'
+        print(f'\n{self.name},the {self.profession}\n'
+              f'Level:\t{self.level:>4}  XP: {self.xp:>6}/{self.xp_to_lvl_up}\n'
+              f'HP:\t   {self.hp}/{self.max_hp:<4}\n'
+              f'Str:\t   {self.str:<3}Damage: {self.damage:>6}\n'
+              f'Dex:\t   {self.dex:<3}Crit:  {self.crit_chance}%/{self.crit_muliplier}%\n'
+              f'Int:\t   {self.int:<3}Defence: {self.defense:>5}\n')
 
     def show_stats_old(self):
         """
@@ -188,9 +200,9 @@ class Person:
         :return: -
         """
         stats = {
-            'str' : self.base_str,
-            'dex' : self.base_dex,
-            'int' : self.base_int,
+            'str': self.base_str,
+            'dex': self.base_dex,
+            'int': self.base_int,
             'max_hp': self.base_max_hp,
             'defense': self.base_defense,
             'att_dmg_min': self.base_att_dmg_min,
@@ -203,13 +215,13 @@ class Person:
             self.__dict__[key] = stats[key] + sum([item.__dict__[key] for item in gear])
 
         # TODO: range or static dmg?
-        #self.current_crit_dmg = int(self.current_attack_dmg * (self.current_crit_modifier / 100))
+        # self.current_crit_dmg = int(self.current_attack_dmg * (self.current_crit_modifier / 100))
 
     #  manage gear
     def change_gear(self):
         if len(self.party.equipment) > 0:
             print('What item do you want to equip?')
-            chosen_gear = player_choose_from_list(self.party.equipment)
+            chosen_gear = select_from_list(self.party.equipment)
             self.equip_gear(chosen_gear)
             self.party.equipment.remove(chosen_gear)
 
@@ -244,7 +256,7 @@ class Person:
         if slot_to_change == 'choose':
             if new_gear.gear_type == 'weapon':
                 print('Where do you want to put it?')
-                weapon_slot = player_choose_from_list(['Main Hand', 'Off Hand'], index_pos=True)
+                weapon_slot = select_from_list(['Main Hand', 'Off Hand'], index_pos=True)
                 if weapon_slot == 0:
                     slot_to_change = 'main_hand'
                 elif weapon_slot == 1:
@@ -333,16 +345,20 @@ class Person:
         action = 'basic attack'
         self.attack_target(enemy_party, mode=action)
 
-
 # Testing code!
+
 # def test_norb(n=10):
-#     # Test code!
 #     p = Person.generate('norbnorb')
-#     print(p)
-#     p.calculate_dmg()
-#     p.take_dmg(n)
-#     p.heal(n)
+#     p.get_equipped_items()
 #     p.test_equip()
-#
-#
+#     p.show_stats()
+#     print(p)
+#     # print('main hand: ', p.main_hand)
+#     # print(p.off_hand)
+#     # print(p.head)
+#     # p.calculate_dmg()
+#     # p.take_dmg(n)
+#     # p.heal(n)
+#     # p.test_equip()
+
 # test_norb()

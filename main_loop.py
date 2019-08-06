@@ -1,4 +1,4 @@
-from helper_functions import player_choose_from_list
+from helper_functions import select_from_list
 from person import Person, Hero
 from party import Party
 from battle import Battle
@@ -18,7 +18,7 @@ hero_party.add_member(hero)
 
 while hero_party.has_units_left:
     print('What would you like to do, ' + str(hero.name) + '?')
-    player_action = player_choose_from_list(['BATTLE!', 'camp'])
+    player_action = select_from_list(['BATTLE!', 'camp'])
     if player_action == 'BATTLE!':
 
         # todo: make it a method

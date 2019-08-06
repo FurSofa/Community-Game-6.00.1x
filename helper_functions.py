@@ -1,4 +1,4 @@
-def player_choose_from_list(iterable, index_pos=False):
+def select_from_list(iterable, index_pos=False, q='Whats your choice?'):
     """
     Takes an iterable
     prints a numerated list for the user to choose from
@@ -8,13 +8,20 @@ def player_choose_from_list(iterable, index_pos=False):
     :param iterable, index_pos:
     :return chosen item or index position:
     """
+    print(q)
     for index, item in enumerate(iterable):
         display_number = str(index + 1)
         print(display_number + ': ', item)
     choice = input('Number of choice: ')
-    if not choice.isdigit() or not 0 < int(choice) < (len(iterable) + 1):
-        print('Enter the number of the target!')
-        choice_index = player_choose_from_list(iterable, index_pos=True)
+    if choice == '':
+        choice_index = 0
+        if index_pos:
+            return choice_index
+        return iterable[choice_index]
+
+    if not choice.isdigit() or not 0 < int(choice) <= len(iterable):
+        print('Enter a number from the list!')
+        choice_index = select_from_list(iterable, index_pos=True, q=q)
     else:
         choice_index = int(choice) - 1
     if index_pos:
@@ -22,4 +29,4 @@ def player_choose_from_list(iterable, index_pos=False):
     return iterable[choice_index]
 
 
-    #  TODO: figure out a way to get back if misstyped the menu choice
+
