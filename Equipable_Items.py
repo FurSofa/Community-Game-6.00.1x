@@ -1,4 +1,4 @@
-# Contains base class for all items
+# Contains base class for equipped items
 import random
 import string
 
@@ -18,12 +18,15 @@ class Consumable:
 class Equipment:
     def __init__(self, quality, quality_value=10, value=0, max_durability=10, durability=10,
                  equipable=True, strength=0, dexterity=0, intelligence=0, max_hp=0, defense=0,
-                 att_dmg_min=0, att_dmg_max=0, damage=0, crit_chance=0, crit_multiplyer=0):
+                 att_dmg_min=0, att_dmg_max=0, damage=0, crit_chance=0, crit_multiplier=0):
         self.quality = str(quality)
         self.quality_val = quality_value
         self.value = value + int(10 * quality_value + 10)
-        self.max_durabilty = 10
-        self.durability = self.max_durabilty
+        self.max_durability = 10
+        self.durability = self.max_durability
+
+        self.holder = None  # to keep track of who that item is equipped on
+        # self.gear_type =  # where does it go? needed to equip and unequip
 
         self._equipable = True
         self.str = strength
@@ -35,10 +38,11 @@ class Equipment:
         self.att_dmg_max = att_dmg_max
         self.damage = damage
         self.crit_chance = crit_chance
-        self.crit_muliplyer = crit_multiplyer
+        self.crit_muliplier = crit_multiplier
 
         self._max_left = None
         self._space_between = 10
+
 
     @classmethod
     def generate(cls):
@@ -53,6 +57,10 @@ class Equipment:
         return self._max_left
 
     def __str__(self):
+        # TODO: name and/or type
+        return 'Item'
+
+    def show_stats(self):
         space_between = 5
         max_left = max(len(k) for k in self.__dict__.keys()) + space_between
         return '\n'.join(
@@ -68,8 +76,7 @@ class Equipment:
 
     def repair(self):
         # TODO: Add repair function
-        # self.max_durability = int(self.max_durability * 0.1)
-        pass
+        self.max_durability = int(self.max_durability * 0.9)
 
 
 class Weapon(Equipment):
@@ -78,7 +85,7 @@ class Weapon(Equipment):
 
     def calc_weapon_dmg(self):
         damage_output = random.randint(self.att_dmg_min, self.att_dmg_max)
-        return damage_outpu
+        return damage_output
 
 
 # TODO: Add Armor Class

@@ -2,6 +2,7 @@
 
 
 import Hero
+from helper_functions import player_choose_from_list
 
 
 class Game:
@@ -30,6 +31,9 @@ class Game:
             hero_profession = 'warrior'
 
         our_hero = Hero.Hero.generate(hero_name, hero_profession)
+        hero_name = input()
+        hero_profession = player_choose_from_list(['Warrior', 'Archer', 'Mage'])
+        our_hero = Hero.generate()
 
         print(our_hero)
         keep_hero = input('Do you want to keep this Hero? \n[Y]es or [R]eroll\n').lower()
@@ -52,3 +56,6 @@ class Game:
 
 new_game = Game()
 new_game.gameloop()
+
+
+
