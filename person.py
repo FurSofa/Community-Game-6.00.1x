@@ -1,7 +1,7 @@
 import random
 from helper_functions import player_choose_from_list
-from weapons import *
 import random
+import Equipable_Items
 
 
 class Person:
@@ -11,7 +11,7 @@ class Person:
     choose_battle_action() to start a battle turn (choosing actions and executing the appropriate methods)
     """
 
-    def __init__(self, name='Mr. Lazy', profession='Warrior', level=1, money=25):
+    def __init__(self, name='Mr. Lazy', profession='warrior', level=1, money=25):
         """
         Create new person """
 
@@ -29,19 +29,26 @@ class Person:
         self.base_int = 5 + random.randint(0, 2)
         self.base_max_hp = 30 + (self.base_str * 5) + (self.level * 5)
         self.base_defense = 1
-        self.base_damage = 5 + int((self.base_dex * 3) // 2)
+        self.base_att_dmg_min = 1
+        self.base_att_dmg_max = 4
+        self.base_damage = random.randint(self.base_att_dmg_min,
+                                          self.base_att_dmg_max) \
+                           + int((self.base_dex * 3) // 3)
         self.base_crit_chance = 5
         self.base_crit_muliplyer = 150
 
         # Stats Section
-        self.str = 5 + random.randint(0, 2)
-        self.dex = 5 + random.randint(0, 2)
-        self.int = 5 + random.randint(0, 2)
-        self.max_hp = 30 + (self.str * 5) + (self.level * 5)
-        self.defense = 1
-        self.damage = 5 + int((self.dex * 3) // 2)
-        self.crit_chance = 5
-        self.crit_muliplyer = 150
+        self.str = self.base_str
+        self.dex = self.base_dex
+        self.int = self.base_int
+        self.max_hp = self.base_max_hp
+        self.defense = self.base_defense
+        self.att_dmg_min = self.base_att_dmg_min
+        self.att_dmg_max = self.base_att_dmg_max
+        self.damage = random.randint(self.att_dmg_min, self.att_dmg_max) \
+                      + int((self.dex + self.str) // 2)
+        self.crit_chance = self.base_crit_chance
+        self.crit_muliplyer = self.base_crit_muliplyer
 
         self.max_hp = self.base_max_hp
         self.hp = self.max_hp
@@ -72,6 +79,9 @@ class Person:
 
         self.not_relevant_stats = ['gear_slot', 'holder']
 
+    def test_equip(self):
+        self.main_hand = Equipable_Items.create_random_equipable_item(1, 1)
+
     @classmethod
     def generate(cls, name='Mr. Lazy', profession='Warrior'):
         return cls(name, profession)
@@ -100,33 +110,61 @@ class Person:
 
     def __str__(self):
         return f'\n{self.name}, the {self.profession}\n' \
-            f'Health: {self.hp}/{self.max_hp}\n' \
-            f'Str: {self.str}\nDex: {self.dex}\nInt: {self.int}\n' \
-            f'Defence: {self.defense}\n' \
-            f'Damage: {self.damage} with {self.main_hand}\n' \
-            f'Critical Chance: {self.crit_chance}%chance to dealing {self.crit_muliplyer}% more damage'
+            f'Health:\t\t{self.hp}/{self.max_hp}\n' \
+            f'Str: {self.str}\t\tDamage: {self.damage}\n' \
+            f'Dex: {self.dex}\t\tCrit Chance: {self.crit_chance}%\n' \
+            f'Int: {self.int}\t\tDefence: {self.defense}\n' \
+            f'Crit damage Multiplier: {self.crit_muliplyer}%\n'
 
     def show_stats(self):
         """
         Prints out Stats for the person
         """
         relevant_stats = {
-            'Name': self.name,
-            'Max HP': self.max_health,
-            'HP': self.health,
-            'Attack Damage': self.current_attack_dmg,
+            '\nName': self.name,
+            'Max HP': self.max_hp,
+            'HP': self.hp,
+            'Attack Damage': self.damage,
             'Defense': self.defense,
-            'Crit Chance %': self.current_crit_chance,
-            'Crit Damage %': self.current_crit_modifier
+            'Crit Chance %': self.crit_chance,
+            'Crit Damage %': self.crit_muliplyer
         }
         for k, v in relevant_stats.items():
             print(k, ': ', v)
 
-    # stats
     @property
     def is_alive(self) -> bool:
-        return self.health > 0
+        return self.hp > 0
 
+    def take_dmg(self, amount) -> int:
+        """
+        reduces person hp by dmg_amount
+        :param: amount: int
+        :return: actual_dmg: int
+        """
+        dmg_multi = amount / (amount + self.defense)
+        actual_dmg = round(amount * dmg_multi)
+        self.hp -= actual_dmg
+        print(f'{self.name} took {actual_dmg} damage out of {amount} received.')
+        return actual_dmg
+
+    def heal(self, amount) -> int:
+        """
+        heals self for amount
+        :param amount: int
+        :return: amount healed for: int
+        """
+        self.hp += amount
+        if self.hp > self.max_hp:
+            healed_amount = self.max_hp - self.hp
+            self.hp = self.max_hp
+            print(f'{self.name} is fully Healed! HP: {self.hp}/{self.max_hp}\n')
+        else:
+            healed_amount = amount
+            print(f'{self.name} healed for {amount} hp! HP: {self.hp}/{self.max_hp}\n')
+        return healed_amount
+
+    # Gear and Stat Calculations
     def get_eqipped_items(self):
         """
         :return: list of currently by the player equipped items
@@ -239,17 +277,6 @@ class Person:
         self.calculate_stats_with_gear()
 
     # battle
-    def take_dmg(self, amount) -> int:
-        """
-        reduces person hp by dmg_amount
-        :param dmg_amount: int
-        :return: dmg_taken: int
-        """
-        dmg_taken = amount - self.defense
-        if dmg_taken < 0:
-            dmg_taken = 0
-        self.health -= dmg_taken
-        return dmg_taken
 
     def calculate_dmg(self) -> int:
         """
@@ -257,10 +284,10 @@ class Person:
         determines hit is critical
         :return: dmg int
         """
-        dmg = self.current_attack_dmg
-        if random.randrange(100) < self.current_crit_chance:
-            dmg = self.current_crit_dmg
-            print(self, 'lands a critical strike!')
+        dmg = self.damage
+        if random.randrange(100) < self.crit_chance:
+            dmg = (dmg * self.crit_muliplyer) // 100
+            # print(f'{self.name} lands a critical strike dealing {dmg} damage!')
         return dmg
 
     #  TODO: refactor combat functions to Combat.py
@@ -308,22 +335,6 @@ class Person:
                 dmg_enemy_received = self.off_hand.deal_dmg(target)
             print(target, 'hp:', target.health)
 
-    def heal(self, amount) -> int:
-        """
-        heals self for amount
-        :param amount: int
-        :return: amount healed for: int
-        """
-        self.health += amount
-        if self.health > self.max_health:
-            healed_amount = self.max_health - self.health
-            self.health = self.max_health
-            print(self, 'is fully Healed!')
-        else:
-            healed_amount = amount
-            print(self, 'healed for', amount, 'hp')
-        return healed_amount
-
     def choose_battle_action(self, enemy_party):
         """
         ENDPOINT for battle
@@ -334,3 +345,17 @@ class Person:
         possible_actions = ['basic attack', 'main weapon attack']
         action = 'basic attack'
         self.attack_target(enemy_party, mode=action)
+
+
+# Testing code!
+# def test_norb(n=10):
+#     # Test code!
+#     p = Person.generate('norbnorb')
+#     print(p)
+#     p.calculate_dmg()
+#     p.take_dmg(n)
+#     p.heal(n)
+#     p.test_equip()
+#
+#
+# test_norb()
