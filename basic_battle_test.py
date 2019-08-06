@@ -1,43 +1,31 @@
-from person import Person, Hero, Vampire, Blocker
-from weapons import Weapon, Sword, Axe
+from person import Person
+from Hero import Hero
 from party import Party
 from battle import Battle
+from Equipable_Items import *
 
 
 party1 = Party()
 party2 = Party()
 battle = Battle()
 
-enemy1 = Vampire('Blood Sucker')
-enemy2 = Blocker('Shield Man')
-enemy3 = Person('Goomba')
+hero = Hero.generate('norbnorb', 'Warrior')
+hero.profession_stat_augment()
 
-fighter1 = Person('Basic B')
-hero = Hero('Player One')
-fighter3 = Person('Cannon Fodder')
-fighter4 = Person('More Cannon Fodder')
-# fighter5 = Person('Even more Cannon Fodder')
-# fighter6 = Person('and more Cannon Fodder')
+enemy = Person.generate()
 
-battle_axe = Axe(dmg=2, defense=0)
-longsword = Sword(dmg=4, defense=0)
-short_sword = Sword(dmg=3, defense=1)
+party1.add_member(hero)
+party2.add_member(enemy)
 
+item = create_random_equipable_item(1, 1)
+party1.pickup_gear(item)
 
-party1.add_member(enemy1)
-party1.add_member(enemy2)
-party1.add_member(enemy3)
-
-party2.add_member(fighter1)
-party2.add_member(hero)
-party2.add_member(fighter3)
-party2.add_member(fighter4)
 # party2.add_member(fighter5)
 # party2.add_member(fighter6)
 
 if __name__ == '__main__':
     # hero.pickup_gear(battle_axe)
-    # GEAR_LIST = hero.get_eqipped_items()
+    # GEAR_LIST = hero.get_equipped_items()
     # hero.pickup_gear(longsword)
     # hero.pickup_gear(short_sword)
 

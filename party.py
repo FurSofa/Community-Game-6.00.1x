@@ -1,3 +1,6 @@
+from helper_functions import player_choose_from_list
+
+
 class Party:
     def __init__(self):
         self.members = []
@@ -9,13 +12,24 @@ class Party:
 
     @property
     def has_units_left(self) -> bool:
+        """
+        checks if active members are left
+        :return: amount of active members left
+        """
         return len(self.members) > 0
 
     @property
     def members_names(self):
+        """
+        :return: string of active members separated my ','
+        """
         return ', '.join(member.name for member in self.members)
 
     def remove_dead(self):
+        """
+        removes dead players from active members and places them in dead members
+        :return: number of members found dead
+        """
         delete_index = []
         for i, member in enumerate(self.members):
             if not member.is_alive:
@@ -26,6 +40,11 @@ class Party:
         return len(delete_index)
 
     def add_member(self, member):
+        """
+        adds a member to the party
+        :param member: Person or Hero class object
+        :return:
+        """
         member.party = self
         self.members.append(member)
 
@@ -37,3 +56,62 @@ class Party:
             return 'Error'
         self.gold += gold_amount
         return gold_amount
+
+    def pickup_gear(self, new_gear):
+        """
+        entry point
+        lets player choose where to put new gear and starts the appropriate methods
+        :param new_gear: new item to equip
+        :return: -
+        """
+        #  TODO: display new and old stats to compare (for item type)
+        print('You found new equipment!')
+        print('-----------------------')
+        print(new_gear.show_stats())  # TODO: print this
+        choices = self.members[:]
+        choices.append('equipment')
+        print('Where do you want to put it?')
+        choice = player_choose_from_list(choices)
+        if choice == 'equipment':
+            self.equipment.append(new_gear)
+        else:
+            choice.pickup_gear(new_gear)
+
+    def get_equipment(self, equipped=True): #, holder=False):
+        """
+        :param equipped: -> bool: includes equipped items
+        # :param holder: -> bool:
+        :return: equipment in the party
+        """
+        equipment = []
+        [equipment.append(item) for item in self.equipment]
+        if equipped:
+            # if holder:
+            [[equipment.append(item) for item in member.get_equipped_items()] for member in self.members]
+        return equipment
+
+    def get_equpiment_holder_list(self):  # combine with get equipment?
+        """
+        :return: list of string with item and holder
+        """
+        equipment_list = self.get_equipment(equipped=True)
+        equipment_and_holder_list = []
+        for item in equipment_list:
+            if item.holder:
+                s = str(item) + ', ' + str(item.holder)
+            else:
+                s = str(item) + ', ' + 'Unused'
+            equipment_and_holder_list.append(s)
+        return equipment_and_holder_list
+
+    def sell_equipment(self):
+        items = self.get_equipment(equipped=True)
+        choice = player_choose_from_list(self.get_equpiment_holder_list(), index_pos=True)
+
+        item_to_sell = items[choice]
+        self.gold += item_to_sell.value
+        print('You sold', item_to_sell, 'for', item_to_sell.value, 'gold')
+        if item_to_sell.holder:
+            # uneqip item
+            pass
+

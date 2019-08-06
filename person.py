@@ -17,7 +17,7 @@ class Person:
 
         self.name = name
         self.profession = profession
-        self.party = []
+        self.party = None  # Only one party at a time
 
         self.level = level
         self.exp = 0
@@ -35,7 +35,7 @@ class Person:
                                           self.base_att_dmg_max) \
                            + int((self.base_dex * 3) // 3)
         self.base_crit_chance = 5
-        self.base_crit_muliplyer = 150
+        self.base_crit_muliplier = 150
 
         # Stats Section
         self.str = self.base_str
@@ -45,10 +45,12 @@ class Person:
         self.defense = self.base_defense
         self.att_dmg_min = self.base_att_dmg_min
         self.att_dmg_max = self.base_att_dmg_max
+
+        # TODO: one static value or a range for damage?
         self.damage = random.randint(self.att_dmg_min, self.att_dmg_max) \
                       + int((self.dex + self.str) // 2)
         self.crit_chance = self.base_crit_chance
-        self.crit_muliplyer = self.base_crit_muliplyer
+        self.crit_muliplier = self.base_crit_muliplier
 
         self.max_hp = self.base_max_hp
         self.hp = self.max_hp
@@ -77,8 +79,6 @@ class Person:
                               self.ring,
                               self.necklace]
 
-        self.not_relevant_stats = ['gear_slot', 'holder']
-
     def test_equip(self):
         self.main_hand = Equipable_Items.create_random_equipable_item(1, 1)
 
@@ -106,17 +106,20 @@ class Person:
             self.next_lvl_xp -= (self.int * 4 // 2)
 
     def __repr__(self):
-        pass
+        return f'{self.name}, the {self.profession}'
 
     def __str__(self):
+        return f'{self.name}, the {self.profession}'
+
+    def show_stats(self):
         return f'\n{self.name}, the {self.profession}\n' \
             f'Health:\t\t{self.hp}/{self.max_hp}\n' \
             f'Str: {self.str}\t\tDamage: {self.damage}\n' \
             f'Dex: {self.dex}\t\tCrit Chance: {self.crit_chance}%\n' \
             f'Int: {self.int}\t\tDefence: {self.defense}\n' \
-            f'Crit damage Multiplier: {self.crit_muliplyer}%\n'
+            f'Crit damage Multiplier: {self.crit_muliplier}%\n'
 
-    def show_stats(self):
+    def show_stats_old(self):
         """
         Prints out Stats for the person
         """
@@ -127,11 +130,12 @@ class Person:
             'Attack Damage': self.damage,
             'Defense': self.defense,
             'Crit Chance %': self.crit_chance,
-            'Crit Damage %': self.crit_muliplyer
+            'Crit Damage %': self.crit_muliplier
         }
         for k, v in relevant_stats.items():
             print(k, ': ', v)
 
+    # stats
     @property
     def is_alive(self) -> bool:
         return self.hp > 0
@@ -165,7 +169,7 @@ class Person:
         return healed_amount
 
     # Gear and Stat Calculations
-    def get_eqipped_items(self):
+    def get_equipped_items(self):
         """
         :return: list of currently by the player equipped items
         """
@@ -184,30 +188,22 @@ class Person:
         :return: -
         """
         stats = {
-            'max_health': self.max_health,
+            'str' : self.base_str,
+            'dex' : self.base_dex,
+            'int' : self.base_int,
+            'max_hp': self.base_max_hp,
             'defense': self.base_defense,
-            'attack_dmg': self.base_attack_dmg,
+            'att_dmg_min': self.base_att_dmg_min,
+            'att_dmg_max': self.base_att_dmg_max,
             'crit_chance': self.base_crit_chance,
-            'crit_modifier': self.base_crit_modifier,
+            'crit_muliplier': self.base_crit_muliplier,
         }
-        gear = self.get_eqipped_items()
+        gear = self.get_equipped_items()
         for key in stats.keys():
-            self.__dict__['current_' + key] = stats[key] + sum([item.__dict__[key] for item in gear])
-        self.current_crit_dmg = int(self.current_attack_dmg * (self.current_crit_modifier / 100))
+            self.__dict__[key] = stats[key] + sum([item.__dict__[key] for item in gear])
 
-    def calculate_stats_with_gear_old(self):
-        combined_gear_stats = {}
-        for item in self.get_eqipped_items():
-            if item:
-                gear_stats = item.__dict__
-                for stat in gear_stats.keys():
-                    if stat not in self.not_relevant_stats:
-                        if stat in combined_gear_stats.keys():
-                            combined_gear_stats[stat] = combined_gear_stats[stat] + gear_stats[stat]
-                        else:
-                            combined_gear_stats[stat] = gear_stats[stat]
-        for stat in combined_gear_stats.keys():
-            self.__dict__['current_' + stat] = self.__dict__['base_' + stat] + combined_gear_stats[stat]
+        # TODO: range or static dmg?
+        #self.current_crit_dmg = int(self.current_attack_dmg * (self.current_crit_modifier / 100))
 
     #  manage gear
     def change_gear(self):
@@ -223,12 +219,7 @@ class Person:
         :param new_gear: a new item
         :return:
         """
-        #  TODO: display new and old stats to compare (for item type)
-        print('You found new equipment!')
-        print('-----------------------')
-        new_gear.show_stats()
         if new_gear.gear_type == 'weapon':
-
             if self.main_hand:
                 print('-----------------------')
                 print('Current First Hand Weapon:')
@@ -240,32 +231,28 @@ class Person:
                 print('-----------------------')
                 print('Current Off Hand Weapon:')
                 self.off_hand.show_stats()
-        print('-----------------------')
-        print('Do you want to equip it now?')
-        player_choice = player_choose_from_list(['Put on now', 'Put in inventory'], index_pos=True)
-        if player_choice == 0:
-            self.equip_gear(new_gear)
-        elif player_choice == 1:
-            self.party.equipment.append(new_gear)
+        self.equip_gear(new_gear)
 
-    def equip_gear(self, new_gear):
+    def equip_gear(self, new_gear, slot_to_change='choose'):
         """
         changes/fills an item in an equipment slot
         puts old item into party inventory
+        :param slot_to_change: provide if you want to auto equip
         :param new_gear:  new item to be equipped
         :return: -
         """
-        if new_gear.gear_type == 'weapon':
-            print('Where do you want to put it?')
-            weapon_slot = player_choose_from_list(['Main Hand', 'Off Hand'], index_pos=True)
-            if weapon_slot == 0:
-                slot_to_change = 'main_hand'
-            elif weapon_slot == 1:
+        if slot_to_change == 'choose':
+            if new_gear.gear_type == 'weapon':
+                print('Where do you want to put it?')
+                weapon_slot = player_choose_from_list(['Main Hand', 'Off Hand'], index_pos=True)
+                if weapon_slot == 0:
+                    slot_to_change = 'main_hand'
+                elif weapon_slot == 1:
+                    slot_to_change = 'off_hand'
+            elif new_gear.gear_type == 'shield':
                 slot_to_change = 'off_hand'
-        elif new_gear.gear_type == 'shield':
-            slot_to_change = 'off_hand'
-        elif new_gear.gear_type == 'armor':
-            slot_to_change = 'armor'
+            elif new_gear.gear_type == 'armor':
+                slot_to_change = 'armor'
 
         if self.__dict__[slot_to_change]:
             old_item = self.__dict__[slot_to_change]
@@ -286,7 +273,7 @@ class Person:
         """
         dmg = self.damage
         if random.randrange(100) < self.crit_chance:
-            dmg = (dmg * self.crit_muliplyer) // 100
+            dmg = (dmg * self.crit_muliplier) // 100
             # print(f'{self.name} lands a critical strike dealing {dmg} damage!')
         return dmg
 
@@ -333,7 +320,7 @@ class Person:
                 dmg_enemy_received = self.main_hand.deal_dmg(target)
             elif mode == 'off hand weapon attack':
                 dmg_enemy_received = self.off_hand.deal_dmg(target)
-            print(target, 'hp:', target.health)
+            print(target, 'hp:', target.hp)
 
     def choose_battle_action(self, enemy_party):
         """
