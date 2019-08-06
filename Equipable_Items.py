@@ -1,4 +1,4 @@
-# Contains base class for equipped items
+# Contains base class for equipable items
 import random
 import string
 
@@ -16,19 +16,19 @@ class Consumable:
 
 
 class Equipment:
-    def __init__(self, quality, quality_value=10, value=0, max_durability=10, durability=10,
-                 equipable=True, strength=0, dexterity=0, intelligence=0, max_hp=0, defense=0,
-                 att_dmg_min=0, att_dmg_max=0, damage=0, crit_chance=0, crit_multiplier=0):
+    def __init__(self, quality, quality_value=10, etype='Weapon', value=0,
+                 max_durability=10, strength=0, dexterity=0, intelligence=0,
+                 max_hp=0, defense=0, att_dmg_min=0, att_dmg_max=0, damage=0,
+                 crit_chance=0, crit_multiplier=0):
         self.quality = str(quality)
         self.quality_val = quality_value
         self.value = value + int(10 * quality_value + 10)
-        self.max_durability = 10
+        self.max_durability = max_durability
         self.durability = self.max_durability
 
-        self.holder = None  # to keep track of who that item is equipped on
-        # self.gear_type =  # where does it go? needed to equip and unequip
+        self.type = etype
+        self._equipable_slot = 'main_hand'
 
-        self._equipable = True
         self.str = strength
         self.dex = dexterity
         self.int = intelligence
@@ -40,9 +40,7 @@ class Equipment:
         self.crit_chance = crit_chance
         self.crit_muliplier = crit_multiplier
 
-        self._max_left = None
-        self._space_between = 10
-
+        self._max_left = max(len(k) for k in self.__dict__.keys()) + 10
 
     @classmethod
     def generate(cls):
@@ -50,21 +48,16 @@ class Equipment:
         qualityity_val = sValue.get(qualityity)
         return cls(qualityity, qualityity_val)
 
-    @property
-    def max_left(self):
-        if not self._max_left:
-            self._max_left = max(len(k) for k in self.__dict__.keys()) + self._space_between
-        return self._max_left
+    def __repr__(self):
+        # max_left = max(len(k) for k in self.__dict__.keys()) + 7
+        return '\n'.join(
+            [f"{k.title()}: {str(v).rjust(self._max_left - len(k), ' ')}"
+             for k, v in self.__dict__.items()])
 
     def __str__(self):
-        # TODO: name and/or type
-        return 'Item'
-
-    def show_stats(self):
-        space_between = 5
-        max_left = max(len(k) for k in self.__dict__.keys()) + space_between
+        # max_left = max(len(k) for k in self.__dict__.keys()) + 7
         return '\n'.join(
-            [f"{k.title()}: {str(v).rjust(max_left - len(k), ' ')}"
+            [f"{k.title()}: {str(v).rjust(self._max_left - len(k), ' ')}"
              for k, v in self.__dict__.items() if v and k[0] != '_'])
 
     def sell(self):
@@ -81,14 +74,29 @@ class Equipment:
 
 class Weapon(Equipment):
     def __init__(self, quality, quality_val):
-        super(Weapon, self).__init__(quality, quality_val)
+        super(Weapon, self).__init__(quality, quality_val, etype='Weapon', damage=5)
+
+    @classmethod
+    def generate(cls):
+        qualityity = random.choices(sList, weights=sWeights, k=1)[0]
+        qualityity_val = sValue.get(qualityity)
+        return cls(qualityity, qualityity_val)
 
     def calc_weapon_dmg(self):
         damage_output = random.randint(self.att_dmg_min, self.att_dmg_max)
         return damage_output
 
 
-# TODO: Add Armor Class
+class Armor(Equipment):
+    def __init__(self, quality, quality_val):
+        super(Armor, self).__init__(quality, quality_val, etype='Armor', defense=5)
+
+    @classmethod
+    def generate(cls):
+        qualityity = random.choices(sList, weights=sWeights, k=1)[0]
+        qualityity_val = sValue.get(qualityity)
+        return cls(qualityity, qualityity_val)
+
 
 # Code designed to generate item variation
 def generate_quality():
@@ -115,5 +123,4 @@ def create_random_item(class_type=1):
 def create_random_equipable_item(how_many=1, etype=random.randint(1, 2)):
     for i in range(0, how_many):
         x = create_random_item(etype)
-        print(x)
         return x

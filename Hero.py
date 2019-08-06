@@ -1,14 +1,15 @@
 import person
-from helper_functions import player_choose_from_list
+from helper_functions import select_from_list
+
 
 class Hero(person.Person):
-    def __init__(self, name, profession):
-        super().__init__(name, profession)
+    def __init__(self, name, profession, level):
+        super().__init__(name, profession, level)
         self.type = 'Hero'
 
     @classmethod
-    def generate(cls, name='Mr. Lazy', profession='warrior'):
-        return cls(name, profession)
+    def generate(cls, name='Mr. Lazy', profession='warrior', level=1):
+        return cls(name, profession, level)
 
     def __str__(self):
         return super().__str__()
@@ -20,7 +21,7 @@ class Hero(person.Person):
         :return: person instance
         """
         print('Choose a target:')
-        return player_choose_from_list(target_party.members)
+        return select_from_list(target_party.members)
 
     def choose_battle_action(self, enemy_party):
         """
@@ -43,7 +44,7 @@ class Hero(person.Person):
         #  spell
         #  inventory
         possible_actions.append('Show Hero Stats')
-        action = player_choose_from_list(possible_actions)
+        action = select_from_list(possible_actions)
         if action == 'change gear':
             self.change_gear()
             self.choose_battle_action(enemy_party)
