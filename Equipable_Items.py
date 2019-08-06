@@ -53,8 +53,8 @@ class Equipment:
         return self._max_left
 
     def __str__(self):
-        space_between = 5
-        max_left = max(len(k) for k in self.__dict__.keys()) + space_between
+        # space_between = 5
+        # max_left = max(len(k) for k in self.__dict__.keys()) + space_between
         return '\n'.join(
             [f"{k.title()}: {str(v).rjust(max_left - len(k), ' ')}"
              for k, v in self.__dict__.items() if v and k[0] != '_'])
