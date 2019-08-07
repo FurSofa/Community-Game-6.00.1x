@@ -87,8 +87,22 @@ class Person:
         self.head = Equipable_Items.create_random_equipable_item(1, 2)
 
     @classmethod
-    def generate(cls, name='Mr. Lazy', profession='Warrior'):
-        return cls(name, profession)
+    def generate(cls, name='Jeb', profession='Warrior', level=1):
+        """
+        Create new character at level 1
+        """
+        return cls(name, profession, level)
+
+    @classmethod
+    def generate_random(cls, level=1):
+        """
+        Create new random character at level 1
+        """
+        level = level
+        name = random.choice(['Lamar', 'Stacey', 'Ali', 'Jackson', 'Minky',
+                              'Leo', 'Lilli', 'Lindsay', 'Tongo', 'Paku', ])
+        profession = random.choice(['Warrior', 'Archer', 'Mage', 'Farmer', 'Blacksmith'])
+        return cls(name, profession, level)
 
     def profession_stat_augment(self):
         if self.profession == 'Warrior':
@@ -347,18 +361,18 @@ class Person:
 
 # Testing code!
 
-# def test_norb(n=10):
-#     p = Person.generate('norbnorb')
-#     p.get_equipped_items()
-#     p.test_equip()
-#     p.show_stats()
-#     print(p)
-#     # print('main hand: ', p.main_hand)
-#     # print(p.off_hand)
-#     # print(p.head)
-#     # p.calculate_dmg()
-#     # p.take_dmg(n)
-#     # p.heal(n)
-#     # p.test_equip()
+def test_norb(n=10):
+    p1 = Person.generate(name='norbnorb')
+    p2 = Person.generate_random()
+    # p.get_equipped_items()
+    print(p1)
+    print(p2)
+    # print('main hand: ', p.main_hand)
+    # print(p.off_hand)
+    # print(p.head)
+    # p.calculate_dmg()
+    # p.take_dmg(n)
+    # p.heal(n)
+    # p.test_equip()
 
-# test_norb()
+test_norb()
