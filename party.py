@@ -20,9 +20,10 @@ class Party:
         """
         for member in self.members:
             if not member.is_alive:
-                return False
+                continue
             else:
-                return True
+                return False
+        return True
 
     def kill_everyone(self):
         delete_index = []
