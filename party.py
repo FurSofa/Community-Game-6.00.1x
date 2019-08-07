@@ -64,11 +64,11 @@ class Party:
         """
         :return: returns the hero or None
         """
-    heroes = [member.name for member in self.members if member.is_alive and isinstance(member, Hero)]
-    if heroes:
-        return heroes[0]
-    else:
-        return None
+        heroes = [member.name for member in self.members if member.is_alive and isinstance(member, Hero)]
+        if heroes:
+            return heroes[0]
+        else:
+            return None
 
 
 def has_hero(self):
