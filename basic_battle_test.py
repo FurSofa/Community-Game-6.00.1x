@@ -4,7 +4,6 @@ from party import Party
 from battle import Battle
 from Equipable_Items import *
 
-
 party1 = Party()
 party2 = Party()
 battle = Battle()
@@ -31,6 +30,5 @@ if __name__ == '__main__':
 
     print('---------------------------------')
     print()
-#     # battle.whole_party_turn_battle(party1, party2)
+    #     # battle.whole_party_turn_battle(party1, party2)
     battle.alternating_turn_battle(party1, party2)
-

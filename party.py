@@ -16,28 +16,26 @@ class Party:
 
     def alive(self):
         """ Checks if anyone is alive
-        :returns Ture if anyone is
+        :returns True if any party member is alive
         """
         for member in self.members:
-            if member.is_alive:
+            if not member.is_alive:
+                return False
+            else:
                 return True
-        return False
 
     def kill_everyone(self):
         delete_index = []
         for i, member in enumerate(self.members):
             delete_index.append(i)
-            print(f'{member.name}, the {member.profession} has been killed!')
         for i in reversed(delete_index):
             self.dead_members.append(self.members.pop(i))
 
     def party_members_info(self):
-        for member in self.members:
-            party_member_info = ''.join(f'{member.name}, {member.profession} '
-                                        f'Lv: {member.level} {member.hp}/{member.max_hp}\n')
         print(f'=====  Party Info  =====\n'
-              f'Gold: {self.gold}\t Items: {len(self.inventory) + len(self.equipment)}\n'
-              f'Party Members:\n {party_member_info}')
+              f'Gold: {self.gold}\t Items: {len(self.inventory) + len(self.equipment)}\n')
+        for member in self.members:
+            print(f'- {member.name}, {member.profession} Lv: {member.level} {member.hp}/{member.max_hp}')
 
     def party_info(self):
         return f'Party Info:\nGold: {self.gold}\tItems: {len(self.inventory)}\nMembers:\n'
@@ -46,7 +44,7 @@ class Party:
     def has_units_left(self) -> bool:
         """
         checks if active members are left
-        :return: amount of active members left
+        :return: True if any party member is alive
         """
         return len(self.members) > 0
 
@@ -106,7 +104,7 @@ class Party:
         """
         #  TODO: display new and old stats to compare (for item type)
         print('You found new equipment!')
-        print('-----------------------')
+        print('------------------------')
         print(new_gear.show_stats())  # TODO: print this
         choices = self.members[:]
         choices.append('equipment')

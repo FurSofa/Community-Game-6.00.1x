@@ -4,11 +4,9 @@ from party import Party
 from battle import Battle
 from weapons import Sword
 
-
 # TODO: Move this to Game.py and add if name == __Main__:
 
 player_name = input('What is your name, Traveler?')
-
 
 hero_party = Party()
 
