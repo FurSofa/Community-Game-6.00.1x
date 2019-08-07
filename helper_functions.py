@@ -27,6 +27,3 @@ def select_from_list(iterable, index_pos=False, q='Whats your choice?'):
     if index_pos:
         return choice_index
     return iterable[choice_index]
-
-
-

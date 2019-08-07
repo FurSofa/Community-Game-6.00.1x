@@ -4,8 +4,6 @@ import random
 from Hero import Hero
 from helper_functions import select_from_list
 
-screen_width = 100
-
 
 class Game:
     def __init__(self):
@@ -22,9 +20,9 @@ class Game:
     def create_random_character(self):
         """
          create new random character the same level as the party leader"""
-        level = self.party.party_leader.level()
+        level = self.party.party_leader.level
         name = random.choice(['Lamar', 'Stacey', 'Ali', 'Jackson', 'Minky',
-                 'Leo', 'Lilli', 'Lindsay', 'Tongo', 'Paku', ])
+                              'Leo', 'Lilli', 'Lindsay', 'Tongo', 'Paku', ])
         profession = random.choice(['Warrior', 'Archer', 'Mage', 'Farmer', 'Blacksmith'])
         return Hero.generate(name, profession, level)
 
@@ -68,11 +66,24 @@ class Game:
         self.party.kill_everyone()
 
     def main_options(self):
+        """
+        Contains Choices after new game and settings
+        """
+
+        def adventure(self):
+            print(f'You found another traveler You talk for a while and have a great time!')
+            self.party.add_member(self.create_random_character())
+            print('Time to get back to the task at hand!')
+
+        def camp(self):
+            print('A bear got into the camp and killed everyone!')
+            self.party.kill_everyone()
+
         choice = select_from_list(['Adventure', 'Camp', 'Party Info'], True, q=f'What would you like to do\n ')
         if choice == 0:
-            self.adventure()
+            adventure()
         elif choice == 1:
-            self.camp()
+            camp()
         elif choice == 2:
             self.party.party_info()
             self.party.party_members_info()
@@ -84,13 +95,10 @@ class Game:
     def gameloop(self):
         self.party.add_member(self.create_hero())
         print(f'You are all set! Danger is that way, Good Luck, {self.party.party_leader.name}!\n')
-        while True:
+        while self.party.has_units_left:
             self.main_options()
-            if not self.party.alive():
-                self.game_over()
 
-
-        print('Game Over, Thanks for playing!')
+        self.game_over()
 
 
 new_game = Game()

@@ -1,5 +1,5 @@
-#Contains battle logic
-#TODO: should this be a function call or a class?
+# Contains battle logic
+# TODO: should this be a function call or a class?
 
 class Battle:
     def __init__(self):
