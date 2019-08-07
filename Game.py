@@ -14,12 +14,14 @@ class Game:
 
     def create_character(self, name='Jeb', profession='Astronaut', level=1):
         """
-         create new character"""
+         Create new character
+         Allows selection of char and reroll of stats
+         """
         return Hero.generate(name, profession, level)
 
     def create_random_character(self):
         """
-         create new random character the same level as the party leader"""
+         Create new random character the same level as the party leader"""
         level = self.party.party_leader.level
         name = random.choice(['Lamar', 'Stacey', 'Ali', 'Jackson', 'Minky',
                               'Leo', 'Lilli', 'Lindsay', 'Tongo', 'Paku', ])
@@ -33,15 +35,13 @@ class Game:
             our_hero.show_stats()
             return our_hero
 
-        while True:
-            hero_name = input('What is your name, hero?:\n').title()
-            if len(hero_name) > 0:
-                print(f'{hero_name}, ah yes. That name carries great respect!')
-                break
-            else:
-                print('Ah, the quiet type huh? I\'ll just call you Steve.')
-                hero_name = 'Steve'
-                break
+        hero_name = input('What is your name, hero?:\n').title()
+        if len(hero_name) > 0:
+            print(f'{hero_name}, ah yes. That name carries great respect!')
+
+        else:
+            print('Ah, the quiet type huh? I\'ll just call you Steve.')
+            hero_name = 'Steve'
 
         hero_profession = select_from_list(['Warrior', 'Archer', 'Mage'],
                                            q=f'Now, {hero_name}, What is your profession?:\n')
@@ -81,15 +81,16 @@ class Game:
 
         choice = select_from_list(['Adventure', 'Camp', 'Party Info'], True, q=f'What would you like to do\n ')
         if choice == 0:
-            adventure()
+            self.adventure()
         elif choice == 1:
-            camp()
+            self.camp()
         elif choice == 2:
             self.party.party_info()
             self.party.party_members_info()
 
     def game_over(self):
         print('Game Over, Thanks for playing!')
+
         quit()
 
     def gameloop(self):
