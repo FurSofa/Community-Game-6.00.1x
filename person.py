@@ -129,6 +129,7 @@ class Person:
             [f"{k.title()}: {str(v).rjust(max_left - len(k), ' ')}"
              for k, v in self.__dict__.items() if v and k[0] != '_'])
 
+    # TODO: make it shorter!
     def __str__(self):
         return f'\n{self.name},the {self.profession}\n' \
             f'Level:\t{self.level:>4}  XP: {self.xp:>6}/{self.xp_to_lvl_up}\n' \

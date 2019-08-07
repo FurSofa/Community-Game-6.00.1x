@@ -1,6 +1,6 @@
 import person
-from helper_functions import select_from_list
 
+from helper_functions import select_from_list
 
 class Hero(person.Person):
     def __init__(self, name, profession, level):

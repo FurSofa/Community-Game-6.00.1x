@@ -17,16 +17,13 @@ party1.add_member(hero)
 party2.add_member(enemy)
 
 item = create_random_equipable_item(1, 1)
-party1.pickup_gear(item)
+
 
 # party2.add_member(fighter5)
 # party2.add_member(fighter6)
 
 if __name__ == '__main__':
-    # hero.pickup_gear(battle_axe)
-    # GEAR_LIST = hero.get_equipped_items()
-    # hero.pickup_gear(longsword)
-    # hero.pickup_gear(short_sword)
+    party1.pickup_gear(item)
 
     print('---------------------------------')
     print()
