@@ -38,15 +38,22 @@ class Battle:
             print('Party 2 has won the battle!')
         return party_1.has_units_left
 
+    def party_vs_party(self, party_1, party_2):
+        print('=' * 9, 'Hero Party', '=' * 9, end=" ")
+        print('=' * 9, 'Enemy Party', '=' * 9, end='\n')
+        for heroes, enemies in party_1.members, party_2.members:
+            print(f'- {heroes.name}, {heroes.profession} Lv: {heroes.level} {heroes.hp}/{heroes.max_hp}',
+                  f'- {enemies.name}, {enemies.profession} Lv: {enemies.level} {enemies.hp}/{enemies.max_hp}')
+
     def alternating_turn_battle(self, party_1, party_2):
         rounds = 0
         print('A Battle has started!')
         while party_1.has_units_left and party_2.has_units_left:
             rounds += 1
-            print('')
             print('Round:', rounds)
-            print('Party 1:', party_1.members_names)
-            print('Party 2:', party_2.members_names)
+            self.party_vs_party(party_1, party_2)
+            # print('Party 1:', party_1.members_names)
+            # print('Party 2:', party_2.members_names)
             for i in range(max(len(party_1.members), len(party_2.members))):
                 if i < len(party_1.members):
                     no_enemies_left = self.single_unit_turn(party_1.members[i], party_2)

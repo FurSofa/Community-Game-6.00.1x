@@ -38,8 +38,7 @@ class Party:
         f'{len(self.inventory) + len(self.inventory)}\n  Members:')
         for member in self.members:
             print(f'- {member.name}, {member.profession} Lv: {member.level} {member.hp}/{member.max_hp}')
-        print('='*30, '\n', end='')
-        x = input('Press Enter to go back.')
+
 
     @property
     def has_units_left(self) -> bool:
