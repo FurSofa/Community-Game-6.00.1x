@@ -22,7 +22,7 @@ class Game:
     def create_random_character(self):
         """
          Create new random character the same level as the party leader"""
-        level = self.party.party_leader.level
+        level = self.party.member().level
         name = random.choice(['Lamar', 'Stacey', 'Ali', 'Jackson', 'Minky',
                               'Leo', 'Lilli', 'Lindsay', 'Tongo', 'Paku', ])
         profession = random.choice(['Warrior', 'Archer', 'Mage', 'Farmer', 'Blacksmith'])
@@ -85,7 +85,6 @@ class Game:
         elif choice == 1:
             self.camp()
         elif choice == 2:
-            self.party.party_info()
             self.party.party_members_info()
 
     def game_over(self):
@@ -95,7 +94,7 @@ class Game:
 
     def gameloop(self):
         self.party.add_member(self.create_hero())
-        print(f'You are all set! Danger is that way, Good Luck, {self.party.party_leader.name}!\n')
+        print(f'You are all set! Danger is that way, Good Luck, {self.party.member().name}!\n')
         while self.party.has_units_left:
             self.main_options()
 
