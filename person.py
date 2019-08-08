@@ -81,12 +81,6 @@ class Person:
                               self.feet,
                               self.ring,
                               self.necklace]
-
-    def test_equip(self):
-        self.main_hand = Equipable_Items.create_random_equipable_item(1, 1)
-        self.off_hand = Equipable_Items.create_random_equipable_item(1, 1)
-        self.head = Equipable_Items.create_random_equipable_item(1, 2)
-
     @classmethod
     def generate(cls, name='Jeb', profession='Warrior', level=1):
         """
@@ -104,6 +98,16 @@ class Person:
                               'Leo', 'Lilli', 'Lindsay', 'Tongo', 'Paku', ])
         profession = random.choice(['Warrior', 'Archer', 'Mage', 'Farmer', 'Blacksmith'])
         return cls(name, profession, level)
+
+    @property
+    def is_alive(self) -> bool:
+        return self.hp > 0
+
+    def test_equip(self):
+        self.main_hand = Equipable_Items.create_random_equipable_item(1, 1)
+        self.off_hand = Equipable_Items.create_random_equipable_item(1, 1)
+        self.head = Equipable_Items.create_random_equipable_item(1, 2)
+
 
     def profession_stat_augment(self):
         if self.profession == 'Warrior':
@@ -163,9 +167,6 @@ class Person:
             print(k, ': ', v)
 
     # stats
-    @property
-    def is_alive(self) -> bool:
-        return self.hp > 0
 
     def take_dmg(self, amount) -> int:
         """
