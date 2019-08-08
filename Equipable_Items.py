@@ -86,7 +86,6 @@ class Weapon(Equipment):
         damage_output = random.randint(self.att_dmg_min, self.att_dmg_max)
         return damage_output
 
-
 class Armor(Equipment):
     def __init__(self, quality, quality_val):
         super(Armor, self).__init__(quality, quality_val, etype='Armor', defense=5)

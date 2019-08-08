@@ -8,27 +8,34 @@ party1 = Party()
 party2 = Party()
 battle = Battle()
 
-hero = Hero.generate('norbnorb', 'Warrior')
-hero.profession_stat_augment()
 
-enemy = Person.generate()
+party1.add_member(Hero.generate('Norb', 'Codesmith'))
+party1.add_member(Person.generate('Fur', 'Mage'))
+# party1.add_member(Person.generate())
+# party1.add_member(Person.generate())
 
-party1.add_member(hero)
-party2.add_member(enemy)
+party2.add_member(Person.generate())
+# party2.add_member(Person.generate())
+# party2.add_member(Person.generate())
+# party2.add_member(Person.generate())
 
-item = create_random_equipable_item(1, 1)
-party1.pickup_gear(item)
 
-# party2.add_member(fighter5)
-# party2.add_member(fighter6)
+# party1.party_members_info()
+# party2.party_members_info()
 
-if __name__ == '__main__':
-    # hero.pickup_gear(battle_axe)
-    # GEAR_LIST = hero.get_equipped_items()
-    # hero.pickup_gear(longsword)
-    # hero.pickup_gear(short_sword)
 
-    print('---------------------------------')
-    print()
-    #     # battle.whole_party_turn_battle(party1, party2)
-    battle.alternating_turn_battle(party1, party2)
+# if __name__ == "__main__":
+#     print('---------------------------------')
+#     print()
+#     #     # battle.whole_party_turn_battle(party1, party2)
+battle.alternating_turn_battle(party1, party2)
+
+
+"""
+========= Hero Party========= ========= Enemy Party =========
+Gold: 0	Items: 0               Gold: 0	Items: 0
+  Members:                       Members:
+- Hero, Warrior Lv: 1 60/60    - Jeb, Warrior Lv: 1 70/70
+- Jeb, Warrior Lv: 1 70/70     - Jeb, Warrior Lv: 1 65/65
+
+"""
