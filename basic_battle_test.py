@@ -15,7 +15,7 @@ party1.add_member(Person.generate('Fur', 'Mage'))
 # party1.add_member(Person.generate())
 
 party2.add_member(Person.generate())
-# party2.add_member(Person.generate())
+party2.add_member(Person.generate())
 # party2.add_member(Person.generate())
 # party2.add_member(Person.generate())
 
@@ -32,10 +32,10 @@ battle.alternating_turn_battle(party1, party2)
 
 
 """
-========= Hero Party========= ========= Enemy Party =========
-Gold: 0	Items: 0               Gold: 0	Items: 0
-  Members:                       Members:
-- Hero, Warrior Lv: 1 60/60    - Jeb, Warrior Lv: 1 70/70
-- Jeb, Warrior Lv: 1 70/70     - Jeb, Warrior Lv: 1 65/65
+===== Hero Party Members ===== ===== Enemy Party Members =====
+  Members:                          Members:
+- Hero, Warrior Lv: 1 60/60       - Jeb, Warrior Lv: 1 70/70
+- Jeb, Warrior Lv: 1 70/70        - Jeb, Warrior Lv: 1 65/65
+
 
 """

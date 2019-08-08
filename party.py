@@ -34,8 +34,7 @@ class Party:
             self.dead_members.append(self.members.pop(i))
 
     def party_members_info(self):
-        print('=' * 9, 'Party Info', '=' * 9, f'\nGold: {self.gold}\tItems: '
-        f'{len(self.inventory) + len(self.inventory)}\n  Members:')
+        print('=' * 6, 'Party Members Info', '=' * 6)
         for member in self.members:
             print(f'- {member.name}, {member.profession} Lv: {member.level} {member.hp}/{member.max_hp}')
 
@@ -98,7 +97,7 @@ class Party:
         :param member: Person or Hero class object
         :return:
         """
-        member.party = self
+
         print(f'{member.name}, the {member.profession} joins the party!')
         self.members.append(member)
 
