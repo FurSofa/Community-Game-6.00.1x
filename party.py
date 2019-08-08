@@ -28,10 +28,11 @@ class Party:
             self.dead_members.append(self.members.pop(i))
 
     def party_members_info(self):
-        print(f'=====  Party Info  =====\nGold: {self.gold}\tItems: '
-              f'{len(self.inventory) + len(self.inventory)}\nMembers:\n')
+        print('=' * 9, 'Party Info', '=' * 9, f'\nGold: {self.gold}\tItems: '
+        f'{len(self.inventory) + len(self.inventory)}\n  Members:')
         for member in self.members:
             print(f'- {member.name}, {member.profession} Lv: {member.level} {member.hp}/{member.max_hp}')
+
 
     @property
     def has_units_left(self) -> bool:

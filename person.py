@@ -54,6 +54,7 @@ class Person:
 
         self.max_hp = self.base_max_hp
         self.hp = self.max_hp
+        self.profession_stat_augment()
 
         # Inventory Section
         self.inventory = []
@@ -360,20 +361,4 @@ class Person:
         action = 'basic attack'
         self.attack_target(enemy_party, mode=action)
 
-# Testing code!
 
-def test_norb(n=10):
-    p1 = Person.generate(name='norbnorb')
-    p2 = Person.generate_random()
-    # p.get_equipped_items()
-    print(p1)
-    print(p2)
-    # print('main hand: ', p.main_hand)
-    # print(p.off_hand)
-    # print(p.head)
-    # p.calculate_dmg()
-    # p.take_dmg(n)
-    # p.heal(n)
-    # p.test_equip()
-
-test_norb()
