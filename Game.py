@@ -61,7 +61,6 @@ class Game:
         print(event)
         if event == 0:
             print(f'You found another traveler You talk for a while and have a great time!')
-            select_from_list(['Yes', 'No'], False, 'The traveler offers to join your party, what do you say?')
             choice = select_from_list(['Yes', 'No'], False,
                                       'The traveler offers to join your party, what do you say?').lower()
             if choice == 'yes':
