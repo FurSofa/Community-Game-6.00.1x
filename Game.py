@@ -71,7 +71,7 @@ class Game:
             # Battle
             enemy_party = Party.generate()
             x = 0
-            for x in range(randrange(3)):
+            for x in range(randrange(3) + 1):
                 enemy_party.add_member(Person.generate_random(
                     randrange(self.party.hero.level, (self.party.hero.level + 2))))
                 x += 1
