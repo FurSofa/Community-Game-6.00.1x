@@ -85,7 +85,7 @@ class Game:
 
     def camp(self):
         print('You build a beautiful camp fire and everyone settles in for the night')
-        for member in self.party:
+        for member in self.party.members:
             member.heal(member.max_hp)
         bear_attack = randint(1, 100)
         if bear_attack < 3:
