@@ -217,12 +217,10 @@ def alternating_turn_battle(party_1, party_2):
                 no_enemies_left = single_unit_turn(party_1.members[i], party_2)
                 if no_enemies_left:
                     break
-                input('just press enter')
             if i < len(party_2.members):
                 no_enemies_left = single_unit_turn(party_2.members[i], party_1)
                 if no_enemies_left:
                     break
-                input('just press enter')
     if party_1.has_units_left:
         party_1.party_members_info()
         print('Party 1 has won the battle!')
