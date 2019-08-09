@@ -102,7 +102,7 @@ class Person:
         if name == 'Minky':
             profession = 'Miffy Muffin'
         if name == 'Colin':
-            profession = 'Bass Bard'
+            profession = 'Bard of Bass'
         return cls(name, profession, level)
 
     @property
@@ -140,12 +140,18 @@ class Person:
              for k, v in self.__dict__.items() if v and k[0] != '_'])
 
     def __str__(self):
-        return f'\n{self.name},the {self.profession}\n' \
-            f'Level:\t{self.level:>4}  XP: {self.xp:>6}/{self.xp_to_lvl_up}\n' \
-            f'HP:\t   {self.hp}/{self.max_hp:<4}\n' \
-            f'Str:\t   {self.str:<3}Damage: {self.damage:>6}\n' \
-            f'Dex:\t   {self.dex:<3}Crit:  {self.crit_chance}%/{self.crit_muliplier}%\n' \
-            f'Int:\t   {self.int:<3}Defence: {self.defense:>5}\n'
+        # return f'\n{self.name},the {self.profession}\n' \
+        #     f'Level:\t{self.level:>4}  XP: {self.xp:>6}/{self.xp_to_lvl_up}\n' \
+        #     f'HP:\t   {self.hp}/{self.max_hp:<4}\n' \
+        #     f'Str:\t   {self.str:<3}Damage: {self.damage:>6}\n' \
+        #     f'Dex:\t   {self.dex:<3}Crit:  {self.crit_chance}%/{self.crit_muliplier}%\n' \
+        #     f'Int:\t   {self.int:<3}Defence: {self.defense:>5}\n'
+        name = f'{self.name}, the {self.profession}'
+        hp = f'Hp: {self.hp:>2}/{self.max_hp:<2}'
+        dmg = f'Dmg: {self.att_dmg_min:>2}/{self.att_dmg_max:<2}'
+        return f'- {name:^23} ' \
+            f'{hp:<8} ' \
+            f'{dmg:<13}'
 
     def show_stats(self):
         print(f'\n{self.name},the {self.profession}\n'
