@@ -84,8 +84,13 @@ class Game:
             print('\nEvent #4 not done, Stop back soon!')
 
     def camp(self):
-        print('A bear got into the camp and killed everyone!')
-        self.party.kill_everyone()
+        print('You build a beautiful camp fire and everyone settles in for the night')
+        for member in self.party:
+            member.heal(member.max_hp)
+        bear_attack = randint(1, 100)
+        if bear_attack < 3:
+            print('A bear got into the camp and killed everyone!')
+            self.party.kill_everyone()
 
     def main_options(self):
         """
