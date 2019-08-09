@@ -32,8 +32,8 @@ def select_from_list(iterable, index_pos=False, q='Whats your choice?'):
 def combat_select_from_list(iterable, index_pos=False, q='Who do you want to attack?'):
     """
     Takes an iterable
-    prints a numerated list for the user to choose from
-    lets the user choose
+    prints a numerated list -- HORIZONTALLY --
+    for the user to choose from, lets the user choose
     returns index position of user chosen item of iterable
     if index_pos=True will return index position of chosen object instead of object
     :param question, iterable, index_pos:
@@ -43,7 +43,7 @@ def combat_select_from_list(iterable, index_pos=False, q='Who do you want to att
     for index, item in enumerate(iterable):
         display_number = str(index + 1)
         print(display_number + ': ', item, end='  ')
-    choice = input('Number of choice: ')
+    choice = input('')
     if choice == '':
         choice_index = 0
         if index_pos:
@@ -51,7 +51,7 @@ def combat_select_from_list(iterable, index_pos=False, q='Who do you want to att
         return iterable[choice_index]
 
     if not choice.isdigit() or not 0 < int(choice) <= len(iterable):
-        print('Enter a number from the list!')
+        print('Please select a number from the list!')
         choice_index = select_from_list(iterable, index_pos=True, q=q)
     else:
         choice_index = int(choice) - 1
