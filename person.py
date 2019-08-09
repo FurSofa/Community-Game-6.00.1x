@@ -209,10 +209,10 @@ class Person:
         if self.hp > self.max_hp:
             healed_amount = self.max_hp - self.hp
             self.hp = self.max_hp
-            print(f'{self.name} is fully Healed! HP: {self.hp}/{self.max_hp}\n')
+            print(f'{self.name} is fully Healed! HP: {self.hp}/{self.max_hp}')
         else:
             healed_amount = amount
-            print(f'{self.name} healed for {amount} hp! HP: {self.hp}/{self.max_hp}\n')
+            print(f'{self.name} healed for {amount} hp! HP: {self.hp}/{self.max_hp}')
         return healed_amount
 
     # Gear and Stat Calculations
