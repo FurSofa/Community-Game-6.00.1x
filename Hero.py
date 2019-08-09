@@ -51,7 +51,8 @@ class Hero(person.Person):
         elif action == 'Show Hero Stats':
             print(self.show_combat_stats())
             self.choose_battle_action(enemy_party)
-        self.attack_target(enemy_party, mode=action)
+        # self.attack_target(enemy_party, mode=action)
+        return action
 
 # Testing Code!
 # p = person.Person.generate('norbnorb', 'Mage')

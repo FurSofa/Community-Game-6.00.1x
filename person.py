@@ -142,7 +142,7 @@ class Person:
             self.int += random.randint(0, 3)
             self.xp_to_lvl_up -= (self.int * 4 // 2)
 
-    def fur__repr__(self):
+    def __repr__(self):
         max_left = max(len(k) for k in self.__dict__.keys()) + 10
         return '\n'.join(
             [f"{k.title()}: {str(v).rjust(max_left - len(k), ' ')}"
@@ -359,25 +359,23 @@ class Person:
         return target_party.members[choice]
 
     #  TODO: maybe split up into smaller parts
-    def attack_target(self, target_party, mode='basic attack'):
+    def attack_target(self, target, mode='basic attack'):
         """
         chooses deal_dmg func, based on mode
         executes chosen deal_dmg
-        :param target_party: party instance
+        :param target: person instance in a party
         :param mode: str
         :return:
         """
         physical_attack_modes = ['basic attack', 'main weapon attack', 'off hand weapon attack']
         if mode in physical_attack_modes:
-            target = self.choose_target(target_party)
-            print('target:', target)
             if mode == 'basic attack':
                 dmg_enemy_received = self.deal_dmg(target)
             elif mode == 'main weapon attack':
                 dmg_enemy_received = self.main_hand.deal_dmg(target)
             elif mode == 'off hand weapon attack':
                 dmg_enemy_received = self.off_hand.deal_dmg(target)
-            print(target.show_combat_stats())
+
 
     def choose_battle_action(self, enemy_party):
         """
@@ -388,4 +386,21 @@ class Person:
         """
         possible_actions = ['basic attack', 'main weapon attack']
         action = 'basic attack'
-        self.attack_target(enemy_party, mode=action)
+        # self.attack_target(enemy_party, mode=action)
+        return action
+
+    def battle_turn(self, enemy_party):
+        action = self.choose_battle_action(enemy_party)
+        if action == 'basic attack':
+            target = self.choose_target(enemy_party)
+            print('target:', target)
+            # TODO: refactor to input chosen target, not party
+            # self.attack_target(target, mode=action) # not needed untill we have more options to do dmg
+            dmg_enemy_received = self.deal_dmg(target)
+            print(target.show_combat_stats())
+        elif action == 'Show Hero Stats':
+            print(self.show_combat_stats())
+            self.battle_turn(enemy_party)
+        elif action == 'change gear':
+            self.change_gear()
+            self.choose_battle_action(enemy_party)

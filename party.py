@@ -79,7 +79,7 @@ class Party:
         """ Checks if anyone is alive
         :returns True if any party member is a hero
         """
-        return any([member.is_hero for member in self.members])
+        return any([isinstance(member, Hero) for member in self.members])
 
     def remove_dead(self):
         """
@@ -101,8 +101,8 @@ class Party:
         :param member: Person or Hero class object
         :return:
         """
-
-        print(f'{member.name}, the {member.profession} joins the party!')
+        if self.has_hero():
+            print(f'{member.name}, the {member.profession} joins the party!')
         self.members.append(member)
         if member.hero:
             self.hero = member

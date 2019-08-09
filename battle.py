@@ -57,7 +57,7 @@ class Battle:
 
     def single_unit_turn(self, unit, enemy_party):
         print(unit, 'has to choose an action.')
-        unit.choose_battle_action(enemy_party)
+        unit.battle_turn(enemy_party)
         enemy_party.remove_dead()
         return not enemy_party.has_units_left
 
@@ -170,7 +170,7 @@ def print_combat_status(party_1, party_2):
 
 def single_unit_turn(unit, enemy_party):
     print('\n', unit.show_combat_stats(), 'has to choose an action.')
-    unit.choose_battle_action(enemy_party)
+    unit.battle_turn(enemy_party)
     enemy_party.remove_dead()
     return not enemy_party.has_units_left
 
