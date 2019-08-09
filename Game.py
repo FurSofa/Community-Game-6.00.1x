@@ -106,7 +106,7 @@ class Game:
             print('A bear got into the camp and killed everyone!')
             self.party.kill_everyone()
 
-        choice = select_from_list(['Adventure', 'Camp', 'Party Info'], True, q=f'What would you like to do\n ')
+        choice = select_from_list(['Adventure', 'Camp', 'Party Info'], True, q=f'\nWhat would you like to do\n ')
         if choice == 0:
             self.adventure()
         elif choice == 1:
