@@ -28,14 +28,14 @@ class Person:
         self.base_str = 5 + random.randint(0, 2)
         self.base_dex = 5 + random.randint(0, 2)
         self.base_int = 5 + random.randint(0, 2)
-        self.base_max_hp = 30 + (self.base_str * 5) + (self.level * 5)
+        self.base_max_hp = 20 + (self.base_str * 5) + (self.level * 5)
         self.base_defense = 1
-        self.base_att_dmg_min = 1
-        self.base_att_dmg_max = 4
+        self.base_att_dmg_min = 2
+        self.base_att_dmg_max = 5
         self.base_damage = random.randint(self.base_att_dmg_min,
                                           self.base_att_dmg_max) \
                            + int((self.base_dex * 3) // 3)
-        self.base_crit_chance = 5
+        self.base_crit_chance = 5 + round(self.base_dex // 2)
         self.base_crit_muliplier = 150
 
         # Stats Section
