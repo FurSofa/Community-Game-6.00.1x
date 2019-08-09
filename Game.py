@@ -30,7 +30,7 @@ class Game:
 
         def reroll_stats(hero_name, hero_profession):
             our_hero = self.create_character(hero_name, hero_profession)
-            our_hero.profession_stat_augment()
+            our_hero.hero_stat_buff()
             our_hero.show_stats()
             return our_hero
 
@@ -50,11 +50,11 @@ class Game:
             keep_hero = input('Do you want to keep these stats? \n[Y]es or [R]eroll Hero\n').lower()
             if keep_hero == '':
                 our_hero.hero = True
-                our_hero.profession_stat_augment()
+
                 return our_hero
             elif keep_hero == 'y':
                 our_hero.hero = True
-                our_hero.profession_stat_augment()
+
                 return our_hero
             else:
                 continue

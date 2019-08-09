@@ -30,13 +30,13 @@ class Person:
         self.base_int = 5 + random.randint(0, 2)
         self.base_max_hp = 20 + (self.base_str * 5) + (self.level * 5)
         self.base_defense = 1
-        self.base_att_dmg_min = 2
-        self.base_att_dmg_max = 5
+        self.base_att_dmg_min = 1
+        self.base_att_dmg_max = 4
         self.base_damage = random.randint(self.base_att_dmg_min,
                                           self.base_att_dmg_max) \
                            + int((self.base_dex * 3) // 3)
-        self.base_crit_chance = 5 + round(self.base_dex // 2)
-        self.base_crit_muliplier = 150
+        self.base_crit_chance = 5
+        self.base_crit_muliplier = 120
 
         # Stats Section
         self.str = self.base_str
@@ -113,6 +113,13 @@ class Person:
         self.main_hand = Equipable_Items.create_random_equipable_item(1, 1)
         self.off_hand = Equipable_Items.create_random_equipable_item(1, 1)
         self.head = Equipable_Items.create_random_equipable_item(1, 2)
+
+    def hero_stat_buff(self):
+        self.att_dmg_max += (self.str // 3)
+        self.crit_chance = 5 + round(self.base_dex // 3)
+        self.crit_muliplier += (self.dex * 10 // 3)
+        self.att_dmg_min = self.base_att_dmg_min + 1
+        self.att_dmg_max = self.base_att_dmg_max + 2
 
     def profession_stat_augment(self):
         if self.profession == 'Warrior':
