@@ -78,11 +78,11 @@ class Game:
                 x += 1
             alternating_turn_battle(self.party, enemy_party)
         elif event == 2:
-            print('2')
+            print('\nEvent #2 not done, Stop back soon!')
         elif event == 3:
-            print('3')
+            print('\nEvent #3 not done, Stop back soon!')
         else:
-            print('4')
+            print('\nEvent #4 not done, Stop back soon!')
 
     def camp(self):
         print('A bear got into the camp and killed everyone!')
