@@ -61,8 +61,8 @@ class Game:
         print(event)
         if event == 0:
             print(f'You found another traveler You talk for a while and have a great time!')
-            choice = select_from_list(['Yes', 'No'], False,
-                                      'The traveler offers to join your party, what do you say?').lower()
+            choice = combat_select_from_list(['Yes', 'No'], False,
+                                             'The traveler offers to join your party, what do you say?').lower()
             if choice == 'yes':
                 self.party.add_member(self.create_random_character())
             elif choice == 'no':
