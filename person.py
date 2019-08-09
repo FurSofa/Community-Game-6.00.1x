@@ -158,7 +158,7 @@ class Person:
     def show_combat_stats(self):
         name = f'{self.name}, the {self.profession}'
         hp = f'Hp: {self.hp:>2}/{self.max_hp:<2}'
-        dmg = f'Dmg: {self.att_dmg_min:>2}/{self.att_dmg_min:<2}'
+        dmg = f'Dmg: {self.att_dmg_min:>2}/{self.att_dmg_max:<2}'
         return f'- {name:^23} ' \
             f'{hp:<8} ' \
             f'{dmg:<13}'

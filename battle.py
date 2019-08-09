@@ -128,8 +128,8 @@ def print_combat_status(party_1, party_2):
             stat_list.append(member.profession)
             stat_list.append(member.hp)
             stat_list.append(member.max_hp)
-            stat_list.append(member.att_dam_min)
-            stat_list.append(member.att_dam_min)
+            stat_list.append(member.att_dmg_min)
+            stat_list.append(member.att_dmg_max)
         else:
             return None
         return stat_list
@@ -169,7 +169,7 @@ def print_combat_status(party_1, party_2):
 
 
 def single_unit_turn(unit, enemy_party):
-    print(unit.show_combat_stats(), 'has to choose an action.')
+    print('\n', unit.show_combat_stats(), 'has to choose an action.')
     unit.choose_battle_action(enemy_party)
     enemy_party.remove_dead()
     return not enemy_party.has_units_left
