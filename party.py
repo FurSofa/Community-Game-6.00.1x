@@ -13,6 +13,9 @@ class Party:
         self.equipment = []  # used for armor and weapons
         self.gold = 0
 
+    def __str__(self):
+        return 'h: ' + str(self.hero()) + ' ' + str(self.members)
+
     @classmethod
     def generate(cls):
         return cls()
@@ -25,12 +28,7 @@ class Party:
         """ Checks if anyone is alive
         :returns True if any party member is alive
         """
-        for member in self.members:
-            if not member.is_alive:
-                continue
-            else:
-                return False
-        return True
+        return any([member.is_alive for member in self.members])
 
     def kill_everyone(self):
         delete_index = []
@@ -43,6 +41,7 @@ class Party:
         print('=' * 6, 'Party Members Info', '=' * 6)
         for member in self.members:
             print(f'- {member.name}, {member.profession} Lv: {member.level} {member.hp}/{member.max_hp}')
+
 
     @property
     def has_units_left(self) -> bool:
@@ -80,7 +79,7 @@ class Party:
         """ Checks if anyone is alive
         :returns True if any party member is a hero
         """
-        return any([member.is_hero for member in self.members])
+        return any([isinstance(member, Hero) for member in self.members])
 
     def remove_dead(self):
         """
@@ -102,8 +101,8 @@ class Party:
         :param member: Person or Hero class object
         :return:
         """
-
-        print(f'{member.name}, the {member.profession} joins the party!')
+        if self.has_hero():
+            print(f'{member.name}, the {member.profession} joins the party!')
         self.members.append(member)
         if member.hero:
             self.hero = member

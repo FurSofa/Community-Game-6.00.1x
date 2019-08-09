@@ -7,13 +7,15 @@ import Equipable_Items
 class Person:
     """
     access points:
-    pickup_gear() to give the player a new weapon
     choose_battle_action() to start a battle turn (choosing actions and executing the appropriate methods)
     """
+    nextID = 0
 
     def __init__(self, name='Mr. Lazy', profession='warrior', level=1, money=25):
         """
         Create new person """
+        self.obj_id = Person.nextID
+        Person.nextID += 1
 
         self.hero = False
         self.name = name
@@ -146,6 +148,7 @@ class Person:
             [f"{k.title()}: {str(v).rjust(max_left - len(k), ' ')}"
              for k, v in self.__dict__.items() if v and k[0] != '_'])
 
+    # TODO: make it shorter!
     def __str__(self):
         # return f'\n{self.name},the {self.profession}\n' \
         #     f'Level:\t{self.level:>4}  XP: {self.xp:>6}/{self.xp_to_lvl_up}\n' \
@@ -350,31 +353,29 @@ class Person:
         :return: person from party
         """
         if len(target_party.members) > 1:
-            choice = random.randrange(len(target_party.members) - 1)
+            choice = random.randrange(len(target_party.members))
         else:
             choice = 0
         return target_party.members[choice]
 
     #  TODO: maybe split up into smaller parts
-    def attack_target(self, target_party, mode='basic attack'):
+    def attack_target(self, target, mode='basic attack'):
         """
         chooses deal_dmg func, based on mode
         executes chosen deal_dmg
-        :param target_party: party instance
+        :param target: person instance in a party
         :param mode: str
         :return:
         """
         physical_attack_modes = ['basic attack', 'main weapon attack', 'off hand weapon attack']
         if mode in physical_attack_modes:
-            target = self.choose_target(target_party)
-            print('target:', target)
             if mode == 'basic attack':
                 dmg_enemy_received = self.deal_dmg(target)
             elif mode == 'main weapon attack':
                 dmg_enemy_received = self.main_hand.deal_dmg(target)
             elif mode == 'off hand weapon attack':
                 dmg_enemy_received = self.off_hand.deal_dmg(target)
-            print(target.show_combat_stats())
+
 
     def choose_battle_action(self, enemy_party):
         """
@@ -385,4 +386,21 @@ class Person:
         """
         possible_actions = ['basic attack', 'main weapon attack']
         action = 'basic attack'
-        self.attack_target(enemy_party, mode=action)
+        # self.attack_target(enemy_party, mode=action)
+        return action
+
+    def battle_turn(self, enemy_party):
+        action = self.choose_battle_action(enemy_party)
+        if action == 'basic attack':
+            target = self.choose_target(enemy_party)
+            print('target:', target)
+            # TODO: refactor to input chosen target, not party
+            # self.attack_target(target, mode=action) # not needed untill we have more options to do dmg
+            dmg_enemy_received = self.deal_dmg(target)
+            print(target.show_combat_stats())
+        elif action == 'Show Hero Stats':
+            print(self.show_combat_stats())
+            self.battle_turn(enemy_party)
+        elif action == 'change gear':
+            self.change_gear()
+            self.choose_battle_action(enemy_party)
