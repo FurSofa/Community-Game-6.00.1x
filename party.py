@@ -1,9 +1,11 @@
 from helper_functions import select_from_list
-from Hero import Hero
+from Hero import *
+from person import *
 
 
 class Party:
-    def __init__(self):
+    def __init__(self, ):
+        self.hero = None
         self.members = []
         self.dead_members = []
         # inventory
@@ -14,6 +16,10 @@ class Party:
     @classmethod
     def generate(cls):
         return cls()
+
+    @classmethod
+    def __del__(cls):
+        del cls
 
     def alive(self):
         """ Checks if anyone is alive
@@ -37,7 +43,6 @@ class Party:
         print('=' * 6, 'Party Members Info', '=' * 6)
         for member in self.members:
             print(f'- {member.name}, {member.profession} Lv: {member.level} {member.hp}/{member.max_hp}')
-
 
     @property
     def has_units_left(self) -> bool:
@@ -86,7 +91,7 @@ class Party:
         for i, member in enumerate(self.members):
             if not member.is_alive:
                 delete_index.append(i)
-                print(member, 'is dead!')
+                print(member.name, 'is dead!')
         for i in reversed(delete_index):
             self.dead_members.append(self.members.pop(i))
         return len(delete_index)
@@ -100,6 +105,8 @@ class Party:
 
         print(f'{member.name}, the {member.profession} joins the party!')
         self.members.append(member)
+        if member.hero:
+            self.hero = member
 
     #  inventory and trading
     def change_gold(self, gold_amount):

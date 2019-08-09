@@ -22,3 +22,5 @@ For this project we are using:
 
 # TODO figure out how to display Equipped gear effectively
 
+# TODO bard idea "Bard plays {song title: Effect}" calls random song title
+

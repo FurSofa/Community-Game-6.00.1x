@@ -44,9 +44,9 @@ class Equipment:
 
     @classmethod
     def generate(cls):
-        qualityity = random.choices(sList, weights=sWeights, k=1)[0]
-        qualityity_val = sValue.get(qualityity)
-        return cls(qualityity, qualityity_val)
+        quality = random.choices(sList, weights=sWeights, k=1)[0]
+        qualityity_val = sValue.get(quality)
+        return cls(quality, qualityity_val)
 
     def __repr__(self):
         # max_left = max(len(k) for k in self.__dict__.keys()) + 7
@@ -92,9 +92,9 @@ class Armor(Equipment):
 
     @classmethod
     def generate(cls):
-        qualityity = random.choices(sList, weights=sWeights, k=1)[0]
-        qualityity_val = sValue.get(qualityity)
-        return cls(qualityity, qualityity_val)
+        quality = random.choices(sList, weights=sWeights, k=1)[0]
+        quality_val = sValue.get(quality)
+        return cls(quality, quality_val)
 
 
 # Code designed to generate item variation

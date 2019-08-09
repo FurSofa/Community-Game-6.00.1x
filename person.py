@@ -15,6 +15,7 @@ class Person:
         """
         Create new person """
 
+        self.hero = False
         self.name = name
         self.profession = profession
         self.party = None  # Only one party at a time
@@ -81,6 +82,7 @@ class Person:
                               self.feet,
                               self.ring,
                               self.necklace]
+
     @classmethod
     def generate(cls, name='Jeb', profession='Warrior', level=1):
         """
@@ -94,9 +96,13 @@ class Person:
         Create new random character at level 1
         """
         level = level
-        name = random.choice(['Lamar', 'Stacey', 'Ali', 'Jackson', 'Minky',
+        name = random.choice(['Lamar', 'Colin', 'Ali', 'Jackson', 'Minky',
                               'Leo', 'Lilli', 'Lindsay', 'Tongo', 'Paku', ])
         profession = random.choice(['Warrior', 'Archer', 'Mage', 'Farmer', 'Blacksmith'])
+        if name == 'Minky':
+            profession = 'Miffy Muffin'
+        if name == 'Colin':
+            profession = 'Bass Bard'
         return cls(name, profession, level)
 
     @property
@@ -107,7 +113,6 @@ class Person:
         self.main_hand = Equipable_Items.create_random_equipable_item(1, 1)
         self.off_hand = Equipable_Items.create_random_equipable_item(1, 1)
         self.head = Equipable_Items.create_random_equipable_item(1, 2)
-
 
     def profession_stat_augment(self):
         if self.profession == 'Warrior':
@@ -149,6 +154,14 @@ class Person:
               f'Str:\t   {self.str:<3}Damage: {self.damage:>6}\n'
               f'Dex:\t   {self.dex:<3}Crit:  {self.crit_chance}%/{self.crit_muliplier}%\n'
               f'Int:\t   {self.int:<3}Defence: {self.defense:>5}\n')
+
+    def show_combat_stats(self):
+        name = f'{self.name}, the {self.profession}'
+        hp = f'Hp: {self.hp:>2}/{self.max_hp:<2}'
+        dmg = f'Dmg: {self.att_dmg_min:>2}/{self.att_dmg_min:<2}'
+        return f'- {name:^23} ' \
+            f'{hp:<8} ' \
+            f'{dmg:<13}'
 
     def show_stats_old(self):
         """
@@ -348,7 +361,7 @@ class Person:
                 dmg_enemy_received = self.main_hand.deal_dmg(target)
             elif mode == 'off hand weapon attack':
                 dmg_enemy_received = self.off_hand.deal_dmg(target)
-            print(target, 'hp:', target.hp)
+            print(target.show_combat_stats())
 
     def choose_battle_action(self, enemy_party):
         """
@@ -360,5 +373,3 @@ class Person:
         possible_actions = ['basic attack', 'main weapon attack']
         action = 'basic attack'
         self.attack_target(enemy_party, mode=action)
-
-
