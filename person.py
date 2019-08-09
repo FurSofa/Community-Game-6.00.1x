@@ -7,13 +7,15 @@ import Equipable_Items
 class Person:
     """
     access points:
-    pickup_gear() to give the player a new weapon
     choose_battle_action() to start a battle turn (choosing actions and executing the appropriate methods)
     """
+    nextID = 0
 
     def __init__(self, name='Mr. Lazy', profession='warrior', level=1, money=25):
         """
         Create new person """
+        self.obj_id = Person.nextID
+        Person.nextID += 1
 
         self.name = name
         self.profession = profession
@@ -125,19 +127,11 @@ class Person:
             self.xp_to_lvl_up -= (self.int * 4 // 2)
 
     def __repr__(self):
-        max_left = max(len(k) for k in self.__dict__.keys()) + 10
-        return '\n'.join(
-            [f"{k.title()}: {str(v).rjust(max_left - len(k), ' ')}"
-             for k, v in self.__dict__.items() if v and k[0] != '_'])
+        return self.name + str(self.obj_id)
 
     # TODO: make it shorter!
     def __str__(self):
-        return f'\n{self.name},the {self.profession}\n' \
-            f'Level:\t{self.level:>4}  XP: {self.xp:>6}/{self.xp_to_lvl_up}\n' \
-            f'HP:\t   {self.hp}/{self.max_hp:<4}\n' \
-            f'Str:\t   {self.str:<3}Damage: {self.damage:>6}\n' \
-            f'Dex:\t   {self.dex:<3}Crit:  {self.crit_chance}%/{self.crit_muliplier}%\n' \
-            f'Int:\t   {self.int:<3}Defence: {self.defense:>5}\n'
+        return self.name + ' id: ' + str(self.obj_id) + ' hp:' + str(self.hp)
 
     def show_stats(self):
         print(f'\n{self.name},the {self.profession}\n'
@@ -324,7 +318,7 @@ class Person:
         :return: person from party
         """
         if len(target_party.members) > 1:
-            choice = random.randrange(len(target_party.members) - 1)
+            choice = random.randrange(len(target_party.members))
         else:
             choice = 0
         return target_party.members[choice]

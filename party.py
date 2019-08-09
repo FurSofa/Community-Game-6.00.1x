@@ -10,6 +10,9 @@ class Party:
         self.equipment = []  # used for armor and weapons
         self.gold = 0
 
+    def __str__(self):
+        return 'h: ' + str(self.hero()) + ' ' + str(self.members)
+
     @classmethod
     def generate(cls):
         return cls()
@@ -139,7 +142,7 @@ class Party:
             [[equipment.append(item) for item in member.get_equipped_items()] for member in self.members]
         return equipment
 
-    def get_equpiment_holder_list(self):  # combine with get equipment?
+    def get_equipment_holder_list(self):  # combine with get equipment?
         """
         :return: list of string with item and holder
         """
@@ -155,7 +158,7 @@ class Party:
 
     def sell_equipment(self):
         items = self.get_equipment(equipped=True)
-        choice = select_from_list(self.get_equpiment_holder_list(), index_pos=True)
+        choice = select_from_list(self.get_equipment_holder_list(), index_pos=True)
 
         item_to_sell = items[choice]
         self.gold += item_to_sell.value
