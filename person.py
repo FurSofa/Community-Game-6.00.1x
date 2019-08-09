@@ -17,6 +17,7 @@ class Person:
         self.obj_id = Person.nextID
         Person.nextID += 1
 
+        self.hero = False
         self.name = name
         self.profession = profession
         self.party = None  # Only one party at a time
@@ -29,7 +30,7 @@ class Person:
         self.base_str = 5 + random.randint(0, 2)
         self.base_dex = 5 + random.randint(0, 2)
         self.base_int = 5 + random.randint(0, 2)
-        self.base_max_hp = 30 + (self.base_str * 5) + (self.level * 5)
+        self.base_max_hp = 20 + (self.base_str * 5) + (self.level * 5)
         self.base_defense = 1
         self.base_att_dmg_min = 1
         self.base_att_dmg_max = 4
@@ -37,7 +38,7 @@ class Person:
                                           self.base_att_dmg_max) \
                            + int((self.base_dex * 3) // 3)
         self.base_crit_chance = 5
-        self.base_crit_muliplier = 150
+        self.base_crit_muliplier = 120
 
         # Stats Section
         self.str = self.base_str
@@ -84,11 +85,6 @@ class Person:
                               self.ring,
                               self.necklace]
 
-    def test_equip(self):
-        self.main_hand = Equipable_Items.create_random_equipable_item(1, 1)
-        self.off_hand = Equipable_Items.create_random_equipable_item(1, 1)
-        self.head = Equipable_Items.create_random_equipable_item(1, 2)
-
     @classmethod
     def generate(cls, name='Jeb', profession='Warrior', level=1):
         """
@@ -102,10 +98,30 @@ class Person:
         Create new random character at level 1
         """
         level = level
-        name = random.choice(['Lamar', 'Stacey', 'Ali', 'Jackson', 'Minky',
+        name = random.choice(['Lamar', 'Colin', 'Ali', 'Jackson', 'Minky',
                               'Leo', 'Lilli', 'Lindsay', 'Tongo', 'Paku', ])
         profession = random.choice(['Warrior', 'Archer', 'Mage', 'Farmer', 'Blacksmith'])
+        if name == 'Minky':
+            profession = 'Miffy Muffin'
+        if name == 'Colin':
+            profession = 'Bard of Bass'
         return cls(name, profession, level)
+
+    @property
+    def is_alive(self) -> bool:
+        return self.hp > 0
+
+    def test_equip(self):
+        self.main_hand = Equipable_Items.create_random_equipable_item(1, 1)
+        self.off_hand = Equipable_Items.create_random_equipable_item(1, 1)
+        self.head = Equipable_Items.create_random_equipable_item(1, 2)
+
+    def hero_stat_buff(self):
+        self.att_dmg_max += (self.str // 3)
+        self.crit_chance = 5 + round(self.base_dex // 3)
+        self.crit_muliplier += (self.dex * 10 // 3)
+        self.att_dmg_min = self.base_att_dmg_min + 1
+        self.att_dmg_max = self.base_att_dmg_max + 2
 
     def profession_stat_augment(self):
         if self.profession == 'Warrior':
@@ -126,12 +142,26 @@ class Person:
             self.int += random.randint(0, 3)
             self.xp_to_lvl_up -= (self.int * 4 // 2)
 
-    def __repr__(self):
-        return self.name + str(self.obj_id)
+    def fur__repr__(self):
+        max_left = max(len(k) for k in self.__dict__.keys()) + 10
+        return '\n'.join(
+            [f"{k.title()}: {str(v).rjust(max_left - len(k), ' ')}"
+             for k, v in self.__dict__.items() if v and k[0] != '_'])
 
     # TODO: make it shorter!
     def __str__(self):
-        return self.name + ' id: ' + str(self.obj_id) + ' hp:' + str(self.hp)
+        # return f'\n{self.name},the {self.profession}\n' \
+        #     f'Level:\t{self.level:>4}  XP: {self.xp:>6}/{self.xp_to_lvl_up}\n' \
+        #     f'HP:\t   {self.hp}/{self.max_hp:<4}\n' \
+        #     f'Str:\t   {self.str:<3}Damage: {self.damage:>6}\n' \
+        #     f'Dex:\t   {self.dex:<3}Crit:  {self.crit_chance}%/{self.crit_muliplier}%\n' \
+        #     f'Int:\t   {self.int:<3}Defence: {self.defense:>5}\n'
+        name = f'{self.name}, the {self.profession}'
+        hp = f'Hp: {self.hp:>2}/{self.max_hp:<2}'
+        dmg = f'Dmg: {self.att_dmg_min:>2}/{self.att_dmg_max:<2}'
+        return f'- {name:^23} ' \
+            f'{hp:<8} ' \
+            f'{dmg:<13}'
 
     def show_stats(self):
         print(f'\n{self.name},the {self.profession}\n'
@@ -140,6 +170,14 @@ class Person:
               f'Str:\t   {self.str:<3}Damage: {self.damage:>6}\n'
               f'Dex:\t   {self.dex:<3}Crit:  {self.crit_chance}%/{self.crit_muliplier}%\n'
               f'Int:\t   {self.int:<3}Defence: {self.defense:>5}\n')
+
+    def show_combat_stats(self):
+        name = f'{self.name}, the {self.profession}'
+        hp = f'Hp: {self.hp:>2}/{self.max_hp:<2}'
+        dmg = f'Dmg: {self.att_dmg_min:>2}/{self.att_dmg_max:<2}'
+        return f'- {name:^23} ' \
+            f'{hp:<8} ' \
+            f'{dmg:<13}'
 
     def show_stats_old(self):
         """
@@ -158,9 +196,6 @@ class Person:
             print(k, ': ', v)
 
     # stats
-    @property
-    def is_alive(self) -> bool:
-        return self.hp > 0
 
     def take_dmg(self, amount) -> int:
         """
@@ -184,10 +219,10 @@ class Person:
         if self.hp > self.max_hp:
             healed_amount = self.max_hp - self.hp
             self.hp = self.max_hp
-            print(f'{self.name} is fully Healed! HP: {self.hp}/{self.max_hp}\n')
+            print(f'{self.name} is fully Healed! HP: {self.hp}/{self.max_hp}')
         else:
             healed_amount = amount
-            print(f'{self.name} healed for {amount} hp! HP: {self.hp}/{self.max_hp}\n')
+            print(f'{self.name} healed for {amount} hp! HP: {self.hp}/{self.max_hp}')
         return healed_amount
 
     # Gear and Stat Calculations
@@ -342,7 +377,7 @@ class Person:
                 dmg_enemy_received = self.main_hand.deal_dmg(target)
             elif mode == 'off hand weapon attack':
                 dmg_enemy_received = self.off_hand.deal_dmg(target)
-            print(target, 'hp:', target.hp)
+            print(target.show_combat_stats())
 
     def choose_battle_action(self, enemy_party):
         """
@@ -354,5 +389,3 @@ class Person:
         possible_actions = ['basic attack', 'main weapon attack']
         action = 'basic attack'
         self.attack_target(enemy_party, mode=action)
-
-

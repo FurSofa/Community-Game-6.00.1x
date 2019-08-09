@@ -1,6 +1,6 @@
 import person
+from helper_functions import *
 
-from helper_functions import select_from_list
 
 class Hero(person.Person):
     def __init__(self, name, profession, level):
@@ -37,19 +37,19 @@ class Hero(person.Person):
         if self.off_hand:
             if self.off_hand.gear_type == 'weapon':
                 possible_actions.append('off hand weapon attack')
-        if len(self.party.equipment) > 0:
-            possible_actions.append('change gear')
+        # if len(self.party.equipment) > 0:
+        #     possible_actions.append('change gear')
         #  basic attack
         #  main weapon attack
         #  spell
         #  inventory
         possible_actions.append('Show Hero Stats')
-        action = select_from_list(possible_actions)
+        action = combat_select_from_list(possible_actions)
         if action == 'change gear':
             self.change_gear()
             self.choose_battle_action(enemy_party)
         elif action == 'Show Hero Stats':
-            print(self.show_stats())
+            print(self.show_combat_stats())
             self.choose_battle_action(enemy_party)
         self.attack_target(enemy_party, mode=action)
 
@@ -61,3 +61,4 @@ class Hero(person.Person):
 # w = Hero.generate('norbnorb', 'Warrior')
 # w.profession_stat_augment()
 # print(w)
+# print(w.att_dmg_min)

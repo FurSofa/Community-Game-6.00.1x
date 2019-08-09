@@ -44,9 +44,9 @@ class Equipment:
 
     @classmethod
     def generate(cls):
-        qualityity = random.choices(sList, weights=sWeights, k=1)[0]
-        qualityity_val = sValue.get(qualityity)
-        return cls(qualityity, qualityity_val)
+        quality = random.choices(sList, weights=sWeights, k=1)[0]
+        qualityity_val = sValue.get(quality)
+        return cls(quality, qualityity_val)
 
     def __repr__(self):
         return self.type + ': ' + self._equipable_slot
@@ -90,16 +90,15 @@ class Weapon(Equipment):
         damage_output = random.randint(self.att_dmg_min, self.att_dmg_max)
         return damage_output
 
-
 class Armor(Equipment):
     def __init__(self, quality, quality_val):
         super(Armor, self).__init__(quality, quality_val, etype='Armor', defense=5)
 
     @classmethod
     def generate(cls):
-        qualityity = random.choices(sList, weights=sWeights, k=1)[0]
-        qualityity_val = sValue.get(qualityity)
-        return cls(qualityity, qualityity_val)
+        quality = random.choices(sList, weights=sWeights, k=1)[0]
+        quality_val = sValue.get(quality)
+        return cls(quality, quality_val)
 
 
 # Code designed to generate item variation

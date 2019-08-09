@@ -1,8 +1,11 @@
 from helper_functions import select_from_list
-from Hero import Hero
+from Hero import *
+from person import *
+
 
 class Party:
-    def __init__(self):
+    def __init__(self, ):
+        self.hero = None
         self.members = []
         self.dead_members = []
         # inventory
@@ -17,7 +20,11 @@ class Party:
     def generate(cls):
         return cls()
 
-    def is_alive(self):
+    @classmethod
+    def __del__(cls):
+        del cls
+
+    def alive(self):
         """ Checks if anyone is alive
         :returns True if any party member is alive
         """
@@ -31,8 +38,7 @@ class Party:
             self.dead_members.append(self.members.pop(i))
 
     def party_members_info(self):
-        print('=' * 9, 'Party Info', '=' * 9, f'\nGold: {self.gold}\tItems: '
-        f'{len(self.inventory) + len(self.inventory)}\n  Members:')
+        print('=' * 6, 'Party Members Info', '=' * 6)
         for member in self.members:
             print(f'- {member.name}, {member.profession} Lv: {member.level} {member.hp}/{member.max_hp}')
 
@@ -75,7 +81,6 @@ class Party:
         """
         return any([member.is_hero for member in self.members])
 
-
     def remove_dead(self):
         """
         removes dead players from active members and places them in dead members
@@ -85,7 +90,7 @@ class Party:
         for i, member in enumerate(self.members):
             if not member.is_alive:
                 delete_index.append(i)
-                print(member, 'is dead!')
+                print(member.name, 'is dead!')
         for i in reversed(delete_index):
             self.dead_members.append(self.members.pop(i))
         return len(delete_index)
@@ -96,9 +101,11 @@ class Party:
         :param member: Person or Hero class object
         :return:
         """
-        member.party = self
+
         print(f'{member.name}, the {member.profession} joins the party!')
         self.members.append(member)
+        if member.hero:
+            self.hero = member
 
     #  inventory and trading
     def change_gold(self, gold_amount):
@@ -142,7 +149,7 @@ class Party:
             [[equipment.append(item) for item in member.get_equipped_items()] for member in self.members]
         return equipment
 
-    def get_equipment_holder_list(self):  # combine with get equipment?
+    def get_equpiment_holder_list(self):  # combine with get equipment?
         """
         :return: list of string with item and holder
         """
@@ -158,7 +165,7 @@ class Party:
 
     def sell_equipment(self):
         items = self.get_equipment(equipped=True)
-        choice = select_from_list(self.get_equipment_holder_list(), index_pos=True)
+        choice = select_from_list(self.get_equpiment_holder_list(), index_pos=True)
 
         item_to_sell = items[choice]
         self.gold += item_to_sell.value

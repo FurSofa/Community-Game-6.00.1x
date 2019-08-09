@@ -1,31 +1,34 @@
 from person import Person
 from Hero import Hero
 from party import Party
+from battle import *
 from battle import Battle
+from itertools import zip_longest
 from Equipable_Items import *
 
-party1 = Party()
-party2 = Party()
-battle = Battle()
+# party1 = Party()
+# party1.add_member(Hero.generate('Norb', 'Codesmith'))
+# party1.add_member(Person.generate('Fur', 'Mage'))
+# party1.add_member(Person.generate())
+# party1.add_member(Person.generate())
+# party2 = Party()
+# party2.add_member(Person.generate())
+# party2.add_member(Person.generate())
+# party2.add_member(Person.generate())
+# party2.add_member(Person.generate())
+# battle = Battle()
+# party1.party_members_info()
+# party2.party_members_info()
+# battle.whole_party_turn_battle(party1, party2)
+# battle.alternating_turn_battle(party1, party2)
 
-hero = Hero.generate('norbnorb', 'Warrior')
-hero.profession_stat_augment()
-
-enemy = Person.generate()
-
-party1.add_member(hero)
-party2.add_member(enemy)
-
-item = create_random_equipable_item(1, 1)
 
 
-# party2.add_member(fighter5)
-# party2.add_member(fighter6)
-
-if __name__ == '__main__':
-    party1.pickup_gear(item)
-
-    print('---------------------------------')
-    print()
-    #     # battle.whole_party_turn_battle(party1, party2)
-    battle.alternating_turn_battle(party1, party2)
+p1 = Party.generate()
+p1.add_member(Person.generate('Fur', 'Jr.Coder'))
+p1.add_member(Person.generate_random(1))
+p1.add_member(Person.generate_random(1))
+p2 = Party.generate()
+p2.add_member(Person.generate('Kefka', 'Drama Queen'))
+p2.add_member(Person.generate_random(1))
+print_combat_status(p1, p2)
