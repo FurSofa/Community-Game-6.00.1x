@@ -45,8 +45,8 @@ class Equipment:
     @classmethod
     def generate(cls):
         quality = random.choices(sList, weights=sWeights, k=1)[0]
-        qualityity_val = sValue.get(quality)
-        return cls(quality, qualityity_val)
+        quality_val = sValue.get(quality)
+        return cls(quality, quality_val)
 
     def __repr__(self):
         # max_left = max(len(k) for k in self.__dict__.keys()) + 7

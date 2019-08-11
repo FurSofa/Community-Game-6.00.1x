@@ -32,9 +32,7 @@ class Person:
         self.base_defense = 1
         self.base_att_dmg_min = 1
         self.base_att_dmg_max = 4
-        self.base_damage = random.randint(self.base_att_dmg_min,
-                                          self.base_att_dmg_max) \
-                           + int((self.base_dex * 3) // 3)
+
         self.base_crit_chance = 5
         self.base_crit_muliplier = 120
 
@@ -46,6 +44,8 @@ class Person:
         self.defense = self.base_defense
         self.att_dmg_min = self.base_att_dmg_min
         self.att_dmg_max = self.base_att_dmg_max
+        self.base_damage = random.randint(self.base_att_dmg_min,
+                                          self.base_att_dmg_max)
 
         # TODO: one static value or a range for damage?
         self.damage = random.randint(self.att_dmg_min, self.att_dmg_max) \
