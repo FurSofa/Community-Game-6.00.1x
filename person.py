@@ -1,21 +1,19 @@
 import random
 from helper_functions import select_from_list
 import random
-import Equipable_Items
+from Equipable_Items import *
 
 
 class Person:
     """
     access points:
+    pickup_gear() to give the player a new weapon
     choose_battle_action() to start a battle turn (choosing actions and executing the appropriate methods)
     """
-    nextID = 0
 
     def __init__(self, name='Mr. Lazy', profession='warrior', level=1, money=25):
         """
         Create new person """
-        self.obj_id = Person.nextID
-        Person.nextID += 1
 
         self.hero = False
         self.name = name
@@ -24,19 +22,17 @@ class Person:
 
         self.level = level
         self.xp = 0
-        self.xp_to_lvl_up = 20
+        self.next_level = 20
+        self.worth_xp = 5
 
         # Base Stats Section!
-        self.base_str = 5 + random.randint(0, 2)
-        self.base_dex = 5 + random.randint(0, 2)
-        self.base_int = 5 + random.randint(0, 2)
+        self.base_str = 4
+        self.base_dex = 4
+        self.base_int = 4
         self.base_max_hp = 20 + (self.base_str * 5) + (self.level * 5)
         self.base_defense = 1
         self.base_att_dmg_min = 1
         self.base_att_dmg_max = 4
-        self.base_damage = random.randint(self.base_att_dmg_min,
-                                          self.base_att_dmg_max) \
-                           + int((self.base_dex * 3) // 3)
         self.base_crit_chance = 5
         self.base_crit_muliplier = 120
 
@@ -44,32 +40,30 @@ class Person:
         self.str = self.base_str
         self.dex = self.base_dex
         self.int = self.base_int
-        self.max_hp = self.base_max_hp
+        self.max_hp = self.base_max_hp + (self.str * 5) + (self.level * 5)
         self.defense = self.base_defense
         self.att_dmg_min = self.base_att_dmg_min
         self.att_dmg_max = self.base_att_dmg_max
-
-        # TODO: one static value or a range for damage?
-        self.damage = random.randint(self.att_dmg_min, self.att_dmg_max) \
-                      + int((self.dex + self.str) // 2)
         self.crit_chance = self.base_crit_chance
         self.crit_muliplier = self.base_crit_muliplier
 
+        self.damage = random.randint(self.att_dmg_min, self.att_dmg_max) \
+                      + int((self.dex + self.str) // 2)
+
         self.max_hp = self.base_max_hp
         self.hp = self.max_hp
-        self.profession_stat_augment()
 
         # Inventory Section
         self.inventory = []
         self.money = money
 
         # weapons
-        self.main_hand = None
+        self.main_hand = Weapon.generate()
         self.off_hand = None
 
         # armor
         self.head = None
-        self.chest = None
+        self.chest = Armor.generate()
         self.legs = None
         self.feet = None
 
@@ -84,6 +78,10 @@ class Person:
                               self.feet,
                               self.ring,
                               self.necklace]
+
+        # Calculate stats and gear
+        self.stat_growth()
+        self.calculate_stats()
 
     @classmethod
     def generate(cls, name='Jeb', profession='Warrior', level=1):
@@ -117,30 +115,48 @@ class Person:
         self.head = Equipable_Items.create_random_equipable_item(1, 2)
 
     def hero_stat_buff(self):
-        self.att_dmg_max += (self.str // 3)
         self.crit_chance = 5 + round(self.base_dex // 3)
-        self.crit_muliplier += (self.dex * 10 // 3)
+        self.crit_muliplier += (self.base_dex * 10 // 3)
         self.att_dmg_min = self.base_att_dmg_min + 1
-        self.att_dmg_max = self.base_att_dmg_max + 2
+        self.att_dmg_max += (self.base_str // 3)
 
-    def profession_stat_augment(self):
-        if self.profession == 'Warrior':
-            self.str += random.randint(0, 3)
-            self.dex += random.randint(0, 1)
-            self.int -= random.randint(0, 3)
-            self.xp_to_lvl_up -= (self.int * 2 // 4)
+    def stat_growth(self):
+        self.base_str += 1
+        self.base_dex += 1
+        self.base_int += 1
+        if self.profession.lower() == 'warrior':
+            self.base_str += 3
+            self.base_int -= 1
+        elif self.profession.lower() == 'archer':
+            self.base_dex += 2
+        elif self.profession.lower() == 'mage':
+            self.base_int += 3
+            self.base_str -= 1
 
-        elif self.profession == 'Archer':
-            self.str += random.randint(0, 1)
-            self.dex += random.randint(0, 3)
-            self.int += random.randint(0, 1)
-            self.xp_to_lvl_up -= (self.int * 3 // 3)
+        elif self.profession.lower() == 'thief':
+            self.base_int += 1
+            self.base_dex += 1
+        elif self.profession.lower() == 'blacksmith':
+            self.base_str += 1
+            self.base_dex += 1
+        elif self.profession.lower() == 'bard':
+            self.base_str += 1
+            self.base_int += 1
 
-        elif self.profession == 'Mage':
-            self.str -= random.randint(0, 3)
-            self.dex += random.randint(0, 1)
-            self.int += random.randint(0, 3)
-            self.xp_to_lvl_up -= (self.int * 4 // 2)
+    def calculate_stats(self):
+        self.str = self.base_str
+        self.dex = self.base_dex
+        self.int = self.base_int
+        self.max_hp = self.base_max_hp + (self.str * 5) + (self.level * 5)
+        self.defense = self.base_defense
+        self.att_dmg_min = self.base_att_dmg_min
+        self.att_dmg_max = self.base_att_dmg_max
+        self.crit_chance = self.base_crit_chance
+        self.crit_muliplier = self.base_crit_muliplier
+
+        self.damage = random.randint(self.att_dmg_min, self.att_dmg_max) \
+                      + int((self.dex + self.str) // 2)
+        self.calculate_stats_with_gear()
 
     def display(self):
         return self.name + ' - ' + self.profession
@@ -151,7 +167,6 @@ class Person:
             [f"{k.title()}: {str(v).rjust(max_left - len(k), ' ')}"
              for k, v in self.__dict__.items() if v and k[0] != '_'])
 
-    # TODO: make it shorter!
     def __str__(self):
         # return f'\n{self.name},the {self.profession}\n' \
         #     f'Level:\t{self.level:>4}  XP: {self.xp:>6}/{self.xp_to_lvl_up}\n' \
@@ -168,7 +183,7 @@ class Person:
 
     def show_stats(self):
         print(f'\n{self.name},the {self.profession}\n'
-              f'Level:\t{self.level:>4}  XP: {self.xp:>6}/{self.xp_to_lvl_up}\n'
+              f'Level:\t{self.level:>4}  XP: {self.xp:>6}/{self.next_level}\n'
               f'HP:\t   {self.hp}/{self.max_hp:<4}\n'
               f'Str:\t   {self.str:<3}Damage: {self.damage:>6}\n'
               f'Dex:\t   {self.dex:<3}Crit:  {self.crit_chance}%/{self.crit_muliplier}%\n'
@@ -197,6 +212,20 @@ class Person:
         }
         for k, v in relevant_stats.items():
             print(k, ': ', v)
+
+    def add_xp(self, xp):
+        self.xp += xp
+        print(f'{self.name} gained {xp} xp!')
+        if self.xp > self.next_level:
+            self.level_up()
+
+    def level_up(self):
+
+        self.level += 1
+        self.xp -= self.next_level
+        self.next_level = round(4 * (self.level ** 3) / 5) + 20
+        print(f'{self.name} is now {self.level}!')
+        self.stat_growth()
 
     # stats
 
@@ -235,6 +264,7 @@ class Person:
         """
         items = [self.main_hand,
                  self.off_hand,
+                 self.head,
                  self.chest,
                  self.legs,
                  self.feet,
@@ -248,15 +278,15 @@ class Person:
         :return: -
         """
         stats = {
-            'str': self.base_str,
-            'dex': self.base_dex,
-            'int': self.base_int,
-            'max_hp': self.base_max_hp,
-            'defense': self.base_defense,
-            'att_dmg_min': self.base_att_dmg_min,
-            'att_dmg_max': self.base_att_dmg_max,
-            'crit_chance': self.base_crit_chance,
-            'crit_muliplier': self.base_crit_muliplier,
+            'str': self.str,
+            'dex': self.dex,
+            'int': self.int,
+            'max_hp': self.max_hp,
+            'defense': self.defense,
+            'att_dmg_min': self.att_dmg_min,
+            'att_dmg_max': self.att_dmg_max,
+            'crit_chance': self.crit_chance,
+            'crit_muliplier': self.crit_muliplier,
         }
         gear = self.get_equipped_items()
         for key in stats.keys():
@@ -357,28 +387,31 @@ class Person:
         :return: person from party
         """
         if len(target_party.members) > 1:
-            choice = random.randrange(len(target_party.members))
+            choice = random.randrange(len(target_party.members) - 1)
         else:
             choice = 0
         return target_party.members[choice]
 
-    def attack_target(self, target, mode='basic attack'):
+
+    def attack_target(self, target_party, mode='basic attack'):
         """
         chooses deal_dmg func, based on mode
         executes chosen deal_dmg
-        :param target: person instance in a party
+        :param target_party: party instance
         :param mode: str
         :return:
         """
         physical_attack_modes = ['basic attack', 'main weapon attack', 'off hand weapon attack']
         if mode in physical_attack_modes:
+            target = self.choose_target(target_party)
+            print('target:', target)
             if mode == 'basic attack':
                 dmg_enemy_received = self.deal_dmg(target)
             elif mode == 'main weapon attack':
                 dmg_enemy_received = self.main_hand.deal_dmg(target)
             elif mode == 'off hand weapon attack':
                 dmg_enemy_received = self.off_hand.deal_dmg(target)
-
+            print(target.show_combat_stats())
 
     def choose_battle_action(self, enemy_party):
         """
@@ -389,8 +422,8 @@ class Person:
         """
         possible_actions = ['basic attack', 'main weapon attack']
         action = 'basic attack'
-        # self.attack_target(enemy_party, mode=action)
-        return action
+        self.attack_target(enemy_party, mode=action)
+
 
     def battle_turn(self, enemy_party):
         action = self.choose_battle_action(enemy_party)
@@ -408,4 +441,12 @@ class Person:
         elif action == 'change gear':
             self.change_gear()
             self.choose_battle_action(enemy_party)
+
+
+if __name__ == '__main__':
+    p = Person.generate_random()
+    p.stat_growth()
+    print(p.show_stats())
+    p.add_xp(22)
+    print(p.show_stats())
 

@@ -16,7 +16,7 @@ class Consumable:
 
 
 class Equipment:
-    def __init__(self, quality, quality_value=10, etype='Weapon', value=0,
+    def __init__(self, quality, quality_value=1, etype='Weapon', value=0,
                  max_durability=10, strength=0, dexterity=0, intelligence=0,
                  max_hp=0, defense=0, att_dmg_min=0, att_dmg_max=0, damage=0,
                  crit_chance=0, crit_multiplier=0):
@@ -43,10 +43,16 @@ class Equipment:
         self._max_left = max(len(k) for k in self.__dict__.keys()) + 10
 
     @classmethod
-    def generate(cls):
+    def generate(cls, quality, quality_val=1, etype='Weapon', value=0,
+                 max_durability=10, strength=0, dexterity=0, intelligence=0,
+                 max_hp=0, defense=0, att_dmg_min=0, att_dmg_max=0, damage=0,
+                 crit_chance=0, crit_multiplier=0):
         quality = random.choices(sList, weights=sWeights, k=1)[0]
-        qualityity_val = sValue.get(quality)
-        return cls(quality, qualityity_val)
+        quality_val = sValue.get(quality)
+        return cls(quality, quality_val, etype, value,
+                   max_durability, strength, dexterity, intelligence,
+                   max_hp, defense, att_dmg_min, att_dmg_max, damage,
+                   crit_chance, crit_multiplier)
 
     def __repr__(self):
         return self.type + ': ' + self._equipable_slot
@@ -77,39 +83,62 @@ class Equipment:
 
 
 class Weapon(Equipment):
-    def __init__(self, quality, quality_val):
-        super(Weapon, self).__init__(quality, quality_val, etype='Weapon', damage=5)
+    def __init__(self, quality, quality_val=1, etype='Weapon', value=0,
+                 max_durability=10, strength=0, dexterity=0, intelligence=0,
+                 max_hp=0, defense=0, att_dmg_min=1, att_dmg_max=3, damage=0,
+                 crit_chance=1, crit_multiplier=4):
+        super(Weapon, self).__init__(quality, quality_val, etype, value,
+                                     max_durability, strength, dexterity, intelligence,
+                                     max_hp, defense, att_dmg_min, att_dmg_max, damage,
+                                     crit_chance, crit_multiplier)
 
     @classmethod
-    def generate(cls):
-        qualityity = random.choices(sList, weights=sWeights, k=1)[0]
-        qualityity_val = sValue.get(qualityity)
-        return cls(qualityity, qualityity_val)
+    def generate(cls, quality='common', quality_val=1, etype='Weapon', value=0,
+                 max_durability=10, strength=0, dexterity=0, intelligence=0,
+                 max_hp=0, defense=0, att_dmg_min=0, att_dmg_max=0, damage=0,
+                 crit_chance=0, crit_multiplier=0):
+        quality = random.choices(sList, weights=sWeights, k=1)[0]
+        quality_val = sValue.get(quality)
+        return cls(quality, quality_val, etype, value,
+                   max_durability, strength, dexterity, intelligence,
+                   max_hp, defense, att_dmg_min, att_dmg_max, damage,
+                   crit_chance, crit_multiplier)
 
     def calc_weapon_dmg(self):
         damage_output = random.randint(self.att_dmg_min, self.att_dmg_max)
         return damage_output
 
+
 class Armor(Equipment):
-    def __init__(self, quality, quality_val):
-        super(Armor, self).__init__(quality, quality_val, etype='Armor', defense=5)
+    def __init__(self, quality='Common', quality_val=1, etype='Armor', value=0,
+                 max_durability=10, strength=0, dexterity=0, intelligence=0,
+                 max_hp=0, defense=1, att_dmg_min=0, att_dmg_max=0, damage=0,
+                 crit_chance=0, crit_multiplier=0):
+        super(Armor, self).__init__(quality, quality_val, etype, value,
+                                    max_durability, strength, dexterity, intelligence,
+                                    max_hp, defense, att_dmg_min, att_dmg_max, damage,
+                                    crit_chance, crit_multiplier)
 
     @classmethod
-    def generate(cls):
+    def generate(cls, quality='common', quality_val=1, etype='Weapon', value=0,
+                 max_durability=10, strength=0, dexterity=0, intelligence=0,
+                 max_hp=0, defense=1, att_dmg_min=0, att_dmg_max=0, damage=0,
+                 crit_chance=0, crit_multiplier=0):
         quality = random.choices(sList, weights=sWeights, k=1)[0]
         quality_val = sValue.get(quality)
-        return cls(quality, quality_val)
+        return cls(quality, quality_val, etype, value,
+                   max_durability, strength, dexterity, intelligence,
+                   max_hp, defense, att_dmg_min, att_dmg_max, damage,
+                   crit_chance, crit_multiplier)
 
 
 # Code designed to generate item variation
-def generate_quality():
-    return random.choices(list(sValue.keys()), weights=sWeights, k=1)[0]
-
-
-def generate_item_variable_str(string_length=5):
-    """Generate a random string of fixed length """
-    letters = string.ascii_lowercase
-    return ''.join(random.sample(letters, string_length))
+# def generate_quality():
+#     return random.choices(list(sValue.keys()), weights=sWeights, k=1)[0]
+# def generate_item_variable_str(string_length=5):
+#     """Generate a random string of fixed length """
+#     letters = string.ascii_lowercase
+#     return ''.join(random.sample(letters, string_length))
 
 
 def create_random_item(class_type=1):

@@ -140,7 +140,7 @@ def print_combat_status(party_1, party_2):
             hero_name = f'{h[0]}, the {h[1]}'
             hero_hp = f'Hp: {h[2]:>2}/{h[3]:<2}'
             hero_dmg = f'Dmg: {h[4]:>2}/{h[5]:<2}'
-            print(f'- {hero_name:^23} '
+            print(f'+ {hero_name:^23} '
                   f'{hero_hp:<8} '
                   f'{hero_dmg:<13} ', end='\t')
         else:
@@ -224,6 +224,8 @@ def alternating_turn_battle(party_1, party_2):
     if party_1.has_units_left:
         party_1.party_members_info()
         print('Party 1 has won the battle!')
+        for member in party_1.members:
+            member.add_xp(party_2.party_worth_xp())
         party_2.__del__()
         input('Congrats! Press Enter!')
     else:
