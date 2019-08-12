@@ -23,6 +23,7 @@ class Person:
         self.level = level
         self.xp = 0
         self.xp_to_lvl_up = 20
+        self.worth_xp = 5
 
         # Base Stats Section!
         self.base_str = 5 + random.randint(0, 2)
@@ -32,9 +33,6 @@ class Person:
         self.base_defense = 1
         self.base_att_dmg_min = 1
         self.base_att_dmg_max = 4
-        self.base_damage = random.randint(self.base_att_dmg_min,
-                                          self.base_att_dmg_max) \
-                           + int((self.base_dex * 3) // 3)
         self.base_crit_chance = 5
         self.base_crit_muliplier = 120
 
@@ -46,12 +44,11 @@ class Person:
         self.defense = self.base_defense
         self.att_dmg_min = self.base_att_dmg_min
         self.att_dmg_max = self.base_att_dmg_max
-
-        # TODO: one static value or a range for damage?
-        self.damage = random.randint(self.att_dmg_min, self.att_dmg_max) \
-                      + int((self.dex + self.str) // 2)
         self.crit_chance = self.base_crit_chance
         self.crit_muliplier = self.base_crit_muliplier
+
+        self.damage = random.randint(self.att_dmg_min, self.att_dmg_max) \
+                      + int((self.dex + self.str) // 2)
 
         self.max_hp = self.base_max_hp
         self.hp = self.max_hp
@@ -140,6 +137,21 @@ class Person:
             self.int += random.randint(0, 3)
             self.xp_to_lvl_up -= (self.int * 4 // 2)
 
+    def calculate_stats(self):
+        self.str = self.base_str
+        self.dex = self.base_dex
+        self.int = self.base_int
+        self.max_hp = self.base_max_hp
+        self.defense = self.base_defense
+        self.att_dmg_min = self.base_att_dmg_min
+        self.att_dmg_max = self.base_att_dmg_max
+        self.crit_chance = self.base_crit_chance
+        self.crit_muliplier = self.base_crit_muliplier
+
+        self.damage = random.randint(self.att_dmg_min, self.att_dmg_max) \
+                      + int((self.dex + self.str) // 2)
+        self.calculate_stats_with_gear()
+
     def __repr__(self):
         max_left = max(len(k) for k in self.__dict__.keys()) + 10
         return '\n'.join(
@@ -192,6 +204,12 @@ class Person:
         for k, v in relevant_stats.items():
             print(k, ': ', v)
 
+    def add_xp(self):
+        pass
+
+    def level_up(self):
+        pass
+
     # stats
 
     def take_dmg(self, amount) -> int:
@@ -229,6 +247,7 @@ class Person:
         """
         items = [self.main_hand,
                  self.off_hand,
+                 self.head,
                  self.chest,
                  self.legs,
                  self.feet,
@@ -242,15 +261,15 @@ class Person:
         :return: -
         """
         stats = {
-            'str': self.base_str,
-            'dex': self.base_dex,
-            'int': self.base_int,
-            'max_hp': self.base_max_hp,
-            'defense': self.base_defense,
-            'att_dmg_min': self.base_att_dmg_min,
-            'att_dmg_max': self.base_att_dmg_max,
-            'crit_chance': self.base_crit_chance,
-            'crit_muliplier': self.base_crit_muliplier,
+            'str': self.str,
+            'dex': self.dex,
+            'int': self.int,
+            'max_hp': self.max_hp,
+            'defense': self.defense,
+            'att_dmg_min': self.att_dmg_min,
+            'att_dmg_max': self.att_dmg_max,
+            'crit_chance': self.crit_chance,
+            'crit_muliplier': self.crit_muliplier,
         }
         gear = self.get_equipped_items()
         for key in stats.keys():
@@ -386,3 +405,10 @@ class Person:
         possible_actions = ['basic attack', 'main weapon attack']
         action = 'basic attack'
         self.attack_target(enemy_party, mode=action)
+
+
+p = Person.generate_random()
+p.profession_stat_augment()
+print(p.show_stats())
+p.add_xp(22)
+print(p.show_stats())
