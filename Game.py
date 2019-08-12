@@ -101,13 +101,30 @@ class Game:
                 member.take_dmg(20)
 
     def camp(self):
-        print('You build a beautiful camp fire and everyone settles in for the night')
-        for member in self.party.members:
-            member.heal(member.max_hp)
-        bear_attack = randint(1, 100)
-        if bear_attack < 3:
-            print('A bear got into the camp and killed everyone!')
-            self.party.kill_everyone()
+        print('\n'*10)
+        print("""    
+             )
+            (\033[1;33m
+           /%/\\
+          (% \033[1;31m%)\033[1;33m)\033[0;0m
+        .-'....`-.
+        `--'.'`--' """)
+        print('  You build a beautiful camp fire.\n')
+        input = combat_select_from_list(['Rest', 'Inventory', '??', 'Continue Adventuring'],
+                                        q=f'What would you like to do: ')
+        if input == 'Rest':
+            for member in self.party.members:
+                member.heal(member.max_hp)
+            bear_attack = randint(1, 100)
+            if bear_attack < 3:
+                print('A bear got into the camp and killed everyone!')
+                self.party.kill_everyone()
+        elif input == 'inventory':
+            pass
+        elif input == '':
+            pass
+        elif input == '':
+            pass
 
     def main_options(self):
         """
@@ -137,5 +154,5 @@ class Game:
 
 
 if __name__ == '__main__':
-    new_game = Game()
-    new_game.gameloop()
+    g = Game()
+    g.gameloop()
