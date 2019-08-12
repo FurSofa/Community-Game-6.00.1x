@@ -22,12 +22,13 @@ class Person:
 
         self.level = level
         self.xp = 0
-        self.xp_to_lvl_up = 20
+        self.next_level = 20
+        self.worth_xp = self.level * 5
 
         # Base Stats Section!
-        self.base_str = 5 + random.randint(0, 2)
-        self.base_dex = 5 + random.randint(0, 2)
-        self.base_int = 5 + random.randint(0, 2)
+        self.base_str = 5
+        self.base_dex = 5
+        self.base_int = 5
         self.base_max_hp = 20 + (self.base_str * 5) + (self.level * 5)
         self.base_defense = 1
         self.base_att_dmg_min = 1
@@ -44,10 +45,7 @@ class Person:
         self.defense = self.base_defense
         self.att_dmg_min = self.base_att_dmg_min
         self.att_dmg_max = self.base_att_dmg_max
-        self.base_damage = random.randint(self.base_att_dmg_min,
-                                          self.base_att_dmg_max)
 
-        # TODO: one static value or a range for damage?
         self.damage = random.randint(self.att_dmg_min, self.att_dmg_max) \
                       + int((self.dex + self.str) // 2)
         self.crit_chance = self.base_crit_chance
@@ -84,7 +82,7 @@ class Person:
                               self.necklace]
 
     @classmethod
-    def generate(cls, name='Jeb', profession='Warrior', level=1):
+    def generate(cls, name='Jeb', profession='warrior', level=1):
         """
         Create new character at level 1
         """
@@ -116,29 +114,83 @@ class Person:
 
     def hero_stat_buff(self):
         self.att_dmg_max += (self.str // 3)
-        self.crit_chance = 5 + round(self.base_dex // 3)
-        self.crit_muliplier += (self.dex * 10 // 3)
-        self.att_dmg_min = self.base_att_dmg_min + 1
-        self.att_dmg_max = self.base_att_dmg_max + 2
+        self.base_crit_chance = 5 + round(self.base_dex // 3)
+        self.base_crit_muliplier += (self.dex * 10 // 3)
 
     def profession_stat_augment(self):
-        if self.profession == 'Warrior':
-            self.str += random.randint(0, 3)
-            self.dex += random.randint(0, 1)
-            self.int -= random.randint(0, 3)
-            self.xp_to_lvl_up -= (self.int * 2 // 4)
+        if self.profession.lower() == 'warrior':
+            self.base_str += 2
+            self.base_dex += 1
+            self.base_int += 0
+            self.base_defense = 3
+            self.base_att_dmg_max = 5
 
-        elif self.profession == 'Archer':
-            self.str += random.randint(0, 1)
-            self.dex += random.randint(0, 3)
-            self.int += random.randint(0, 1)
-            self.xp_to_lvl_up -= (self.int * 3 // 3)
+        elif self.profession.lower() == 'archer':
+            self.base_str += 1
+            self.base_dex += 2
+            self.base_int += 0
+            self.base_att_dmg_min = 2
 
-        elif self.profession == 'Mage':
-            self.str -= random.randint(0, 3)
-            self.dex += random.randint(0, 1)
-            self.int += random.randint(0, 3)
-            self.xp_to_lvl_up -= (self.int * 4 // 2)
+        elif self.profession.lower() == 'mage':
+            self.base_str += 0
+            self.base_dex += 0
+            self.base_int += 3
+            self.next_level = 15
+        self.calulate_stats()
+
+    def calulate_stats(self):
+        """
+        Recalculates all stats based on items and level ups.
+        :return:
+        """
+
+        self.str = self.base_str
+        self.dex = self.base_dex
+        self.int = self.base_int
+        self.max_hp = self.base_max_hp
+        self.defense = self.base_defense
+        self.att_dmg_min = self.base_att_dmg_min
+        self.att_dmg_max = self.base_att_dmg_max
+
+        self.damage = random.randint(self.att_dmg_min, self.att_dmg_max) \
+                      + int((self.dex + self.str) // 2)
+        self.crit_chance = self.base_crit_chance
+        self.crit_muliplier = self.base_crit_muliplier
+
+        self.max_hp = self.base_max_hp
+        self.hp = self.max_hp
+
+        self.calculate_stats_with_gear()
+
+    def add_xp(self, xp):
+        self.xp += xp
+        print(f'{self.name} gained {xp} xp!')
+        if self.xp > self.next_level:
+            self.levelup()
+
+    def levelup(self):
+        if self.profession.lower() == 'warrior':
+            self.base_str += 2
+            self.base_dex += 1
+            self.base_int += 0
+            self.next_level = round(4 * (self.level ** 3) // 5)
+
+        elif self.profession.lower() == 'archer':
+            self.base_str += 1
+            self.base_dex += 2
+            self.base_int += 1
+            self.next_level = round(4 * (self.level ** 3) // 5)
+
+        elif self.profession.lower() == 'mage':
+            self.base_str += 0
+            self.base_dex += 1
+            self.base_int += 2
+            self.next_level = round(4 * (self.level ** 3) // 5)
+
+        self.xp -= self.next_level
+        self.level += 1
+        print(f'{self.name} is now level {self.level}!')
+        self.calulate_stats()
 
     def __repr__(self):
         max_left = max(len(k) for k in self.__dict__.keys()) + 10
@@ -147,22 +199,16 @@ class Person:
              for k, v in self.__dict__.items() if v and k[0] != '_'])
 
     def __str__(self):
-        # return f'\n{self.name},the {self.profession}\n' \
-        #     f'Level:\t{self.level:>4}  XP: {self.xp:>6}/{self.xp_to_lvl_up}\n' \
-        #     f'HP:\t   {self.hp}/{self.max_hp:<4}\n' \
-        #     f'Str:\t   {self.str:<3}Damage: {self.damage:>6}\n' \
-        #     f'Dex:\t   {self.dex:<3}Crit:  {self.crit_chance}%/{self.crit_muliplier}%\n' \
-        #     f'Int:\t   {self.int:<3}Defence: {self.defense:>5}\n'
         name = f'{self.name}, the {self.profession}'
         hp = f'Hp: {self.hp:>2}/{self.max_hp:<2}'
         dmg = f'Dmg: {self.att_dmg_min:>2}/{self.att_dmg_max:<2}'
-        return f'- {name:^23} ' \
+        return f'{name:^23} ' \
             f'{hp:<8} ' \
             f'{dmg:<13}'
 
     def show_stats(self):
         print(f'\n{self.name},the {self.profession}\n'
-              f'Level:\t{self.level:>4}  XP: {self.xp:>6}/{self.xp_to_lvl_up}\n'
+              f'Level:\t{self.level:>4}  XP: {self.xp:>6}/{self.next_level}\n'
               f'HP:\t   {self.hp}/{self.max_hp:<4}\n'
               f'Str:\t   {self.str:<3}Damage: {self.damage:>6}\n'
               f'Dex:\t   {self.dex:<3}Crit:  {self.crit_chance}%/{self.crit_muliplier}%\n'
@@ -172,7 +218,7 @@ class Person:
         name = f'{self.name}, the {self.profession}'
         hp = f'Hp: {self.hp:>2}/{self.max_hp:<2}'
         dmg = f'Dmg: {self.att_dmg_min:>2}/{self.att_dmg_max:<2}'
-        return f'- {name:^23} ' \
+        return f'  {name:^23} ' \
             f'{hp:<8} ' \
             f'{dmg:<13}'
 
@@ -229,6 +275,7 @@ class Person:
         """
         items = [self.main_hand,
                  self.off_hand,
+                 self.head,
                  self.chest,
                  self.legs,
                  self.feet,
@@ -386,3 +433,12 @@ class Person:
         possible_actions = ['basic attack', 'main weapon attack']
         action = 'basic attack'
         self.attack_target(enemy_party, mode=action)
+
+
+if __name__ == '__main__':
+    p = Person.generate_random()
+    p.profession_stat_augment()
+    print(p.show_stats())
+
+    p.add_xp(25)
+    print(p.show_stats())
