@@ -1,6 +1,4 @@
-import random
 from helper_functions import select_from_list
-import random
 from Equipable_Items import *
 
 
@@ -57,7 +55,7 @@ class Person:
         self.money = money
 
         # weapons
-        self.main_hand = Weapon.generate(att_dmg_min=1,att_dmg_max=3)
+        self.main_hand = Weapon.generate(att_dmg_min=1, att_dmg_max=3)
         self.off_hand = None
 
         # armor
@@ -152,6 +150,7 @@ class Person:
         self.att_dmg_max = self.base_att_dmg_max
         self.crit_chance = self.base_crit_chance
         self.crit_muliplier = self.base_crit_muliplier + self.dex
+        self.damage = random.randint(self.att_dmg_min, self.att_dmg_max)
 
         self.calculate_stats_with_gear()
 
@@ -180,11 +179,11 @@ class Person:
 
     def show_stats(self):
         return (f'\n{self.name},the {self.profession}\n'
-              f'Level:\t{self.level:>4}  XP: {self.xp:>6}/{self.next_level}\n'
-              f'HP:\t   {self.hp}/{self.max_hp:<4}\n'
-              f'Str:\t   {self.str:<3}Damage: {self.att_dmg_min:>3}/{self.att_dmg_max:<3}\n'
-              f'Dex:\t   {self.dex:<3}Crit:  {self.crit_chance}%/{self.crit_muliplier}%\n'
-              f'Int:\t   {self.int:<3}Defence: {self.defense:>5}\n')
+                f'Level:\t{self.level:>4}  XP: {self.xp:>6}/{self.next_level}\n'
+                f'HP:\t   {self.hp}/{self.max_hp:<4}\n'
+                f'Str:\t   {self.str:<3}Damage: {self.att_dmg_min:>3}/{self.att_dmg_max:<3}\n'
+                f'Dex:\t   {self.dex:<3}Crit:  {self.crit_chance}%/{self.crit_muliplier}%\n'
+                f'Int:\t   {self.int:<3}Defence: {self.defense:>5}\n')
 
     def show_combat_stats(self):
         name = f'{self.name}, the {self.profession}'
@@ -411,7 +410,7 @@ class Person:
         :param enemy_party:
         :return: -
         """
-        possible_actions = ['basic attack', 'main weapon attack']
+        possible_actions = ['basic attack', ]
         action = 'basic attack'
         self.attack_target(enemy_party, mode=action)
 
@@ -420,9 +419,10 @@ class Person:
         if action == 'basic attack':
             target = self.choose_target(enemy_party)
             # TODO: refactor to input chosen target, not party
-            # self.attack_target(target, mode=action) # not needed untill we have more options to do dmg
+            # self.attack_target(target, mode=action)  # not needed until we have more options to do dmg
             dmg_enemy_received = self.deal_dmg(target)
             print(self.name, 'deals', dmg_enemy_received, 'to', target.name)
+
         elif action == 'show hero stats':
             print(self.show_combat_stats())
             self.battle_turn(enemy_party)
@@ -435,18 +435,4 @@ class Person:
 
 
 if __name__ == '__main__':
-    p = Person.generate_random()
-    print(p.main_hand.show_stats())
-    print(p.chest.show_stats())
-    print(p.legs.show_stats(), end='\n')
-    print('')
-    p.test_equip()
-    print(p.main_hand.show_stats())
-    print(p.chest.show_stats())
-    print(p.legs.show_stats(), end='\n')
-    print('')
-    p.test_equip()
-    print(p.main_hand.show_stats())
-    print(p.chest.show_stats())
-    print(p.legs.show_stats(), end='\n')
-
+    pass

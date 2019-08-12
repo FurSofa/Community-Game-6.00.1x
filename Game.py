@@ -47,7 +47,6 @@ class Game:
             print(our_hero.show_stats())
             return our_hero
 
-
         while True:
             our_hero = roll_hero()
             keep_hero = input('Do you want to keep this Hero? \n[Y]es or [R]eroll Hero\n').lower()
@@ -77,16 +76,27 @@ class Game:
             # Battle
             enemy_party = Party.generate()
             x = 0
-            for x in range(randrange(3) + 1):
-                enemy_party.add_member(Person.generate_random(randrange(self.party.hero.level - 1, (self.party.hero.level + 2))))
+            for x in range(randrange(len(self.party.members) - 1, len(self.party.members) + 1)):
+                enemy_party.add_member(
+                    Person.generate_random(randint(self.party.hero.level - 1, (self.party.hero.level + 1))))
                 x += 1
             alternating_turn_battle(self.party, enemy_party)
         elif event == 2:
-            print('\nEvent #2 not done, Stop back soon!')
+            # Battle
+            enemy_party = Party.generate()
+            x = 0
+            for x in range(randrange(len(self.party.members) - 1, len(self.party.members) + 1)):
+                enemy_party.add_member(
+                    Person.generate_random(randint(self.party.hero.level + 1, self.party.hero.level + 1)))
+                x += 1
+            alternating_turn_battle(self.party, enemy_party)
         elif event == 3:
-            print('\nEvent #3 not done, Stop back soon!')
+            print(f'You found another traveler You talk for a while and have a great time!')
+            print('You bid the traveler farewell and continue on your way.\n')
         else:
-            print('\nEvent #4 not done, Stop back soon!')
+            print('\nA tree falls on the party!')
+            for member in self.party.members:
+                member.take_dmg(20)
 
     def camp(self):
         print('You build a beautiful camp fire and everyone settles in for the night')
@@ -101,15 +111,6 @@ class Game:
         """
         Contains Choices after new game and settings
         """
-
-        def adventure(self):
-            print(f'You found another traveler You talk for a while and have a great time!')
-            self.party.add_member(self.create_random_character)
-            print('Time to get back to the task at hand!')
-
-        def camp(self):
-            print('A bear got into the camp and killed everyone!')
-            self.party.kill_everyone()
 
         choice = select_from_list(['Adventure', 'Camp', 'Party Info'], True, q=f'\nWhat would you like to do\n ')
         if choice == 0:
@@ -131,6 +132,7 @@ class Game:
             self.main_options()
 
         self.game_over()
+
 
 if __name__ == '__main__':
     new_game = Game()

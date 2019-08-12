@@ -1,8 +1,8 @@
-import person
+from person import *
 from helper_functions import *
 
 
-class Hero(person.Person):
+class Hero(Person):
     def __init__(self, name, profession, level):
         super().__init__(name, profession, level)
         self.type = 'Hero'
@@ -53,13 +53,14 @@ class Hero(person.Person):
             self.choose_battle_action(enemy_party)
         elif action.lower() == 'heal':
             self.heal(10)
-        # self.attack_target(enemy_party, mode=action)
+        else:
+            self.attack_target(enemy_party, mode=action)
         return action
 
 
 # Testing Code!
 if __name__ == '__main__':
-    p = person.Person.generate('norbnorb', 'Mage')
+    p = Person.generate('norbnorb', 'Mage')
     p.stat_growth()
     print(p)
     w = Hero.generate('norbnorb', 'Warrior')
