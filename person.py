@@ -40,17 +40,16 @@ class Person:
         self.str = self.base_str
         self.dex = self.base_dex
         self.int = self.base_int
-        self.max_hp = self.base_max_hp + (self.str * 5) + (self.level * 5)
+        self.max_hp = self.base_max_hp + (self.str * 5 // 2) + (self.level * 5)
+
         self.defense = self.base_defense
         self.att_dmg_min = self.base_att_dmg_min
         self.att_dmg_max = self.base_att_dmg_max
         self.crit_chance = self.base_crit_chance
-        self.crit_muliplier = self.base_crit_muliplier
+        self.crit_muliplier = self.base_crit_muliplier + self.dex
 
-        self.damage = random.randint(self.att_dmg_min, self.att_dmg_max) \
-                      + int((self.dex + self.str) // 2)
+        self.damage = random.randint(self.att_dmg_min, self.att_dmg_max)
 
-        self.max_hp = self.base_max_hp
         self.hp = self.max_hp
 
         # Inventory Section
@@ -80,7 +79,6 @@ class Person:
                               self.necklace]
 
         # Calculate stats and gear
-        self.stat_growth()
         self.calculate_stats()
 
     @classmethod
@@ -125,12 +123,12 @@ class Person:
         self.base_dex += 1
         self.base_int += 1
         if self.profession.lower() == 'warrior':
-            self.base_str += 3
+            self.base_str += 2
             self.base_int -= 1
         elif self.profession.lower() == 'archer':
             self.base_dex += 2
         elif self.profession.lower() == 'mage':
-            self.base_int += 3
+            self.base_int += 2
             self.base_str -= 1
 
         elif self.profession.lower() == 'thief':
@@ -142,20 +140,21 @@ class Person:
         elif self.profession.lower() == 'bard':
             self.base_str += 1
             self.base_int += 1
+        self.calculate_stats()
 
     def calculate_stats(self):
         self.str = self.base_str
         self.dex = self.base_dex
         self.int = self.base_int
-        self.max_hp = self.base_max_hp + (self.str * 5) + (self.level * 5)
+        self.max_hp = self.base_max_hp + (self.str * 5 // 2) + (self.level * 5)
+        self.hp = self.max_hp
         self.defense = self.base_defense
         self.att_dmg_min = self.base_att_dmg_min
         self.att_dmg_max = self.base_att_dmg_max
         self.crit_chance = self.base_crit_chance
-        self.crit_muliplier = self.base_crit_muliplier
+        self.crit_muliplier = self.base_crit_muliplier + self.dex
 
-        self.damage = random.randint(self.att_dmg_min, self.att_dmg_max) \
-                      + int((self.dex + self.str) // 2)
+        self.damage = random.randint(self.att_dmg_min, self.att_dmg_max)
         self.calculate_stats_with_gear()
 
     def display(self):
@@ -182,7 +181,7 @@ class Person:
             f'{dmg:<13}'
 
     def show_stats(self):
-        print(f'\n{self.name},the {self.profession}\n'
+        return (f'\n{self.name},the {self.profession}\n'
               f'Level:\t{self.level:>4}  XP: {self.xp:>6}/{self.next_level}\n'
               f'HP:\t   {self.hp}/{self.max_hp:<4}\n'
               f'Str:\t   {self.str:<3}Damage: {self.damage:>6}\n'
@@ -238,7 +237,7 @@ class Person:
         dmg_multi = amount / (amount + self.defense)
         actual_dmg = round(amount * dmg_multi)
         self.hp -= actual_dmg
-        print(f'{self.name} took {actual_dmg} damage out of {amount} received.')
+        # print(f'{self.name} took {actual_dmg} damage out of {amount} received.')
         return actual_dmg
 
     def heal(self, amount) -> int:
@@ -365,7 +364,7 @@ class Person:
         dmg = self.damage
         if random.randrange(100) < self.crit_chance:
             dmg = (dmg * self.crit_muliplier) // 100
-            #print(f'{self.name} lands a critical strike dealing {dmg} damage!')
+            # print(f'{self.name} lands a critical strike dealing {dmg} damage!')
         return dmg
 
     #  TODO: refactor combat functions to Combat.py
@@ -392,7 +391,6 @@ class Person:
             choice = 0
         return target_party.members[choice]
 
-
     def attack_target(self, target_party, mode='basic attack'):
         """
         chooses deal_dmg func, based on mode
@@ -408,7 +406,6 @@ class Person:
             if mode == 'basic attack':
                 dmg_enemy_received = self.deal_dmg(target)
 
-
     def choose_battle_action(self, enemy_party):
         """
         ENDPOINT for battle
@@ -419,7 +416,6 @@ class Person:
         possible_actions = ['basic attack', 'main weapon attack']
         action = 'basic attack'
         self.attack_target(enemy_party, mode=action)
-
 
     def battle_turn(self, enemy_party):
         action = self.choose_battle_action(enemy_party)
@@ -442,8 +438,12 @@ class Person:
 
 if __name__ == '__main__':
     p = Person.generate_random()
-    p.stat_growth()
     print(p.show_stats())
+    print('\ncombat: ')
+    print(p.show_combat_stats())
+    p.take_dmg(20)
+    print(p.show_combat_stats())
     p.add_xp(22)
     print(p.show_stats())
-
+    print(p.show_combat_stats())
+    print(p.chest.show_stats())
