@@ -104,9 +104,13 @@ class Weapon(Equipment):
                    max_hp, defense, att_dmg_min, att_dmg_max, damage,
                    crit_chance, crit_multiplier)
 
-    def calc_weapon_dmg(self):
-        damage_output = random.randint(self.att_dmg_min, self.att_dmg_max)
-        return damage_output
+    # def calc_weapon_dmg(self):
+    #     damage_output = random.randint(self.att_dmg_min, self.att_dmg_max)
+    #     return damage_output
+
+    def show_stats(self):
+        return f'{self.type}: {self._equipable_slot.title()}\n' \
+            f'Damage: {self.att_dmg_min:>3}/{self.att_dmg_max:<3}'
 
 
 class Armor(Equipment):

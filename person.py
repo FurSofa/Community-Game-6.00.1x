@@ -32,7 +32,7 @@ class Person:
         self.base_max_hp = 20 + (self.base_str * 5) + (self.level * 5)
         self.base_defense = 1
         self.base_att_dmg_min = 1
-        self.base_att_dmg_max = 4
+        self.base_att_dmg_max = 3
         self.base_crit_chance = 5
         self.base_crit_muliplier = 120
 
@@ -57,13 +57,13 @@ class Person:
         self.money = money
 
         # weapons
-        self.main_hand = Weapon.generate()
+        self.main_hand = Weapon.generate(att_dmg_min=1,att_dmg_max=3)
         self.off_hand = None
 
         # armor
         self.head = None
-        self.chest = Armor.generate()
-        self.legs = None
+        self.chest = Armor.generate(etype='Armor', equipable_slot='chest',defense=2)
+        self.legs = Armor.generate(etype='Armor', equipable_slot='legs')
         self.feet = None
 
         # accessories
@@ -447,3 +447,6 @@ if __name__ == '__main__':
     print(p.show_stats())
     print(p.show_combat_stats())
     print(p.chest.show_stats())
+    print(p.legs.show_stats())
+    print(p.main_hand.show_stats())
+
