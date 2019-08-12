@@ -108,8 +108,8 @@ class Party:
         :param member: Person or Hero class object
         :return:
         """
-        if self.has_hero():
-            print(f'{member.name}, the {member.profession} joins the party!')
+        print(f'{member.name}, the {member.profession} joins the party!')
+        member.party = self
         self.members.append(member)
         if member.hero:
             self.hero = member
