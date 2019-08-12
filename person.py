@@ -150,8 +150,6 @@ class Person:
         self.att_dmg_max = self.base_att_dmg_max
         self.crit_chance = self.base_crit_chance
         self.crit_muliplier = self.base_crit_muliplier + self.dex
-        self.damage = random.randint(self.att_dmg_min, self.att_dmg_max)
-
         self.calculate_stats_with_gear()
 
     def display(self):
@@ -173,9 +171,7 @@ class Person:
         name = f'{self.name}, the {self.profession}'
         hp = f'Hp: {self.hp:>2}/{self.max_hp:<2}'
         dmg = f'Dmg: {self.att_dmg_min:>2}/{self.att_dmg_max:<2}'
-        return f'- {name:^23} ' \
-            f'{hp:<8} ' \
-            f'{dmg:<13}'
+        return f'{name}'
 
     def show_stats(self):
         return (f'\n{self.name},the {self.profession}\n'
@@ -193,21 +189,21 @@ class Person:
             f'{hp:<8} ' \
             f'{dmg:<13}'
 
-    def show_stats_old(self):
-        """
-        Prints out Stats for the person
-        """
-        relevant_stats = {
-            '\nName': self.name,
-            'Max HP': self.max_hp,
-            'HP': self.hp,
-            'Attack Damage': self.damage,
-            'Defense': self.defense,
-            'Crit Chance %': self.crit_chance,
-            'Crit Damage %': self.crit_muliplier
-        }
-        for k, v in relevant_stats.items():
-            print(k, ': ', v)
+    # def show_stats_old(self):
+    #     """
+    #     Prints out Stats for the person
+    #     """
+    #     relevant_stats = {
+    #         '\nName': self.name,
+    #         'Max HP': self.max_hp,
+    #         'HP': self.hp,
+    #         'Attack Damage': self.damage,
+    #         'Defense': self.defense,
+    #         'Crit Chance %': self.crit_chance,
+    #         'Crit Damage %': self.crit_muliplier
+    #     }
+    #     for k, v in relevant_stats.items():
+    #         print(k, ': ', v)
 
     def add_xp(self, xp):
         self.xp += xp
@@ -234,7 +230,6 @@ class Person:
         dmg_multi = amount / (amount + self.defense)
         actual_dmg = round(amount * dmg_multi)
         self.hp -= actual_dmg
-        # print(f'{self.name} took {actual_dmg} damage out of {amount} received.')
         return actual_dmg
 
     def heal(self, amount) -> int:
@@ -358,10 +353,9 @@ class Person:
         determines hit is critical
         :return: dmg int
         """
-        dmg = self.damage
+        dmg = random.randint(self.att_dmg_min, self.att_dmg_max)
         if random.randrange(100) < self.crit_chance:
             dmg = (dmg * self.crit_muliplier) // 100
-            # print(f'{self.name} lands a critical strike dealing {dmg} damage!')
         return dmg
 
     #  TODO: refactor combat functions to Combat.py
