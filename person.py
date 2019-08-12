@@ -158,6 +158,9 @@ class Person:
                       + int((self.dex + self.str) // 2)
         self.calculate_stats_with_gear()
 
+    def display(self):
+        return self.name + ' - ' + self.profession
+
     def __repr__(self):
         max_left = max(len(k) for k in self.__dict__.keys()) + 10
         return '\n'.join(
@@ -338,6 +341,7 @@ class Person:
                     slot_to_change = 'off_hand'
             elif new_gear.gear_type == 'shield':
                 slot_to_change = 'off_hand'
+            # TODO: add elifs for all equipment slots
             elif new_gear.gear_type == 'armor':
                 slot_to_change = 'armor'
 
@@ -373,7 +377,7 @@ class Person:
         """
         dmg_dealt = self.calculate_dmg()
         dmg_enemy_received = target.take_dmg(dmg_dealt)
-        print(self, 'deals', dmg_enemy_received, 'to', target)
+        # print(self, 'deals', dmg_enemy_received, 'to', target)
         return dmg_enemy_received
 
     def choose_target(self, target_party):
@@ -388,7 +392,7 @@ class Person:
             choice = 0
         return target_party.members[choice]
 
-    #  TODO: maybe split up into smaller parts
+
     def attack_target(self, target_party, mode='basic attack'):
         """
         chooses deal_dmg func, based on mode
@@ -421,9 +425,28 @@ class Person:
         self.attack_target(enemy_party, mode=action)
 
 
+    def battle_turn(self, enemy_party):
+        action = self.choose_battle_action(enemy_party)
+        if action == 'basic attack':
+            target = self.choose_target(enemy_party)
+            print('target:', target.display())
+            # TODO: refactor to input chosen target, not party
+            # self.attack_target(target, mode=action) # not needed untill we have more options to do dmg
+            dmg_enemy_received = self.deal_dmg(target)
+            print(self, 'deals', dmg_enemy_received, 'to', target.display())
+            print(target.show_combat_stats())
+        elif action == 'Show Hero Stats':
+            print(self.show_combat_stats())
+            self.battle_turn(enemy_party)
+        elif action == 'change gear':
+            self.change_gear()
+            self.choose_battle_action(enemy_party)
+
+
 if __name__ == '__main__':
     p = Person.generate_random()
     p.stat_growth()
     print(p.show_stats())
     p.add_xp(22)
     print(p.show_stats())
+
