@@ -32,7 +32,7 @@ class Battle:
                       f'{hero_hp:<8} '
                       f'{hero_dmg:<13} ', end='\t')
             else:
-                print(f"{' ':<29}", end=" | ")
+                print(f"{' ':<46}", end="\t")
             if e:
                 enemy_name = f'{e[0]}, the {e[1]}'
                 enemy_hp = f'Hp: {e[2]:>2}/{e[3]:<2}'

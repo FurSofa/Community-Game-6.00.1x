@@ -128,7 +128,7 @@ class Party:
         entry point
         lets player choose where to put new gear and starts the appropriate methods
         :param new_gear: new item to equip
-        :return: -
+        :return: -quality='Common'
         """
         #  TODO: display new and old stats to compare (for item type)
         print('You found new equipment!')

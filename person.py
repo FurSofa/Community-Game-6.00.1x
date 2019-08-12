@@ -62,7 +62,7 @@ class Person:
 
         # armor
         self.head = None
-        self.chest = Armor.generate(etype='Armor', equipable_slot='chest',defense=2)
+        self.chest = Armor.generate(etype='Armor', equipable_slot='chest', defense=2)
         self.legs = Armor.generate(etype='Armor', equipable_slot='legs')
         self.feet = None
 
@@ -109,9 +109,9 @@ class Person:
         return self.hp > 0
 
     def test_equip(self):
-        self.main_hand = Equipable_Items.create_random_equipable_item(1, 1)
-        self.off_hand = Equipable_Items.create_random_equipable_item(1, 1)
-        self.head = Equipable_Items.create_random_equipable_item(1, 2)
+        self.main_hand = Weapon.generate_random()
+        self.chest = Armor.generate_random()
+        self.legs = Armor.generate_random()
 
     def hero_stat_buff(self):
         self.base_crit_chance = 5
@@ -153,7 +153,6 @@ class Person:
         self.crit_chance = self.base_crit_chance
         self.crit_muliplier = self.base_crit_muliplier + self.dex
 
-        self.damage = random.randint(self.att_dmg_min, self.att_dmg_max)
         self.calculate_stats_with_gear()
 
     def display(self):
@@ -437,15 +436,17 @@ class Person:
 
 if __name__ == '__main__':
     p = Person.generate_random()
-    print(p.show_stats())
-    print('\ncombat: ')
-    print(p.show_combat_stats())
-    p.take_dmg(20)
-    print(p.show_combat_stats())
-    p.add_xp(22)
-    print(p.show_stats())
-    print(p.show_combat_stats())
     print(p.main_hand.show_stats())
     print(p.chest.show_stats())
-    print(p.legs.show_stats())
+    print(p.legs.show_stats(), end='\n')
+    print('')
+    p.test_equip()
+    print(p.main_hand.show_stats())
+    print(p.chest.show_stats())
+    print(p.legs.show_stats(), end='\n')
+    print('')
+    p.test_equip()
+    print(p.main_hand.show_stats())
+    print(p.chest.show_stats())
+    print(p.legs.show_stats(), end='\n')
 

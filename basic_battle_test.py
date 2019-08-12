@@ -29,6 +29,8 @@ p1.add_member(Person.generate_random())
 p2 = Party.generate()
 p2.add_member(Person.generate('Kefka', 'Drama Queen'))
 print_combat_status(p1, p2)
+
+
 while p1.has_units_left:
 
     alternating_turn_battle(p1, p2)

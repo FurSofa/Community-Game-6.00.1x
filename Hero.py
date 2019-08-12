@@ -45,8 +45,6 @@ class Hero(person.Person):
         #  inventory
         action = combat_select_from_list(possible_actions)
 
-
-
         if action.lower() == 'change gear':
             self.change_gear()
             self.choose_battle_action(enemy_party)
@@ -59,14 +57,14 @@ class Hero(person.Person):
         return action
 
 
-
-
 # Testing Code!
 if __name__ == '__main__':
-
     p = person.Person.generate('norbnorb', 'Mage')
-    p.profession_stat_augment()
+    p.stat_growth()
     print(p)
     w = Hero.generate('norbnorb', 'Warrior')
     print(w)
     print(w.att_dmg_min)
+    print(w.att_dmg_max)
+
+
