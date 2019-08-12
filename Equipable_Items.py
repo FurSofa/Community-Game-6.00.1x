@@ -29,16 +29,16 @@ class Equipment:
         self.type = etype
         self._equipable_slot = equipable_slot
 
-        self.str = strength
-        self.dex = dexterity
-        self.int = intelligence
-        self.max_hp = max_hp
-        self.defense = defense
-        self.att_dmg_min = att_dmg_min
-        self.att_dmg_max = att_dmg_max
-        self.damage = damage
-        self.crit_chance = crit_chance
-        self.crit_muliplier = crit_multiplier
+        self.str = round(strength * self.quality_val)
+        self.dex = round(dexterity * self.quality_val)
+        self.int = round(intelligence * self.quality_val)
+        self.max_hp = round(max_hp * self.quality_val)
+        self.defense = round(defense * self.quality_val)
+        self.att_dmg_min = round(att_dmg_min * self.quality_val)
+        self.att_dmg_max = round(att_dmg_max * self.quality_val)
+        self.damage = round(damage * self.quality_val)
+        self.crit_chance = round(crit_chance * self.quality_val)
+        self.crit_muliplier = round(crit_multiplier * self.quality_val)
 
         self._max_left = max(len(k) for k in self.__dict__.keys()) + 10
 
@@ -109,7 +109,7 @@ class Weapon(Equipment):
     #     return damage_output
 
     def show_stats(self):
-        return f'{self.type}: {self._equipable_slot.title()}\n' \
+        return f'{self.quality.title()} {self.type}: {self._equipable_slot.title()}\n' \
             f'Damage: {self.att_dmg_min:>3}/{self.att_dmg_max:<3}'
 
 
@@ -136,7 +136,7 @@ class Armor(Equipment):
                    crit_chance, crit_multiplier)
 
     def show_stats(self):
-        return f'{self.type}: {self._equipable_slot.title()}\nDefense: {self.defense}'
+        return f'{self.quality.title()} {self.type}: {self._equipable_slot.title()}\nDefense: {self.defense}'
 
 # Code designed to generate item variation
 # def generate_quality():
