@@ -182,24 +182,21 @@ def whole_party_turn_battle(party_1, party_2):
         rounds += 1
         print('')
         print('Round:', rounds)
-        print('Party 1:', party_1.members_names)
-        print('Party 2:', party_2.members_names)
+
         if party_1.has_units_left:
             for member in party_1.members:
                 no_enemies_left = single_unit_turn(member, party_2)
                 if no_enemies_left:
                     break
-                input('just press enter')
         if party_2.has_units_left:
             for member in party_2.members:
                 no_enemies_left = single_unit_turn(member, party_1)
                 if no_enemies_left:
                     break
-                input('just press enter')
     if party_1.has_units_left:
-        print('Party 1 has won the battle!')
+        print('Your party has won the battle!')
     else:
-        print('Party 2 has won the battle!')
+        print('Enemy party has won the battle!')
     return party_1.has_units_left
 
     # TODO figure out how to justify each party output
