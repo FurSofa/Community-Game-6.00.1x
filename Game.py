@@ -131,5 +131,5 @@ class Game:
         self.game_over()
 
 
-new_game = Game()
-new_game.gameloop()
+# new_game = Game()
+# new_game.gameloop()

@@ -49,13 +49,17 @@ class Equipment:
         return cls(quality, quality_val)
 
     def __repr__(self):
-        # max_left = max(len(k) for k in self.__dict__.keys()) + 7
+        return self.type + ': ' + self._equipable_slot
+
+    def stats(self):
         return '\n'.join(
             [f"{k.title()}: {str(v).rjust(self._max_left - len(k), ' ')}"
              for k, v in self.__dict__.items()])
 
     def __str__(self):
-        # max_left = max(len(k) for k in self.__dict__.keys()) + 7
+        return self.type + ': ' + self._equipable_slot
+
+    def info(self):
         return '\n'.join(
             [f"{k.title()}: {str(v).rjust(self._max_left - len(k), ' ')}"
              for k, v in self.__dict__.items() if v and k[0] != '_'])
