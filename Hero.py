@@ -20,8 +20,8 @@ class Hero(person.Person):
         :param target_party: party instance
         :return: person instance
         """
-        print('Choose a target:')
-        return select_from_list(target_party.members)
+        print()
+        return combat_select_from_list(target_party.members, False, 'Choose a target:')
 
     def choose_battle_action(self, enemy_party):
         """
@@ -31,35 +31,42 @@ class Hero(person.Person):
         :return: -
         """
         #  TODO: find a place to store possible actions
-        possible_actions = ['basic attack', ]
-        if self.main_hand:
-            possible_actions.append('main weapon attack')
-        if self.off_hand:
-            if self.off_hand.gear_type == 'weapon':
-                possible_actions.append('off hand weapon attack')
+        possible_actions = ['Basic Attack', 'Heal', 'Show Hero Stats', ]
+        # if self.main_hand:
+        #     possible_actions.append('main weapon attack')
+        # if self.off_hand:
+        #     if self.off_hand.gear_type == 'weapon':
+        #         possible_actions.append('off hand weapon attack')
         # if len(self.party.equipment) > 0:
         #     possible_actions.append('change gear')
         #  basic attack
         #  main weapon attack
         #  spell
         #  inventory
-        possible_actions.append('Show Hero Stats')
         action = combat_select_from_list(possible_actions)
-        if action == 'change gear':
+
+
+
+        if action.lower() == 'change gear':
             self.change_gear()
             self.choose_battle_action(enemy_party)
-        elif action == 'Show Hero Stats':
+        elif action.lower() == 'Show Hero Stats':
             print(self.show_combat_stats())
             self.choose_battle_action(enemy_party)
+        elif action.lower() == 'heal':
+            self.heal(10)
         # self.attack_target(enemy_party, mode=action)
         return action
 
+
+
+
 # Testing Code!
-# p = person.Person.generate('norbnorb', 'Mage')
-# p.profession_stat_augment()
-# print(p)
-#
-# w = Hero.generate('norbnorb', 'Warrior')
-# w.profession_stat_augment()
-# print(w)
-# print(w.att_dmg_min)
+if __name__ == '__main__':
+
+    p = person.Person.generate('norbnorb', 'Mage')
+    p.profession_stat_augment()
+    print(p)
+    w = Hero.generate('norbnorb', 'Warrior')
+    print(w)
+    print(w.att_dmg_min)

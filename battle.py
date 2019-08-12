@@ -167,37 +167,12 @@ def print_combat_status(party_1, party_2):
 
 
 def single_unit_turn(unit, enemy_party):
-    #print('\n', unit.name, 'attachs.')
     unit.battle_turn(enemy_party)
     enemy_party.remove_dead()
     return not enemy_party.has_units_left
 
 
-def whole_party_turn_battle(party_1, party_2):
-    rounds = 0
-    print('A Battle has started!')
-    while party_1.has_units_left and party_2.has_units_left:
-        rounds += 1
-        print('')
-        print('\nRound:', rounds)
-
-        if party_1.has_units_left:
-            for member in party_1.members:
-                no_enemies_left = single_unit_turn(member, party_2)
-                if no_enemies_left:
-                    break
-        if party_2.has_units_left:
-            for member in party_2.members:
-                no_enemies_left = single_unit_turn(member, party_1)
-                if no_enemies_left:
-                    break
-    if party_1.has_units_left:
-        print('Your party has won the battle!')
-    else:
-        print('Enemy party has won the battle!')
-    return party_1.has_units_left
-
-    # TODO figure out how to justify each party output
+# TODO figure out how to justify each party output
 
 
 def alternating_turn_battle(party_1, party_2):

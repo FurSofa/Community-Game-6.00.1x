@@ -387,7 +387,7 @@ class Person:
         :return: person from party
         """
         if len(target_party.members) > 1:
-            choice = random.randrange(len(target_party.members) - 1)
+            choice = random.randrange(len(target_party.members))
         else:
             choice = 0
         return target_party.members[choice]
@@ -401,17 +401,13 @@ class Person:
         :param mode: str
         :return:
         """
-        physical_attack_modes = ['basic attack', 'main weapon attack', 'off hand weapon attack']
+        physical_attack_modes = ['basic attack', ]
         if mode in physical_attack_modes:
             target = self.choose_target(target_party)
-            #print('target:', target)
+
             if mode == 'basic attack':
                 dmg_enemy_received = self.deal_dmg(target)
-            elif mode == 'main weapon attack':
-                dmg_enemy_received = self.main_hand.deal_dmg(target)
-            elif mode == 'off hand weapon attack':
-                dmg_enemy_received = self.off_hand.deal_dmg(target)
-            #print(target.show_combat_stats())
+
 
     def choose_battle_action(self, enemy_party):
         """
@@ -429,17 +425,18 @@ class Person:
         action = self.choose_battle_action(enemy_party)
         if action == 'basic attack':
             target = self.choose_target(enemy_party)
-            print('target:', target.display())
             # TODO: refactor to input chosen target, not party
             # self.attack_target(target, mode=action) # not needed untill we have more options to do dmg
             dmg_enemy_received = self.deal_dmg(target)
-            print(self, 'deals', dmg_enemy_received, 'to', target.display())
-            print(target.show_combat_stats())
-        elif action == 'Show Hero Stats':
+            print(self.name, 'deals', dmg_enemy_received, 'to', target.name)
+        elif action == 'show hero stats':
             print(self.show_combat_stats())
             self.battle_turn(enemy_party)
         elif action == 'change gear':
             self.change_gear()
+            self.choose_battle_action(enemy_party)
+        elif action == 'heal':
+            self.heal(10)
             self.choose_battle_action(enemy_party)
 
 

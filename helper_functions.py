@@ -29,7 +29,7 @@ def select_from_list(iterable, index_pos=False, q='Whats your choice?'):
     return iterable[choice_index]
 
 
-def combat_select_from_list(iterable, index_pos=False, q='Who do you want to attack?'):
+def combat_select_from_list(iterable, index_pos=False, q='\nWho do you want to attack?'):
     """
     Takes an iterable
     prints a numerated list -- HORIZONTALLY --
@@ -39,6 +39,11 @@ def combat_select_from_list(iterable, index_pos=False, q='Who do you want to att
     :param question, iterable, index_pos:
     :return chosen item or index position:
     """
+    if len(iterable) < 2:
+        choice_index = 0
+        if index_pos:
+            return choice_index
+        return iterable[choice_index]
     print(q)
     for index, item in enumerate(iterable):
         display_number = str(index + 1)
