@@ -211,7 +211,10 @@ class Person:
             self.level_up()
 
     def level_up(self):
-
+        self.level += 1
+        self.xp -= self.next_level
+        self.next_level = round(4 * (self.level ** 3) / 5) + 20
+        print(f'{self.name} is now {self.level}!')
 
     # stats
 
