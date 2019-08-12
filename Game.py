@@ -26,7 +26,7 @@ class Game:
         """
          Create new random character the same level as the party leader
          """
-        return Person.generate_random(1)
+        return Person.generate_random(randint(1, self.party.hero.level))
 
     def create_hero(self):
 
@@ -78,7 +78,7 @@ class Game:
             x = 0
             for x in range(randrange(len(self.party.members) - 1, len(self.party.members) + 1)):
                 enemy_party.add_member(
-                    Person.generate_random(randint(self.party.hero.level - 1, (self.party.hero.level + 1))))
+                    Person.generate_random(randint(self.party.hero.level - 1, self.party.hero.level)))
                 x += 1
             alternating_turn_battle(self.party, enemy_party)
         elif event == 2:
@@ -87,7 +87,7 @@ class Game:
             x = 0
             for x in range(randrange(len(self.party.members) - 1, len(self.party.members) + 1)):
                 enemy_party.add_member(
-                    Person.generate_random(randint(self.party.hero.level + 1, self.party.hero.level + 1)))
+                    Person.generate_random(randint(self.party.hero.level - 1, self.party.hero.level)))
                 x += 1
             alternating_turn_battle(self.party, enemy_party)
         elif event == 3:
