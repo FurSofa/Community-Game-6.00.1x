@@ -193,7 +193,7 @@ class Person:
         name = f'{self.name}, the {self.profession}'
         hp = f'Hp: {self.hp:>2}/{self.max_hp:<2}'
         dmg = f'Dmg: {self.att_dmg_min:>2}/{self.att_dmg_max:<2}'
-        return f'- {name:^23} ' \
+        return f'{name:^23} ' \
             f'{hp:<8} ' \
             f'{dmg:<13}'
 
@@ -365,7 +365,7 @@ class Person:
         dmg = self.damage
         if random.randrange(100) < self.crit_chance:
             dmg = (dmg * self.crit_muliplier) // 100
-            # print(f'{self.name} lands a critical strike dealing {dmg} damage!')
+            #print(f'{self.name} lands a critical strike dealing {dmg} damage!')
         return dmg
 
     #  TODO: refactor combat functions to Combat.py
@@ -404,14 +404,14 @@ class Person:
         physical_attack_modes = ['basic attack', 'main weapon attack', 'off hand weapon attack']
         if mode in physical_attack_modes:
             target = self.choose_target(target_party)
-            print('target:', target)
+            #print('target:', target)
             if mode == 'basic attack':
                 dmg_enemy_received = self.deal_dmg(target)
             elif mode == 'main weapon attack':
                 dmg_enemy_received = self.main_hand.deal_dmg(target)
             elif mode == 'off hand weapon attack':
                 dmg_enemy_received = self.off_hand.deal_dmg(target)
-            print(target.show_combat_stats())
+            #print(target.show_combat_stats())
 
     def choose_battle_action(self, enemy_party):
         """
