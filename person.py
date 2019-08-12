@@ -142,6 +142,9 @@ class Person:
             self.int += random.randint(0, 3)
             self.xp_to_lvl_up -= (self.int * 4 // 2)
 
+    def display(self):
+        return self.name + ' - ' + self.profession
+
     def __repr__(self):
         max_left = max(len(k) for k in self.__dict__.keys()) + 10
         return '\n'.join(
@@ -308,6 +311,7 @@ class Person:
                     slot_to_change = 'off_hand'
             elif new_gear.gear_type == 'shield':
                 slot_to_change = 'off_hand'
+            # TODO: add elifs for all equipment slots
             elif new_gear.gear_type == 'armor':
                 slot_to_change = 'armor'
 
@@ -343,7 +347,7 @@ class Person:
         """
         dmg_dealt = self.calculate_dmg()
         dmg_enemy_received = target.take_dmg(dmg_dealt)
-        print(self, 'deals', dmg_enemy_received, 'to', target)
+        # print(self, 'deals', dmg_enemy_received, 'to', target)
         return dmg_enemy_received
 
     def choose_target(self, target_party):
@@ -358,7 +362,6 @@ class Person:
             choice = 0
         return target_party.members[choice]
 
-    #  TODO: maybe split up into smaller parts
     def attack_target(self, target, mode='basic attack'):
         """
         chooses deal_dmg func, based on mode
@@ -393,10 +396,11 @@ class Person:
         action = self.choose_battle_action(enemy_party)
         if action == 'basic attack':
             target = self.choose_target(enemy_party)
-            print('target:', target)
+            print('target:', target.display())
             # TODO: refactor to input chosen target, not party
             # self.attack_target(target, mode=action) # not needed untill we have more options to do dmg
             dmg_enemy_received = self.deal_dmg(target)
+            print(self, 'deals', dmg_enemy_received, 'to', target.display())
             print(target.show_combat_stats())
         elif action == 'Show Hero Stats':
             print(self.show_combat_stats())
@@ -404,3 +408,4 @@ class Person:
         elif action == 'change gear':
             self.change_gear()
             self.choose_battle_action(enemy_party)
+
