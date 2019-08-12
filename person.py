@@ -52,7 +52,7 @@ class Person:
 
         self.max_hp = self.base_max_hp
         self.hp = self.max_hp
-        self.profession_stat_augment()
+        self.stat_growth()
 
         # Inventory Section
         self.inventory = []
@@ -118,24 +118,22 @@ class Person:
         self.att_dmg_min = self.base_att_dmg_min + 1
         self.att_dmg_max = self.base_att_dmg_max + 2
 
-    def profession_stat_augment(self):
-        if self.profession == 'Warrior':
-            self.str += random.randint(0, 3)
-            self.dex += random.randint(0, 1)
-            self.int -= random.randint(0, 3)
-            self.next_level -= (self.int * 2 // 4)
-
-        elif self.profession == 'Archer':
-            self.str += random.randint(0, 1)
-            self.dex += random.randint(0, 3)
-            self.int += random.randint(0, 1)
-            self.next_level -= (self.int * 3 // 3)
-
-        elif self.profession == 'Mage':
-            self.str -= random.randint(0, 3)
-            self.dex += random.randint(0, 1)
-            self.int += random.randint(0, 3)
-            self.next_level -= (self.int * 4 // 2)
+    def stat_growth(self):
+        self.base_str += 1
+        self.base_dex += 1
+        self.base_int += 1
+        if self.profession.lower() == 'warrior':
+            self.base_str += 2
+        elif self.profession.lower() == 'archer':
+            self.base_dex += 2
+        elif self.profession.lower() == 'mage':
+            self.base_int += 2
+        elif self.profession.lower() == 'farmer':
+            self.base_int += 1
+            self.base_dex += 1
+        elif self.profession.lower() == 'blacksmith':
+            self.base_str += 1
+            self.base_dex += 1
 
     def calculate_stats(self):
         self.str = self.base_str
@@ -211,6 +209,7 @@ class Person:
             self.level_up()
 
     def level_up(self):
+
         self.level += 1
         self.xp -= self.next_level
         self.next_level = round(4 * (self.level ** 3) / 5) + 20
@@ -414,7 +413,7 @@ class Person:
 
 
 p = Person.generate_random()
-p.profession_stat_augment()
+p.stat_growth()
 print(p.show_stats())
 p.add_xp(22)
 print(p.show_stats())
