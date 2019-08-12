@@ -1,7 +1,7 @@
 import random
 from helper_functions import select_from_list
 import random
-import Equipable_Items
+from Equipable_Items import *
 
 
 class Person:
@@ -29,7 +29,7 @@ class Person:
         self.base_str = 4
         self.base_dex = 4
         self.base_int = 4
-        self.base_max_hp = 20 + (self.str * 5) + (self.level * 5)
+        self.base_max_hp = 20 + (self.base_str * 5) + (self.level * 5)
         self.base_defense = 1
         self.base_att_dmg_min = 1
         self.base_att_dmg_max = 4
@@ -52,19 +52,19 @@ class Person:
 
         self.max_hp = self.base_max_hp
         self.hp = self.max_hp
-        self.stat_growth()
+
 
         # Inventory Section
         self.inventory = []
         self.money = money
 
         # weapons
-        self.main_hand = None
+        self.main_hand = Weapon.generate()
         self.off_hand = None
 
         # armor
         self.head = None
-        self.chest = None
+        self.chest = Armor.generate()
         self.legs = None
         self.feet = None
 
@@ -79,6 +79,10 @@ class Person:
                               self.feet,
                               self.ring,
                               self.necklace]
+
+        # Calculate stats and gear
+        self.stat_growth()
+        self.calculate_stats()
 
     @classmethod
     def generate(cls, name='Jeb', profession='Warrior', level=1):
