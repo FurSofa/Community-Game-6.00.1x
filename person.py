@@ -184,7 +184,7 @@ class Person:
         return (f'\n{self.name},the {self.profession}\n'
               f'Level:\t{self.level:>4}  XP: {self.xp:>6}/{self.next_level}\n'
               f'HP:\t   {self.hp}/{self.max_hp:<4}\n'
-              f'Str:\t   {self.str:<3}Damage: {self.damage:>6}\n'
+              f'Str:\t   {self.str:<3}Damage: {self.att_dmg_min:>3}/{self.att_dmg_max:<3}\n'
               f'Dex:\t   {self.dex:<3}Crit:  {self.crit_chance}%/{self.crit_muliplier}%\n'
               f'Int:\t   {self.int:<3}Defence: {self.defense:>5}\n')
 
