@@ -13,13 +13,15 @@ class Game:
         self.difficulty = select_from_list(['Easy', 'Medium', 'Hard'], q='Choose your difficulty: ')
         print(f'You selected: {self.difficulty}!')
 
-    def create_character(self, name='Jeb', profession='Astronaut', level=1):
+    @staticmethod
+    def create_character(name='Jeb', profession='Astronaut', level=1):
         """
          Create new character
          Allows selection of char and reroll of stats
          """
         return Hero.generate(name, profession, level)
 
+    @property
     def create_random_character(self):
         """
          Create new random character the same level as the party leader
@@ -42,7 +44,7 @@ class Game:
             print('Ah, the quiet type huh? I\'ll just call you Steve.')
             hero_name = 'Steve'
 
-        hero_profession = select_from_list(['Warrior', 'Archer', 'Mage'],
+        hero_profession = select_from_list(['Warrior', 'Archer', 'Mage', 'Blacksmith', 'Thief', 'Bard'],
                                            q=f'Now, {hero_name}, What is your profession?:\n')
         print(f'You look like a great {hero_profession}, {hero_name}. I should have guessed.')
         while True:
@@ -67,7 +69,7 @@ class Game:
             choice = combat_select_from_list(['Yes', 'No'], False,
                                              'The traveler offers to join your party, what do you say?').lower()
             if choice == 'yes':
-                self.party.add_member(self.create_random_character())
+                self.party.add_member(self.create_random_character)
             elif choice == 'no':
                 print('You bid the traveler farewell and continue on your way.\n')
         elif event == 1:
@@ -102,7 +104,7 @@ class Game:
 
         def adventure(self):
             print(f'You found another traveler You talk for a while and have a great time!')
-            self.party.add_member(self.create_random_character())
+            self.party.add_member(self.create_random_character)
             print('Time to get back to the task at hand!')
 
         def camp(self):

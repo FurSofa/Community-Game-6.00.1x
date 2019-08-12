@@ -26,10 +26,10 @@ class Person:
         self.worth_xp = 5
 
         # Base Stats Section!
-        self.base_str = 5 + random.randint(0, 2)
-        self.base_dex = 5 + random.randint(0, 2)
-        self.base_int = 5 + random.randint(0, 2)
-        self.base_max_hp = 20 + (self.base_str * 5) + (self.level * 5)
+        self.base_str = 4
+        self.base_dex = 4
+        self.base_int = 4
+        self.base_max_hp = 20 + (self.str * 5) + (self.level * 5)
         self.base_defense = 1
         self.base_att_dmg_min = 1
         self.base_att_dmg_max = 4
@@ -40,7 +40,7 @@ class Person:
         self.str = self.base_str
         self.dex = self.base_dex
         self.int = self.base_int
-        self.max_hp = self.base_max_hp
+        self.max_hp = self.base_max_hp + (self.str * 5) + (self.level * 5)
         self.defense = self.base_defense
         self.att_dmg_min = self.base_att_dmg_min
         self.att_dmg_max = self.base_att_dmg_max
@@ -112,11 +112,10 @@ class Person:
         self.head = Equipable_Items.create_random_equipable_item(1, 2)
 
     def hero_stat_buff(self):
-        self.att_dmg_max += (self.str // 3)
         self.crit_chance = 5 + round(self.base_dex // 3)
-        self.crit_muliplier += (self.dex * 10 // 3)
+        self.crit_muliplier += (self.base_dex * 10 // 3)
         self.att_dmg_min = self.base_att_dmg_min + 1
-        self.att_dmg_max = self.base_att_dmg_max + 2
+        self.att_dmg_max += (self.base_str // 3)
 
     def stat_growth(self):
         self.base_str += 1
@@ -145,7 +144,7 @@ class Person:
         self.str = self.base_str
         self.dex = self.base_dex
         self.int = self.base_int
-        self.max_hp = self.base_max_hp
+        self.max_hp = self.base_max_hp + (self.str * 5) + (self.level * 5)
         self.defense = self.base_defense
         self.att_dmg_min = self.base_att_dmg_min
         self.att_dmg_max = self.base_att_dmg_max
