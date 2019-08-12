@@ -133,7 +133,6 @@ def print_combat_status(party_1, party_2):
         else:
             return None
         return stat_list
-
     def member_stat_list_printer(h, e):
 
         if h:
@@ -163,7 +162,6 @@ def print_combat_status(party_1, party_2):
     print('=' * 19, end='')
     print('')
     print('=' * 100)
-
     for hero, enemy in zip_longest(party_1.members, party_2.members):
         member_stat_list_printer(member_stat_list_generator(hero), member_stat_list_generator(enemy))
 
