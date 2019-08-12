@@ -224,6 +224,8 @@ def alternating_turn_battle(party_1, party_2):
     if party_1.has_units_left:
         party_1.party_members_info()
         print('Party 1 has won the battle!')
+        for member in party_1.members:
+            member.add_xp(party_2.party_worth_xp())
         party_2.__del__()
         input('Congrats! Press Enter!')
     else:

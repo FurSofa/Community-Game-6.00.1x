@@ -95,6 +95,9 @@ class Party:
             self.dead_members.append(self.members.pop(i))
         return len(delete_index)
 
+    def party_worth_xp(self):
+        return len(self.dead_members) * 5
+
     def add_member(self, member):
         """
         adds a member to the party
