@@ -53,7 +53,6 @@ class Person:
         self.max_hp = self.base_max_hp
         self.hp = self.max_hp
 
-
         # Inventory Section
         self.inventory = []
         self.money = money
@@ -422,8 +421,9 @@ class Person:
         self.attack_target(enemy_party, mode=action)
 
 
-p = Person.generate_random()
-p.stat_growth()
-print(p.show_stats())
-p.add_xp(22)
-print(p.show_stats())
+if __name__ == '__main__':
+    p = Person.generate_random()
+    p.stat_growth()
+    print(p.show_stats())
+    p.add_xp(22)
+    print(p.show_stats())

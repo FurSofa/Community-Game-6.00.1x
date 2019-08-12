@@ -23,12 +23,10 @@ from Equipable_Items import *
 # battle.alternating_turn_battle(party1, party2)
 
 
-
 p1 = Party.generate()
 p1.add_member(Person.generate('Fur', 'Jr.Coder'))
-p1.add_member(Person.generate_random(1))
-p1.add_member(Person.generate_random(1))
 p2 = Party.generate()
 p2.add_member(Person.generate('Kefka', 'Drama Queen'))
-p2.add_member(Person.generate_random(1))
 print_combat_status(p1, p2)
+
+alternating_turn_battle(p1, p2)
