@@ -123,17 +123,23 @@ class Person:
         self.base_dex += 1
         self.base_int += 1
         if self.profession.lower() == 'warrior':
-            self.base_str += 2
+            self.base_str += 3
+            self.base_int -= 1
         elif self.profession.lower() == 'archer':
             self.base_dex += 2
         elif self.profession.lower() == 'mage':
-            self.base_int += 2
-        elif self.profession.lower() == 'farmer':
+            self.base_int += 3
+            self.base_str -= 1
+
+        elif self.profession.lower() == 'thief':
             self.base_int += 1
             self.base_dex += 1
         elif self.profession.lower() == 'blacksmith':
             self.base_str += 1
             self.base_dex += 1
+        elif self.profession.lower() == 'bard':
+            self.base_str += 1
+            self.base_int += 1
 
     def calculate_stats(self):
         self.str = self.base_str
