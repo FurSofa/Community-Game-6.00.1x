@@ -220,6 +220,7 @@ class Person:
         self.xp -= self.next_level
         self.next_level = round(4 * (self.level ** 3) / 5) + 20
         print(f'{self.name} is now {self.level}!')
+        self.stat_growth()
 
     # stats
 
