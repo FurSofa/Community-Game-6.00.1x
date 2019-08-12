@@ -79,6 +79,7 @@ class Person:
                               self.necklace]
 
         # Calculate stats and gear
+        self.stat_growth()
         self.calculate_stats()
 
     @classmethod
@@ -113,10 +114,8 @@ class Person:
         self.head = Equipable_Items.create_random_equipable_item(1, 2)
 
     def hero_stat_buff(self):
-        self.crit_chance = 5 + round(self.base_dex // 3)
-        self.crit_muliplier += (self.base_dex * 10 // 3)
-        self.att_dmg_min = self.base_att_dmg_min + 1
-        self.att_dmg_max += (self.base_str // 3)
+        self.base_crit_chance = 5
+        self.base_crit_muliplier = 130
 
     def stat_growth(self):
         self.base_str += 1

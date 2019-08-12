@@ -30,26 +30,27 @@ class Game:
 
     def create_hero(self):
 
-        def reroll_stats(hero_name, hero_profession):
+        def roll_hero():
+            hero_name = input('What is your name, hero?:\n').title()
+            if len(hero_name) > 0:
+                print(f'{hero_name}, ah yes. That name carries great respect!')
+
+            else:
+                print('Ah, the quiet type huh? I\'ll just call you Steve.')
+                hero_name = 'Steve'
+
+            hero_profession = select_from_list(['Warrior', 'Archer', 'Mage', 'Blacksmith', 'Thief', 'Bard'],
+                                               q=f'Now, {hero_name}, What is your profession?:\n')
+            print(f'You look like a great {hero_profession}, {hero_name}. I should have guessed.')
             our_hero = self.create_character(hero_name, hero_profession)
             our_hero.hero_stat_buff()
-            our_hero.show_stats()
+            print(our_hero.show_stats())
             return our_hero
 
-        hero_name = input('What is your name, hero?:\n').title()
-        if len(hero_name) > 0:
-            print(f'{hero_name}, ah yes. That name carries great respect!')
 
-        else:
-            print('Ah, the quiet type huh? I\'ll just call you Steve.')
-            hero_name = 'Steve'
-
-        hero_profession = select_from_list(['Warrior', 'Archer', 'Mage', 'Blacksmith', 'Thief', 'Bard'],
-                                           q=f'Now, {hero_name}, What is your profession?:\n')
-        print(f'You look like a great {hero_profession}, {hero_name}. I should have guessed.')
         while True:
-            our_hero = reroll_stats(hero_name, hero_profession)
-            keep_hero = input('Do you want to keep these stats? \n[Y]es or [R]eroll Hero\n').lower()
+            our_hero = roll_hero()
+            keep_hero = input('Do you want to keep this Hero? \n[Y]es or [R]eroll Hero\n').lower()
             if keep_hero == '':
                 our_hero.hero = True
 
