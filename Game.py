@@ -33,7 +33,7 @@ class Game:
         def roll_hero():
             hero_name = input('What is your name, hero?:\n').title()
             if len(hero_name) >10:
-                hero_name = input('Thats too long! (Max 10). What is your name, hero?:\n').title()
+                hero_name = input('That\'s too long! (Max 10). What is your name, hero?:\n').title()
             if len(hero_name) > 0:
                 print(f'{hero_name}, ah yes. That name carries great respect!')
 
