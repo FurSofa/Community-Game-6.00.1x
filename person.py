@@ -22,7 +22,7 @@ class Person:
 
         self.level = level
         self.xp = 0
-        self.xp_to_lvl_up = 20
+        self.next_level = 20
         self.worth_xp = 5
 
         # Base Stats Section!
@@ -123,19 +123,19 @@ class Person:
             self.str += random.randint(0, 3)
             self.dex += random.randint(0, 1)
             self.int -= random.randint(0, 3)
-            self.xp_to_lvl_up -= (self.int * 2 // 4)
+            self.next_level -= (self.int * 2 // 4)
 
         elif self.profession == 'Archer':
             self.str += random.randint(0, 1)
             self.dex += random.randint(0, 3)
             self.int += random.randint(0, 1)
-            self.xp_to_lvl_up -= (self.int * 3 // 3)
+            self.next_level -= (self.int * 3 // 3)
 
         elif self.profession == 'Mage':
             self.str -= random.randint(0, 3)
             self.dex += random.randint(0, 1)
             self.int += random.randint(0, 3)
-            self.xp_to_lvl_up -= (self.int * 4 // 2)
+            self.next_level -= (self.int * 4 // 2)
 
     def calculate_stats(self):
         self.str = self.base_str
@@ -174,7 +174,7 @@ class Person:
 
     def show_stats(self):
         print(f'\n{self.name},the {self.profession}\n'
-              f'Level:\t{self.level:>4}  XP: {self.xp:>6}/{self.xp_to_lvl_up}\n'
+              f'Level:\t{self.level:>4}  XP: {self.xp:>6}/{self.next_level}\n'
               f'HP:\t   {self.hp}/{self.max_hp:<4}\n'
               f'Str:\t   {self.str:<3}Damage: {self.damage:>6}\n'
               f'Dex:\t   {self.dex:<3}Crit:  {self.crit_chance}%/{self.crit_muliplier}%\n'
@@ -204,11 +204,14 @@ class Person:
         for k, v in relevant_stats.items():
             print(k, ': ', v)
 
-    def add_xp(self):
-        pass
+    def add_xp(self, xp):
+        self.xp += xp
+        print(f'{self.name} gained {xp} xp!')
+        if self.xp > self.next_level:
+            self.level_up()
 
     def level_up(self):
-        pass
+
 
     # stats
 
