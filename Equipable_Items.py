@@ -43,7 +43,7 @@ class Equipment:
         self._max_left = max(len(k) for k in self.__dict__.keys()) + 10
 
     @classmethod
-    def generate(cls, quality, quality_val=1, etype='Weapon', equipable_slot='main hand', value=0,
+    def generate(cls, quality='Common', quality_val=1, etype='Weapon', equipable_slot='main hand', value=0,
                  max_durability=10, strength=0, dexterity=0, intelligence=0,
                  max_hp=0, defense=0, att_dmg_min=0, att_dmg_max=0, damage=0,
                  crit_chance=0, crit_multiplier=0):
@@ -93,9 +93,9 @@ class Weapon(Equipment):
                                      crit_chance, crit_multiplier)
 
     @classmethod
-    def generate(cls, quality='common', quality_val=1, etype='Weapon', equipable_slot='main hand', value=0,
+    def generate(cls, quality='Common', quality_val=1, etype='Weapon', equipable_slot='main hand', value=0,
                  max_durability=10, strength=0, dexterity=0, intelligence=0,
-                 max_hp=0, defense=0, att_dmg_min=0, att_dmg_max=0, damage=0,
+                 max_hp=0, defense=0, att_dmg_min=1, att_dmg_max=2, damage=0,
                  crit_chance=0, crit_multiplier=0):
         quality = random.choices(sList, weights=sWeights, k=1)[0]
         quality_val = sValue.get(quality)
@@ -124,7 +124,7 @@ class Armor(Equipment):
                                     crit_chance, crit_multiplier)
 
     @classmethod
-    def generate(cls, quality='common', quality_val=1, etype='Armor', equipable_slot='chest', value=0,
+    def generate(cls, quality='Common', quality_val=1, etype='Armor', equipable_slot='chest', value=0,
                  max_durability=10, strength=0, dexterity=0, intelligence=0,
                  max_hp=0, defense=1, att_dmg_min=0, att_dmg_max=0, damage=0,
                  crit_chance=0, crit_multiplier=0):
