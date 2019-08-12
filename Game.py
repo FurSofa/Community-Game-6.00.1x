@@ -132,6 +132,6 @@ class Game:
 
         self.game_over()
 
-
-# new_game = Game()
-# new_game.gameloop()
+if __name__ == '__main__':
+    new_game = Game()
+    new_game.gameloop()

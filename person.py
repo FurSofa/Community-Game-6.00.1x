@@ -95,8 +95,8 @@ class Person:
         """
         level = level
         name = random.choice(['Lamar', 'Colin', 'Ali', 'Jackson', 'Minky',
-                              'Leo', 'Lilli', 'Lindsay', 'Tongo', 'Paku', ])
-        profession = random.choice(['Warrior', 'Archer', 'Mage', 'Farmer', 'Blacksmith'])
+                              'Leo', 'Phylis', 'Lindsay', 'Tongo', 'Paku', ])
+        profession = random.choice(['Warrior', 'Archer', 'Mage', 'Blacksmith', 'Thief', 'Bard'])
         if name == 'Minky':
             profession = 'Miffy Muffin'
         if name == 'Colin':
@@ -446,7 +446,7 @@ if __name__ == '__main__':
     p.add_xp(22)
     print(p.show_stats())
     print(p.show_combat_stats())
+    print(p.main_hand.show_stats())
     print(p.chest.show_stats())
     print(p.legs.show_stats())
-    print(p.main_hand.show_stats())
 
