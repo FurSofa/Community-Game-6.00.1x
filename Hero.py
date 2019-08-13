@@ -34,7 +34,7 @@ class Hero(Person):
         """
         #  TODO: find a place to store possible actions
         possible_actions = ['attack', 'Heal', 'Show Hero Stats', ]
-        action = select_from_list_horizontal(possible_actions)
+        action = select_from_list_horizontal(possible_actions, q='What do you want to do?')
         # if action.lower() == 'change gear':
         #     self.change_gear()
         #     self.choose_battle_action(enemy_party)
