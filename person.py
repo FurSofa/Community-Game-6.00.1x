@@ -388,7 +388,6 @@ class Person:
         """
 
         target = self.choose_target(target_party)
-        print(target)
         mode = self.choose_attack().lower()
         if mode == 'single attack':
             dmg_done = self.deal_dmg(target)
