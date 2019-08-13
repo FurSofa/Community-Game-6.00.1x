@@ -396,7 +396,7 @@ class Person:
             choice = 0
         return target_party.members[choice]
 
-    def attack_target(self, target_party, mode='basic attack'):
+    def attack_target(self, target_party, mode='single attack'):
         """
         chooses deal_dmg func, based on mode
         executes chosen deal_dmg
@@ -404,12 +404,13 @@ class Person:
         :param mode: str
         :return:
         """
-        physical_attack_modes = ['basic attack', ]
+        physical_attack_modes = ['single attack', ]
         if mode in physical_attack_modes:
             target = self.choose_target(target_party)
 
-            if mode == 'basic attack':
+            if mode == 'single attack':
                 dmg_enemy_received = self.deal_dmg(target)
+
 
     def choose_battle_action(self, enemy_party):
         """
@@ -418,13 +419,18 @@ class Person:
         :param enemy_party:
         :return: -
         """
-        possible_actions = ['basic attack', ]
-        action = 'basic attack'
-        self.attack_target(enemy_party, mode=action)
+        possible_actions = ['attack', ]
+        action = 'attack'
+        # self.attack_target(enemy_party, mode=action)
+        return action
+
+    def get_attack_options(self):
+        # TODO: make a list of options based on <???>
+        return ['single attack', 'multi attack', 'multi attack with primary target']
 
     def battle_turn(self, enemy_party):
         action = self.choose_battle_action(enemy_party)
-        if action == 'basic attack':
+        if action == 'attack':
             target = self.choose_target(enemy_party)
             # TODO: refactor to input chosen target, not party
             # self.attack_target(target, mode=action)  # not needed until we have more options to do dmg
@@ -436,10 +442,38 @@ class Person:
             self.battle_turn(enemy_party)
         elif action == 'change gear':
             self.change_gear()
-            self.choose_battle_action(enemy_party)
+            self.battle_turn(enemy_party)
         elif action == 'heal':
             self.heal(10)
-            self.choose_battle_action(enemy_party)
+
+
+    def deal_multi_dmg(self, target, target_num='all', splash_dmg=25, primary=True, rnd_target=True):
+        if target_num == 'all':
+            target_num = len(target.party.members)
+        members_list = target.party.members[:]
+        dmg_received = 0
+
+        if primary:
+            dmg_dealt = self.calculate_dmg()
+            dmg_received = target.take_dmg(dmg_dealt)
+            print(self.display(), 'deals', dmg_received, 'dmg to', target.display())
+            members_list.remove(target)
+            target_num -= 1
+
+        while target_num > 0:
+            if rnd_target:
+                target = random.choice(members_list)
+            elif target_num < len(members_list):
+                target = select_from_list(members_list, q='Select next target')
+            else:
+                target = members_list[0]
+            dmg_received2 = target.take_dmg(self.calculate_dmg()*splash_dmg//100)
+            print('and', dmg_received2, 'dmg to', target)
+            dmg_received += dmg_received2
+            members_list.remove(target)
+            target_num -= 1
+        return dmg_received
+
 
 
 if __name__ == '__main__':

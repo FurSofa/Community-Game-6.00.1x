@@ -28,13 +28,15 @@ p1.add_member(Hero.generate('Fur', 'Jr.Coder'))
 p1.add_member(Person.generate_random())
 p2 = Party.generate()
 p2.add_member(Person.generate('Kefka', 'Drama Queen'))
+p2.add_member(Person.generate_random())
+p2.add_member(Person.generate_random())
 print_combat_status(p1, p2)
 
 
-while p1.has_units_left:
-
-    alternating_turn_battle(p1, p2)
-    p1.heal_everyone()
-
-    p2.add_member(Person.generate_random(1))
-    p2.add_member(Person.generate_random(1))
+# while p1.has_units_left:
+#
+#     alternating_turn_battle(p1, p2)
+#     p1.heal_everyone()
+#
+#     p2.add_member(Person.generate_random(1))
+#     p2.add_member(Person.generate_random(1))
