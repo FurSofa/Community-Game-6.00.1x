@@ -29,7 +29,7 @@ def select_from_list(iterable, index_pos=False, q='Whats your choice?'):
     return iterable[choice_index]
 
 
-def combat_select_from_list(iterable, index_pos=False, q='\nWho do you want to attack?'):
+def select_from_list_horizontal(iterable, index_pos=False, q='\nWho do you want to attack?'):
     """
     Takes an iterable
     prints a numerated list -- HORIZONTALLY --

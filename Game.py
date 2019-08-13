@@ -68,7 +68,7 @@ class Game:
         print(event)
         if event == 0:
             print(f'You found another traveler You talk for a while and have a great time!')
-            choice = combat_select_from_list(['Yes', 'No'], False,
+            choice = select_from_list_horizontal(['Yes', 'No'], False,
                                              'The traveler offers to join your party, what do you say?').lower()
             if choice == 'yes':
                 self.party.add_member(self.create_random_character)
@@ -102,8 +102,8 @@ class Game:
 
     def camp(self):
         def camp_menu():
-            camp_input = combat_select_from_list(['Rest', 'Inventory', 'Craft', 'Continue Adventuring'],
-                                            q=f'What would you like to do:\n')
+            camp_input = select_from_list_horizontal(['Rest', 'Inventory', 'Craft', 'Continue Adventuring'],
+                                                     q=f'What would you like to do:\n')
             if camp_input == 'Rest':
                 for member in self.party.members:
                     member.heal(member.max_hp)
