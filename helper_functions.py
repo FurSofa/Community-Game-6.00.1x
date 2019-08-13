@@ -1,4 +1,4 @@
-def select_from_list(iterable, q='Whats your choice?', index_pos=False, layout="vertical"):
+def select_from_list(iterable, q='Whats your choice?', index_pos=False, Horizontal=False):
     """
     Takes an iterable
     prints a numerated list for the user to choose from
@@ -8,17 +8,18 @@ def select_from_list(iterable, q='Whats your choice?', index_pos=False, layout="
     :param iterable, index_pos:
     :return chosen item or index position:
     """
-    #Automically choose if only 1 choice.
+    # Atomically choose if only 1 choice.
     if len(iterable) == 1:
         if index_pos:
             return 0
         return iterable[0]
-        
+
     print(q)
-    if layout == "horizontal":
+    if Horizontal:
         for index, item in enumerate(iterable):
             display_number = str(index + 1)
             print(display_number + ': ', item, end='  ')
+            print('')
     else:
         for index, item in enumerate(iterable):
             display_number = str(index + 1)
@@ -39,8 +40,13 @@ def select_from_list(iterable, q='Whats your choice?', index_pos=False, layout="
         return choice - 1
     return iterable[choice - 1]
 
+
 if __name__ == "__main__":
-    x = select_from_list(["Acidic Slime", "Necrotic Ooze", "Decrepit Wurm"],\
+    x = select_from_list(["Acidic Slime", "Necrotic Ooze", "Decrepit Wurm"],
                          "Choose a target:")
-    y = select_from_list(["Arrows", "Candles", "Lockpicks", "Not Interested"],\
-                         "What would you like to buy?", True, "horizontal")
+    print('You selected: ', x)
+    x = select_from_list(["Acidic Slime"])
+    print('You selected: ', x)
+    x = select_from_list(["Arrows", "Candles", "Lockpicks", "Not Interested"],
+                         "What would you like to buy?", False, True)
+    print('You selected: ', x)
