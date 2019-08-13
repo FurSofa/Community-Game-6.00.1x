@@ -107,9 +107,10 @@ class Person:
     def is_alive(self) -> bool:
         return self.hp > 0
 
-    def hp_bar(self, length=10, color=bcolors.WARNING, f_char='#', m_char='-', no_color=False):
+    def hp_bar(self, length=10, color=bcolors.FAIL, f_char='♥', m_char='-', no_color=False):
         '''
         returns a string of an hp_bar for current hp / max hp
+        :param no_color: bool: removes special chars for colors
         :param length: int: length of the bar without border - number of chars
         :param color: color code
         :param f_char: str: char to display for filled ticks

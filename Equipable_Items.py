@@ -131,7 +131,7 @@ class Equipment:
         # TODO: Add repair function
         self.max_durability = int(self.max_durability * 0.9)
 
-    def hp_bar(self, length=5, color=bcolors.WARNING, f_char='#', m_char='-', no_color=True):
+    def hp_bar(self, length=5, color=bcolors.FAIL, f_char='#', m_char='-', no_color=True):
         '''
         returns a string of an hp_bar for current hp / max hp
         :param length: int: length of the bar without border - number of chars
