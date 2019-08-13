@@ -9,45 +9,67 @@ class bcolors:
     BOLD = '\033[1m'
     UNDERLINE = '\033[4m'
 
-
+# TODO: refactor into function - no need for a class
 class BarGFX:
-    def __init__(self, length, color, current, full):
+    def __init__(self, current, full, length=10, color=bcolors.OKGREEN, f_char='#', m_char='-'):
+        '''
+
+        :param current: int: current value - eg hp
+        :param full: int: max value - eg max_hp
+        :param length: int: length of the bar without border - number of chars
+        :param color: color code
+        :param f_char: str: char to display for filled ticks
+        :param m_char: str: char to be displayed for not filled ticks
+        '''
         self.length = length
         self.color = color
         self.current = current
         self.full = full
-
+        self.fill_char = f_char
+        self.missing_char = m_char
         self.tick_percent = 100 / length
 
-    def draw_bar(self):
-        # create "graphic" hp/mp bars
+    def draw_bar(self, no_color=False, border='|'):
+        '''
+        creates a string of the BarGFX
+        :param no_color: bool
+        :param border: char to display as border for bar - use '' for no border
+        :return: str: BarGFX as string
+        '''
         hp_bar = ""
+        if no_color:
+            color = ''
+            end_color = ''
+        else:
+            color = self.color
+            end_color = bcolors.ENDC
+
         hp_bar_ticks = (self.current / self.full) * 100 / self.tick_percent
 
         while hp_bar_ticks > 0:
-            hp_bar += "#"
+            hp_bar += self.fill_char
             hp_bar_ticks -= 1
 
         while len(hp_bar) < self.length:
-            hp_bar += "-"
+            hp_bar += self.missing_char
 
-        return ("|" + self.color + hp_bar +
-                bcolors.ENDC + "|")
+        return (border + color + hp_bar +
+                end_color + border)
 
     def draw_bar_plain(self):
         hp_bar = ""
         hp_bar_ticks = (self.current / self.full) * 100 / self.tick_percent
 
         while hp_bar_ticks > 0:
-            hp_bar += "#"
+            hp_bar += self.fill_char
             hp_bar_ticks -= 1
 
         while len(hp_bar) < self.length:
-            hp_bar += "-"
+            hp_bar += self.missing_char
         return "|" + hp_bar + "|"
 
     def get_muted_char_len(self):
-        return len(self.draw_bar()) - len(self.draw_bar_plain())
+        return len(self.draw_bar()) - len(self.draw_bar(no_color=True))
 
 
 # Example setup from the old RPG
