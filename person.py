@@ -189,22 +189,6 @@ class Person:
             f'{hp:<8} ' \
             f'{dmg:<13}'
 
-    # def show_stats_old(self):
-    #     """
-    #     Prints out Stats for the person
-    #     """
-    #     relevant_stats = {
-    #         '\nName': self.name,
-    #         'Max HP': self.max_hp,
-    #         'HP': self.hp,
-    #         'Attack Damage': self.damage,
-    #         'Defense': self.defense,
-    #         'Crit Chance %': self.crit_chance,
-    #         'Crit Damage %': self.crit_muliplier
-    #     }
-    #     for k, v in relevant_stats.items():
-    #         print(k, ': ', v)
-
     def add_xp(self, xp):
         self.xp += xp
         print(f'{self.name} gained {xp} xp!')
