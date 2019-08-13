@@ -137,8 +137,6 @@ class Equipment:
 
         self._max_left = max(len(k) for k in self.__dict__.keys()) + 10
 
-        self.item_card = self.generate_item_card(self)
-
     @classmethod
     def generate(cls, quality='Common', quality_val=1, etype='Weapon', equipable_slot='main hand', value=0,
                  max_durability=10, strength=0, dexterity=0, intelligence=0,
@@ -151,23 +149,23 @@ class Equipment:
                    max_hp, defense, att_dmg_min, att_dmg_max, damage,
                    crit_chance, crit_multiplier)
 
-    def generate_item_card(self, item):
-        if item.type == 'Weapon':
+    def item_card(self):
+        if self.type == 'Weapon':
             # Line 1
-            line_1_left = f'{item.quality} {item.type}'
-            line_1_right = f'{item.equipable_slot}'
+            line_1_left = f'{self.quality} {self.type}'
+            line_1_right = f'{self.equipable_slot}'
 
             # Line 2
-            line_2_left = f'Dur: {item.durability:>2}/{item.max_durability:<2}'
-            line_2_right = f'Damage: {item.att_dmg_min:>3}/{item.att_dmg_max:<3}'
+            line_2_left = f'Dur: {self.durability:>2}/{self.max_durability:<2}'
+            line_2_right = f'Damage: {self.att_dmg_min:>3}/{self.att_dmg_max:<3}'
 
             # Line 3
-            if item.enchant_1:
-                line_3_left = f'{item.enchant_1}{item.enchant_1_val}'
+            if self.enchant_1:
+                line_3_left = f'{self.enchant_1}{self.enchant_1_val}'
             else:
                 line_3_left = f'               '
-            if item.enchant_2:
-                line_3_right = f'{item.enchant_2}{item.enchant_2_val}'
+            if self.enchant_2:
+                line_3_right = f'{self.enchant_2}{self.enchant_2_val}'
             else:
                 line_3_right = f'               '
 
@@ -177,22 +175,22 @@ class Equipment:
             line_3 = f'{line_3_left:<15}{line_3_right:>15}'
             return [line_1, line_2, line_3]
 
-        elif item.type == 'Armor':
+        elif self.type == 'Armor':
             # Line 1
-            line_1_left = f'{item.quality} {item.type}'
-            line_1_right = f'{item.equipable_slot}'
+            line_1_left = f'{self.quality} {self.type}'
+            line_1_right = f'{self.equipable_slot}'
 
             # Line 2
-            line_2_left = f'Dur: {item.durability:>2}/{item.max_durability:<2}'
-            line_2_right = f'Defense: {item.defense:>3}'
+            line_2_left = f'Dur: {self.durability:>2}/{self.max_durability:<2}'
+            line_2_right = f'Defense: {self.defense:>3}'
 
             # Line 3
-            if item.enchant_1:
-                line_3_left = f'{item.enchant_1}{item.enchant_1_val}'
+            if self.enchant_1:
+                line_3_left = f'{self.enchant_1}{self.enchant_1_val}'
             else:
                 line_3_left = f'               '
-            if item.enchant_2:
-                line_3_right = f'{item.enchant_2}{item.enchant_2_val}'
+            if self.enchant_2:
+                line_3_right = f'{self.enchant_2}{self.enchant_2_val}'
             else:
                 line_3_right = f'               '
 
@@ -202,28 +200,28 @@ class Equipment:
             line_3 = f'{line_3_left:<15}{line_3_right:>15}'
             return [line_1, line_2, line_3]
 
-        elif item.type == 'Jewelry':
+        elif self.type == 'Jewelry':
             # Line 1
-            line_1_left = f'{item.quality} {item.type}'
-            line_1_right = f'{item.equipable_slot}'
+            line_1_left = f'{self.quality} {self.type}'
+            line_1_right = f'{self.equipable_slot}'
 
             # Line 2
-            if item.enchant_1:
-                line_2_left = f'{item.enchant_1}{item.enchant_1_val}'
+            if self.enchant_1:
+                line_2_left = f'{self.enchant_1}{self.enchant_1_val}'
             else:
                 line_2_left = f'               '
-            if item.enchant_2:
-                line_2_right = f'{item.enchant_2}{item.enchant_2_val}'
+            if self.enchant_2:
+                line_2_right = f'{self.enchant_2}{self.enchant_2_val}'
             else:
                 line_2_right = f'               '
 
             # Line 3
-            if item.enchant_1:
-                line_3_left = f'{item.enchant_3}{item.enchant_3_val}'
+            if self.enchant_1:
+                line_3_left = f'{self.enchant_3}{self.enchant_3_val}'
             else:
                 line_3_left = f'               '
-            if item.enchant_2:
-                line_3_right = f'{item.enchant_4}{item.enchant_4_val}'
+            if self.enchant_2:
+                line_3_right = f'{self.enchant_4}{self.enchant_4_val}'
             else:
                 line_3_right = f'               '
 

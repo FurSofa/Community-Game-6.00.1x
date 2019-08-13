@@ -192,8 +192,19 @@ class Party:
             pass
 
     def display_inventory(self):
-        item_cards = [item.item_card for item in self.inventory]
+        pass
 
+    def print_inventory(self):
+        empty_card = [" " * 30] * 3
+        cards = [item.item_card() if item else empty_card for item in self.inventory
+                 + (9 - len(self.inventory)) * [None]]
+        print("┌" + "─" * 32 + "┬" + "─" * 32 + "┬" + "─" * 32 + "┐")
+        print("\n".join(f'│ {x} │ {y} │ {z} │' for x, y, z in zip(*cards[:3])))
+        print("├" + "─" * 32 + "┼" + "─" * 32 + "┼" + "─" * 32 + "┤")
+        print("\n".join(f'│ {x} │ {y} │ {z} │' for x, y, z in zip(*cards[3:6])))
+        print("├" + "─" * 32 + "┼" + "─" * 32 + "┼" + "─" * 32 + "┤")
+        print("\n".join(f'│ {x} │ {y} │ {z} │' for x, y, z in zip(*cards[6:])))
+        print("└" + "─" * 32 + "┴" + "─" * 32 + "┴" + "─" * 32 + "┘")
 
     def add_item(self, item):
         self.inventory.append(item)

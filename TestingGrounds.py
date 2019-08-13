@@ -69,5 +69,4 @@ if __name__ == '__main__':
     h.add_item(Weapon.generate_random())
     h.add_item(Armor.generate_random())
     h.add_item(Armor.generate_random())
-    # h.show_gear(h.inventory)
-    print_inventory(h.inventory)
+    h.print_inventory()
