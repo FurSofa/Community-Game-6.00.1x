@@ -10,7 +10,7 @@ class Game:
     def __init__(self):
         self.party = Party.generate()
         self.autobattle = 0
-        self.difficulty = select_from_list(['Easy', 'Medium', 'Hard'], 'Choose your difficulty:', False, True)
+        self.difficulty = select_from_list(['Easy', 'Medium', 'Hard'], 'Choose your difficulty:')
         print(f'You selected: {self.difficulty}!')
 
     @staticmethod
