@@ -1,6 +1,6 @@
 from helper_functions import *
-from Hero import *
-from person import *
+# from Hero import *
+# from person import *
 from Equipable_Items import *
 
 
@@ -240,16 +240,16 @@ class Party:
         self.calculate_stats_with_gear()
 
 
-if __name__ == '__main__':
-
-    def gen_n_items(n=1):
-
-        for i in range(1,n):
-            p1.add_item(Weapon.generate_random())
-            p1.add_item(Armor.generate_random())
-            i += 1
-
-    p1 = Party.generate()
-    gen_n_items(5)
-    p1.show_gear(p1.inventory)
+# if __name__ == '__main__':
+#
+#     def gen_n_items(n=1):
+#
+#         for i in range(1,n):
+#             p1.add_item(Weapon.generate_random())
+#             p1.add_item(Armor.generate_random())
+#             i += 1
+#
+#     p1 = Party.generate()
+#     gen_n_items(5)
+#     p1.show_gear(p1.inventory)
 

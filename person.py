@@ -189,22 +189,6 @@ class Person:
             f'{hp:<8} ' \
             f'{dmg:<13}'
 
-    # def show_stats_old(self):
-    #     """
-    #     Prints out Stats for the person
-    #     """
-    #     relevant_stats = {
-    #         '\nName': self.name,
-    #         'Max HP': self.max_hp,
-    #         'HP': self.hp,
-    #         'Attack Damage': self.damage,
-    #         'Defense': self.defense,
-    #         'Crit Chance %': self.crit_chance,
-    #         'Crit Damage %': self.crit_muliplier
-    #     }
-    #     for k, v in relevant_stats.items():
-    #         print(k, ': ', v)
-
     def add_xp(self, xp):
         self.xp += xp
         print(f'{self.name} gained {xp} xp!')
@@ -484,27 +468,3 @@ class Person:
 
 if __name__ == '__main__':
     p1 = Person.generate_random()
-    p1.test_equip()
-
-
-"""
-================= Hero Party ==================| |================== Enemy Party ===================
-====================================================================================================
-+    Fur, the Jr.Coder    Hp: 62/62 Dmg:  2/6         - Kefka, the Drama Queen  Hp: 62/62 Dmg:  2/6         
-+     Ali, the Thief      Hp: 62/62 Dmg:  2/6         -   Lindsay, the Archer   Hp: 62/62 Dmg:  2/6         
-                                                 | -    Jackson, the Bard    Hp: 65/65 Dmg:  2/6         
-p1.members[0].deal_multi_dmg(p2.members[0])
-Fur, the Jr.Coder deals 4 dmg to Kefka, the Drama Queen
-and 0 dmg to Lindsay, the Archer
-and 0 dmg to Jackson, the Bard
-4
-p1.members[0].deal_multi_dmg(p2.members[0], splash_dmg=100)
-Fur, the Jr.Coder deals 1 dmg to Kefka, the Drama Queen
-and 1 dmg to Lindsay, the Archer
-and 1 dmg to Jackson, the Bard
-3
-p1.members[0].deal_multi_dmg(p2.members[0], splash_dmg=100, target_num=2)
-Fur, the Jr.Coder deals 1 dmg to Kefka, the Drama Queen
-and 1 dmg to Jackson, the Bard
-
-"""
