@@ -12,21 +12,19 @@ def select_from_list(iterable, index_pos=False, q='Whats your choice?'):
     for index, item in enumerate(iterable):
         display_number = str(index + 1)
         print(display_number + ': ', item)
-    choice = input('Number of choice: ')
-    if choice == '':
-        choice_index = 0
-        if index_pos:
-            return choice_index
-        return iterable[choice_index]
-
-    if not choice.isdigit() or not 0 < int(choice) <= len(iterable):
-        print('Enter a number from the list!')
-        choice_index = select_from_list(iterable, index_pos=True, q=q)
-    else:
-        choice_index = int(choice) - 1
+    choice = ""
+    while not choice:
+        try:
+            choice = int(input('Number of choice: '))
+            if choice < 1 or choice > len(iterable):
+                print("Enter a number from the list!")
+                choice = ""
+        except ValueError:
+            print("Invalid choice!")
+    
     if index_pos:
-        return choice_index
-    return iterable[choice_index]
+        return choice - 1
+    return iterable[choice-1]
 
 
 def select_from_list_horizontal(iterable, index_pos=False, q='\nWho do you want to attack?'):
@@ -66,4 +64,4 @@ def select_from_list_horizontal(iterable, index_pos=False, q='\nWho do you want 
 
 if __name__ == '__main__':
     x = select_from_list(['one', 'two', 'three'])
-    x = select_from_list_horizontal(['one', 'two', 'three'])
+    y = select_from_list_horizontal(['one', 'two', 'three'], True)
