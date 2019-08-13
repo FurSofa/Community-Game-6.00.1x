@@ -249,58 +249,54 @@ class Person:
         return healed_amount
 
     # Gear and Stat Calculations
-    # def get_equipped_items(self):
-    #     """
-    #     :return: list of currently equipped items
-    #     """
-    #     items = [self.main_hand,
-    #              self.off_hand,
-    #              self.head,
-    #              self.chest,
-    #              self.legs,
-    #              self.feet,
-    #              self.ring,
-    #              self.necklace]
-    #     return [item for item in items if item]
-    #
-    # def calculate_stats_with_gear(self):
-    #     """
-    #     updates playerstats based on equipped items
-    #     :return: -
-    #     """
-    #     stats = {
-    #         'str': self.str,
-    #         'dex': self.dex,
-    #         'int': self.int,
-    #         'max_hp': self.max_hp,
-    #         'defense': self.defense,
-    #         'att_dmg_min': self.att_dmg_min,
-    #         'att_dmg_max': self.att_dmg_max,
-    #         'crit_chance': self.crit_chance,
-    #         'crit_muliplier': self.crit_muliplier,
-    #     }
-    #     gear = self.get_equipped_items()
-    #     for key in stats.keys():
-    #         self.__dict__[key] = stats[key] + sum([item.__dict__[key] for item in gear])
-    #
-    #     # TODO: range or static dmg?
-    #     # self.current_crit_dmg = int(self.current_attack_dmg * (self.current_crit_modifier / 100))
-    #
-    # #  manage gear
-    # def show_gear(self):
-    #     items = [self.main_hand,
-    #              self.off_hand,
-    #              self.head,
-    #              self.chest,
-    #              self.legs,
-    #              self.feet,
-    #              self.ring,
-    #              self.necklace]
-    #     gear = [item for item in items if item]
-    #     for i in gear:
-    #         print(i.show_stats())
-    #
-    #
+    def get_equipped_items(self):
+        """
+        :return: list of currently equipped items
+        """
+        items = [self.main_hand,
+                 self.off_hand,
+                 self.head,
+                 self.chest,
+                 self.legs,
+                 self.feet,
+                 self.ring,
+                 self.necklace]
+        return [item for item in items if item]
+
+    def calculate_stats_with_gear(self):
+        """
+        updates playerstats based on equipped items
+        :return: -
+        """
+        stats = {
+            'str': self.str,
+            'dex': self.dex,
+            'int': self.int,
+            'max_hp': self.max_hp,
+            'defense': self.defense,
+            'att_dmg_min': self.att_dmg_min,
+            'att_dmg_max': self.att_dmg_max,
+            'crit_chance': self.crit_chance,
+            'crit_muliplier': self.crit_muliplier,
+        }
+        gear = self.get_equipped_items()
+        for key in stats.keys():
+            self.__dict__[key] = stats[key] + sum([item.__dict__[key] for item in gear])
+
+    def show_gear(self):
+        items = [self.main_hand,
+                 self.off_hand,
+                 self.head,
+                 self.chest,
+                 self.legs,
+                 self.feet,
+                 self.ring,
+                 self.necklace]
+        gear = [item for item in items if item]
+        for i in gear:
+            print(i.show_stats())
+
+
     # def change_gear(self):
     #     if len(self.party.equipment) > 0:
     #         print('What item do you want to equip?')
@@ -479,7 +475,7 @@ class Person:
 if __name__ == '__main__':
     p1 = Person.generate_random()
     p1.test_equip()
-    p1.show_gear()
+
 
 """
 ================= Hero Party ==================| |================== Enemy Party ===================
