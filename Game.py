@@ -102,22 +102,20 @@ class Game:
 
     def camp(self):
         def camp_menu():
-            camp_input = combat_select_from_list(['Rest', 'Inventory', '??', 'Continue Adventuring'],
+            camp_input = combat_select_from_list(['Rest', 'Inventory', 'Craft', 'Continue Adventuring'],
                                             q=f'What would you like to do:\n')
             if camp_input == 'Rest':
                 for member in self.party.members:
                     member.heal(member.max_hp)
-                bear_attack = randint(1, 100)
-                if bear_attack < 3:
-                    print('A bear got into the camp and killed everyone!')
-                    self.party.kill_everyone()
                 camp_menu()
             elif camp_input == 'inventory':
-                pass
+                print('You are too tired.')
+                camp_menu()
+            elif camp_input == 'craft':
+                print('You need a craftsman.')
+                camp_menu()
             elif camp_input == '':
-                pass
-            elif camp_input == '':
-                pass
+                print('You head back out into the wilds..')
         # Actual Camp
         print('\n'*20)
         print("""    
