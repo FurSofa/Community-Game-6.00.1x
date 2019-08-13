@@ -19,7 +19,6 @@ def select_from_list(iterable, q='Whats your choice?', index_pos=False, horizont
         for index, item in enumerate(iterable):
             display_number = str(index + 1)
             print(display_number + ': ', item, end='  ')
-            print('')
     else:
         for index, item in enumerate(iterable):
             display_number = str(index + 1)
