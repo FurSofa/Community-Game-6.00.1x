@@ -17,24 +17,21 @@ if __name__ == '__main__':
     h.show_gear(h.inventory)
 
 
-class item:
-    def __init__(self, quality, kind, equipable_slot, att_dmg_min="NA", att_dmg_max="NA", \
-                 durability="NA", max_durability="NA"):
-        self.type = kind
-        self.quality = quality
-        self.equipable_slot = equipable_slot
-        self.att_dmg_min = att_dmg_min
-        self.att_dmg_max = att_dmg_max
-        self.durability = durability
-        self.max_durability = max_durability
+def show_stats_2():
+    name = f'{self.quality} {self.type}'
+    slot = f'{self.equipable_slot.title():>9}'
+    line2_left = f'Dur: {self.durability:>2}/{self.max_durability:<2} '
+    line2_right = f'Defense: {self.defense}'
+    return f'{name:<17}{slot:>13}\n{line2_left:<15}{line2_right:>15}\n'
 
-    def show_stats(self):
-        name = f'{self.quality} {self.type}'
-        slot = f'{self.equipable_slot:>9}'
-        dmg = "" if self.att_dmg_max == "NA" else f'{self.att_dmg_min:>3}-{self.att_dmg_max:<3}'
-        line2_left = "" if self.durability == "NA" else f'Dur: {self.durability:>2}/{self.max_durability:<2}'
-        line2_right = f'Damage: {dmg}' if dmg else ""
-        return f'{name:<15}{slot:>15}\n{line2_left:<15}{line2_right:>15}'
+
+def show_stats(self):
+    name = f'{self.quality} {self.type}'
+    slot = f'{self.equipable_slot:>9}'
+    dmg = "" if self.att_dmg_max == "NA" else f'{self.att_dmg_min:>3}-{self.att_dmg_max:<3}'
+    line2_left = "" if self.durability == "NA" else f'Dur: {self.durability:>2}/{self.max_durability:<2}'
+    line2_right = f'Damage: {dmg}' if dmg else ""
+    return f'{name:<15}{slot:>15}\n{line2_left:<15}{line2_right:>15}'
 
 
 hat = item("Dirty", "Hat", "Head", "NA", "NA", "13", "100")
@@ -46,8 +43,8 @@ card1 = hat.show_stats()
 card2 = necklace.show_stats()
 card3 = sword_of_a_thousand_truths.show_stats()
 print("┌" + "─" * 32 + "┬" + "─" * 32 + "┬" + "─" * 32 + "┐")
-print("\n".join(f'│ {x} │ {y} │ {z} │' for x, y, z in zip(card1.splitlines(), \
-                                                          card2.splitlines(), \
+print("\n".join(f'│ {x} │ {y} │ {z} │' for x, y, z in zip(card1.splitlines(),
+                                                          card2.splitlines(),
                                                           card3.splitlines())))
 print("└" + "─" * 32 + "┴" + "─" * 32 + "┴" + "─" * 32 + "┘")
 

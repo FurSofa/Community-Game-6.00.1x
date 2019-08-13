@@ -15,53 +15,91 @@ class Consumable:
     pass
 
 
-class Item_card:
-    def __init__(self, item):
+def generate_item_card(self, item):
+    if item.type == 'Weapon':
+        # Line 1
+        line_1_left = f'{item.quality} {item.type}'
+        line_1_right = f'{item.equipable_slot}'
+        line_1 = f'{line_1_left:<15}{line_1_right:>15}'
 
-        if item.type == 'Weapon':
-            # Line 1
-            line_1_left = f'{item.quality} {item.type}'
-            line_1_right = f'{item.equipable_slot}'
-            line_1 = f'{line_1_left:<15}{line_1_right:>15}'
-            # Line 2
-            line_2_left = f'Dur: {item.durability:>2}/{item.max_durability:<2}'
-            line_2_right = f'Damage: {item.att_dmg_min:>3}/{item.att_dmg_max:<3}'
-            line_2 = f'{line_2_left:<15}{line_2_right:>15}'
-            # Line 3
-            line_3_left = f''
-            line_3_right = f''
-            line_3 = f'{line_3_left:<15}{line_3_right:>15}'
-            self.i = [line_1, line_2, line_3]
+        # Line 2
+        line_2_left = f'Dur: {item.durability:>2}/{item.max_durability:<2}'
+        line_2_right = f'Damage: {item.att_dmg_min:>3}/{item.att_dmg_max:<3}'
 
+        # Line 3
+        if item.enchant_1:
+            line_3_left = f'{item.enchant_1}{item.enchant_1_val}'
+        else:
+            line_3_left = f'               '
+        if item.enchant_2:
+            line_3_right = f'{item.enchant_2}{item.enchant_2_val}'
+        else:
+            line_3_right = f'               '
+        # Combine L an R lines
+        line_1 = f'{line_1_left:<15}{line_1_right:>15}'
+        line_2 = f'{line_2_left:<15}{line_2_right:>15}'
+        line_3 = f'{line_3_left:<15}{line_3_right:>15}'
+        return [line_1, line_2, line_3]
 
-        elif item.type == 'Armor':
-            pass
-        elif item.type == 'Jewelery':
-            pass
-        else:  # no item, does this need to exist?
-            pass
+    elif item.type == 'Armor':
+        # Line 1
+        line_1_left = f'{item.quality} {item.type}'
+        line_1_right = f'{item.equipable_slot}'
+        line_1 = f'{line_1_left:<15}{line_1_right:>15}'
 
-        self.item_card = None
+        # Line 2
+        line_2_left = f'Dur: {item.durability:>2}/{item.max_durability:<2}'
+        line_2_right = f'Defense: {item.defense:>3}'
 
-        self.item_card_empty = ['                              ',
-                                '            Empty             ',
-                                '                              ']
+        # Line 3
+        if item.enchant_1:
+            line_3_left = f'{item.enchant_1}{item.enchant_1_val}'
+        else:
+            line_3_left = f'               '
+        if item.enchant_2:
+            line_3_right = f'{item.enchant_2}{item.enchant_2_val}'
+        else:
+            line_3_right = f'               '
+        # Combine L an R lines
+        line_1 = f'{line_1_left:<15}{line_1_right:>15}'
+        line_2 = f'{line_2_left:<15}{line_2_right:>15}'
+        line_3 = f'{line_3_left:<15}{line_3_right:>15}'
+        return [line_1, line_2, line_3]
 
-        self.item_card_weapon = ['                              ',
-                                 '            Empty             ',
-                                 '                              ']
+    elif item.type == 'Jewelry':
+        # Line 1
+        line_1_left = f'{item.quality} {item.type}'
+        line_1_right = f'{item.equipable_slot}'
+        line_1 = f'{line_1_left:<15}{line_1_right:>15}'
 
-        self.item_card_armor = ['                              ',
-                                '            Empty             ',
-                                '                              ']
+        # Line 2
+        if item.enchant_1:
+            line_2_left = f'{item.enchant_1}{item.enchant_1_val}'
+        else:
+            line_2_left = f'               '
+        if item.enchant_2:
+            line_2_right = f'{item.enchant_2}{item.enchant_2_val}'
+        else:
+            line_2_right = f'               '
 
-        self.item_card_jewelery = ['                              ',
-                                   '            Empty             ',
-                                   '                              ']
+        # Line 3
+        if item.enchant_1:
+            line_3_left = f'{item.enchant_3}{item.enchant_3_val}'
+        else:
+            line_3_left = f'               '
+        if item.enchant_2:
+            line_3_right = f'{item.enchant_4}{item.enchant_4_val}'
+        else:
+            line_3_right = f'               '
 
-    @classmethod
-    def generate(cls, item):
-        return cls(item)
+        # Combine L an R lines
+        line_1 = f'{line_1_left:<15}{line_1_right:>15}'
+        line_2 = f'{line_2_left:<15}{line_2_right:>15}'
+        line_3 = f'{line_3_left:<15}{line_3_right:>15}'
+        return [line_1, line_2, line_3]
+    else:
+        return ['                              ', '            Empty             ',
+                '                              ']
 
 
 class Equipment:
@@ -74,6 +112,14 @@ class Equipment:
         self.value = value + int(10 * quality_value + 10)
         self.max_durability = max_durability
         self.durability = self.max_durability
+        self.enchant_1 = None
+        self.enchant_1_val = None
+        self.enchant_2 = None
+        self.enchant_2_val = None
+        self.enchant_3 = None
+        self.enchant_3_val = None
+        self.enchant_4 = None
+        self.enchant_4_val = None
 
         self.type = etype
         self.equipable_slot = equipable_slot
@@ -90,6 +136,7 @@ class Equipment:
         self.crit_muliplier = round(crit_multiplier * self.quality_val)
 
         self._max_left = max(len(k) for k in self.__dict__.keys()) + 10
+        self.item_card = self.item_card(self)
 
     @classmethod
     def generate(cls, quality='Common', quality_val=1, etype='Weapon', equipable_slot='main hand', value=0,
@@ -102,6 +149,92 @@ class Equipment:
                    max_durability, strength, dexterity, intelligence,
                    max_hp, defense, att_dmg_min, att_dmg_max, damage,
                    crit_chance, crit_multiplier)
+
+    def generate_item_card(self, item):
+        if item.type == 'Weapon':
+            # Line 1
+            line_1_left = f'{item.quality} {item.type}'
+            line_1_right = f'{item.equipable_slot}'
+
+            # Line 2
+            line_2_left = f'Dur: {item.durability:>2}/{item.max_durability:<2}'
+            line_2_right = f'Damage: {item.att_dmg_min:>3}/{item.att_dmg_max:<3}'
+
+            # Line 3
+            if item.enchant_1:
+                line_3_left = f'{item.enchant_1}{item.enchant_1_val}'
+            else:
+                line_3_left = f'               '
+            if item.enchant_2:
+                line_3_right = f'{item.enchant_2}{item.enchant_2_val}'
+            else:
+                line_3_right = f'               '
+
+            # Combine L an R lines
+            line_1 = f'{line_1_left:<15}{line_1_right:>15}'
+            line_2 = f'{line_2_left:<15}{line_2_right:>15}'
+            line_3 = f'{line_3_left:<15}{line_3_right:>15}'
+            return [line_1, line_2, line_3]
+
+        elif item.type == 'Armor':
+            # Line 1
+            line_1_left = f'{item.quality} {item.type}'
+            line_1_right = f'{item.equipable_slot}'
+
+            # Line 2
+            line_2_left = f'Dur: {item.durability:>2}/{item.max_durability:<2}'
+            line_2_right = f'Defense: {item.defense:>3}'
+
+            # Line 3
+            if item.enchant_1:
+                line_3_left = f'{item.enchant_1}{item.enchant_1_val}'
+            else:
+                line_3_left = f'               '
+            if item.enchant_2:
+                line_3_right = f'{item.enchant_2}{item.enchant_2_val}'
+            else:
+                line_3_right = f'               '
+
+            # Combine L an R lines
+            line_1 = f'{line_1_left:<15}{line_1_right:>15}'
+            line_2 = f'{line_2_left:<15}{line_2_right:>15}'
+            line_3 = f'{line_3_left:<15}{line_3_right:>15}'
+            return [line_1, line_2, line_3]
+
+        elif item.type == 'Jewelry':
+            # Line 1
+            line_1_left = f'{item.quality} {item.type}'
+            line_1_right = f'{item.equipable_slot}'
+
+            # Line 2
+            if item.enchant_1:
+                line_2_left = f'{item.enchant_1}{item.enchant_1_val}'
+            else:
+                line_2_left = f'               '
+            if item.enchant_2:
+                line_2_right = f'{item.enchant_2}{item.enchant_2_val}'
+            else:
+                line_2_right = f'               '
+
+            # Line 3
+            if item.enchant_1:
+                line_3_left = f'{item.enchant_3}{item.enchant_3_val}'
+            else:
+                line_3_left = f'               '
+            if item.enchant_2:
+                line_3_right = f'{item.enchant_4}{item.enchant_4_val}'
+            else:
+                line_3_right = f'               '
+
+            # Combine L an R lines
+            line_1 = f'{line_1_left:<15}{line_1_right:>15}'
+            line_2 = f'{line_2_left:<15}{line_2_right:>15}'
+            line_3 = f'{line_3_left:<15}{line_3_right:>15}'
+            return [line_1, line_2, line_3]
+        else:
+            return ['                              ',
+                    '            Empty             ',
+                    '                              ']
 
     def __repr__(self):
         return self.type + ': ' + self.equipable_slot
