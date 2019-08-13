@@ -280,7 +280,6 @@ class Person:
         for i in gear:
             print(i.show_stats())
 
-
     # def change_gear(self):
     #     if len(self.party.equipment) > 0:
     #         print('What item do you want to equip?')
@@ -435,7 +434,6 @@ class Person:
         elif action == 'heal':
             self.heal(10)
 
-
     def deal_multi_dmg(self, target, target_num='all', splash_dmg=25, primary=True, rnd_target=True):
 
         if target_num == 'all' or target_num > len(target.party.members):
@@ -457,13 +455,12 @@ class Person:
                 target = select_from_list(members_list, q='Select next target')
             else:
                 target = members_list[0]
-            dmg_received2 = target.take_dmg(self.calculate_dmg()*splash_dmg//100)
+            dmg_received2 = target.take_dmg(self.calculate_dmg() * splash_dmg // 100)
             print('and', dmg_received2, 'dmg to', target)
             dmg_received += dmg_received2
             members_list.remove(target)
             target_num -= 1
         return dmg_received
-
 
 
 if __name__ == '__main__':

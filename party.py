@@ -182,10 +182,10 @@ class Party:
             pass
 
     def inventory_menu(self):
-        x = select_from_list_horizontal(['Inventory', 'Character Inventory', 'exit'], True)
+        x = select_from_list(['Inventory', 'Character Inventory', 'exit'], True)
         if x == '0':
             self.display_inventory()
-            selection = select_from_list_horizontal(['', '', '', ''], True)
+            selection = select_from_list(['', '', '', ''], True)
         if x == '1':
             pass
         if x == '2':
@@ -197,7 +197,6 @@ class Party:
     def add_item(self, item):
         self.inventory.append(item)
 
-
     def show_gear(self, inventory):
 
         for i in inventory:
@@ -205,8 +204,6 @@ class Party:
                 print(i.show_stats())
             else:
                 print('empty')
-
-
 
     def equip_gear(self, new_gear, slot_to_change='choose'):
         """
@@ -239,7 +236,6 @@ class Party:
         new_gear.holder = self
         self.calculate_stats_with_gear()
 
-
 # if __name__ == '__main__':
 #
 #     def gen_n_items(n=1):
@@ -252,4 +248,3 @@ class Party:
 #     p1 = Party.generate()
 #     gen_n_items(5)
 #     p1.show_gear(p1.inventory)
-
