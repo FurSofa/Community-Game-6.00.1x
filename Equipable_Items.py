@@ -121,9 +121,10 @@ class Weapon(Equipment):
     def show_stats(self):
         name = f'{self.quality} {self.type}'
         slot = f'{self.equipable_slot.title():>9}'
-        line2_left = f'Durability: {self.durability:>2}/{self.max_durability:<2} '
-        line2_right = f'Damage: {self.att_dmg_min:>3}-{self.att_dmg_max:<3}'
-        print(f'{name:<19}{slot:>19}\n{line2_left:<20}{line2_right:>20}')
+        dmg = f'{self.att_dmg_min:>3}-{self.att_dmg_max:<3}'
+        line2_left = f'Dur: {self.durability:>2}/{self.max_durability:<2} '
+        line2_right = f'Damage: {dmg}'
+        return f'{name:<15}{slot:>15}\n{line2_left:<15}{line2_right:>15}'
 
 
 class Armor(Equipment):
@@ -147,6 +148,19 @@ class Armor(Equipment):
 
     @classmethod
     def generate_random(cls, etype='Armor', equipable_slot='chest', value=0, max_durability=10,
+                        strength=0, dexterity=0, intelligence=0, max_hp=0, defense=0,
+                        att_dmg_min=0, att_dmg_max=0, damage=0, crit_chance=0, crit_multiplier=0):
+        quality = random.choices(sList, weights=sWeights, k=1)[0]
+        quality_val = sValue.get(quality)
+        equipable_slot = random.choice(['head', 'chest', 'legs', 'feet'])
+        defense = 1 + random.randint(0, 2)
+
+        return cls(quality, quality_val, etype, equipable_slot, value,
+                   max_durability, strength, dexterity, intelligence,
+                   max_hp, defense, att_dmg_min, att_dmg_max, damage,
+                   crit_chance, crit_multiplier)
+    @classmethod
+    def generate_random1(cls, etype='Armor', equipable_slot='chest', value=0, max_durability=10,
                         strength=0, dexterity=0, intelligence=0, max_hp=0, defense=0,
                         att_dmg_min=0, att_dmg_max=0, damage=0, crit_chance=0, crit_multiplier=0):
         quality = random.choices(sList, weights=sWeights, k=1)[0]

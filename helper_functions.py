@@ -63,3 +63,7 @@ def select_from_list_horizontal(iterable, index_pos=False, q='\nWho do you want 
     if index_pos:
         return choice_index
     return iterable[choice_index]
+
+if __name__ == '__main__':
+    x = select_from_list(['one', 'two', 'three'])
+    x = select_from_list_horizontal(['one', 'two', 'three'])

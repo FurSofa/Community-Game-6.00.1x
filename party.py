@@ -1,6 +1,7 @@
 from helper_functions import *
 from Hero import *
 from person import *
+from Equipable_Items import *
 
 
 class Party:
@@ -45,7 +46,6 @@ class Party:
         print('\n', '=' * 6, 'Party Members Info', '=' * 6)
         for member in self.members:
             print(f'- {member.name}, {member.profession} Lv: {member.level} {member.hp}/{member.max_hp}')
-
 
     @property
     def has_units_left(self) -> bool:
@@ -182,73 +182,31 @@ class Party:
             pass
 
     def inventory_menu(self):
-        x = select_from_list_horizontal()
+        x = select_from_list_horizontal(['Inventory', 'Character Inventory', 'exit'], True)
+        if x == '0':
+            self.display_inventory()
+            selection = select_from_list_horizontal(['', '', '', ''], True)
+        if x == '1':
+            pass
+        if x == '2':
+            pass
+
+    def display_inventory(self):
+        pass
+
+    def add_item(self, item):
+        self.inventory.append(item)
 
 
-    def calculate_stats_with_gear(self):
-        """
-        updates playerstats based on equipped items
-        :return: -
-        """
-        stats = {
-            'str': self.str,
-            'dex': self.dex,
-            'int': self.int,
-            'max_hp': self.max_hp,
-            'defense': self.defense,
-            'att_dmg_min': self.att_dmg_min,
-            'att_dmg_max': self.att_dmg_max,
-            'crit_chance': self.crit_chance,
-            'crit_muliplier': self.crit_muliplier,
-        }
-        gear = self.get_equipped_items()
-        for key in stats.keys():
-            self.__dict__[key] = stats[key] + sum([item.__dict__[key] for item in gear])
+    def show_gear(self, inventory):
 
-        # TODO: range or static dmg?
-        # self.current_crit_dmg = int(self.current_attack_dmg * (self.current_crit_modifier / 100))
-
-    #  manage gear
-    def show_gear(self):
-        items = [self.main_hand,
-                 self.off_hand,
-                 self.head,
-                 self.chest,
-                 self.legs,
-                 self.feet,
-                 self.ring,
-                 self.necklace]
-        gear = [item for item in items if item]
-        for i in gear:
-            print(i.show_stats())
-
-
-    def change_gear(self):
-        if len(self.party.equipment) > 0:
-            print('What item do you want to equip?')
-            chosen_gear = select_from_list(self.party.equipment)
-            self.equip_gear(chosen_gear)
-            self.party.equipment.remove(chosen_gear)
-
-    def pickup_gear(self, new_gear):
-        """
-        ENDPOINT to get new items to the player
-        :param new_gear: a new item
-        :return:
-        """
-        if new_gear.gear_type == 'weapon':
-            if self.main_hand:
-                print('-----------------------')
-                print('Current First Hand Weapon:')
-                self.main_hand.show_stats()
+        for i in inventory:
+            if i:
+                print(i.show_stats())
             else:
-                self.equip_gear(new_gear)
-                return
-            if self.off_hand:
-                print('-----------------------')
-                print('Current Off Hand Weapon:')
-                self.off_hand.show_stats()
-        self.equip_gear(new_gear)
+                print('empty')
+
+
 
     def equip_gear(self, new_gear, slot_to_change='choose'):
         """
@@ -283,5 +241,15 @@ class Party:
 
 
 if __name__ == '__main__':
+
+    def gen_n_items(n=1):
+
+        for i in range(1,n):
+            p1.add_item(Weapon.generate_random())
+            p1.add_item(Armor.generate_random())
+            i += 1
+
     p1 = Party.generate()
+    gen_n_items(5)
+    p1.show_gear(p1.inventory)
 
