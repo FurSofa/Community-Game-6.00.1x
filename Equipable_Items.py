@@ -131,7 +131,7 @@ class Equipment:
         # TODO: Add repair function
         self.max_durability = int(self.max_durability * 0.9)
 
-    def hp_bar(self, length=5, color=bcolors.WARNING, f_char='#', m_char='-'):
+    def hp_bar(self, length=5, color=bcolors.WARNING, f_char='#', m_char='-', no_color=True):
         '''
         returns a string of an hp_bar for current hp / max hp
         :param length: int: length of the bar without border - number of chars
@@ -141,7 +141,7 @@ class Equipment:
         :return: hp bar as string
         '''
         bar = BarGFX(self.durability, self.max_durability, length=length, color=color, f_char=f_char, m_char=m_char)
-        return bar.bar_str(no_color=True)
+        return bar.bar_str(no_color=no_color)
 
 
 class Weapon(Equipment):
