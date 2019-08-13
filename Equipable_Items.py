@@ -14,12 +14,54 @@ sValue = {'Rusty': 0.9, 'Common': 1,
 class Consumable:
     pass
 
+
 class Item_card:
-    def __init__(self):
+    def __init__(self, item):
+
+        if item.type == 'Weapon':
+            # Line 1
+            line_1_left = f'{item.quality} {item.type}'
+            line_1_right = f'{item.equipable_slot}'
+            line_1 = f'{line_1_left:<15}{line_1_right:>15}'
+            # Line 2
+            line_2_left = f'Dur: {item.durability:>2}/{item.max_durability:<2}'
+            line_2_right = f'Damage: {item.att_dmg_min:>3}/{item.att_dmg_max:<3}'
+            line_2 = f'{line_2_left:<15}{line_2_right:>15}'
+            # Line 3
+            line_3_left = f''
+            line_3_right = f''
+            line_3 = f'{line_3_left:<15}{line_3_right:>15}'
+            self.i = [line_1, line_2, line_3]
+
+
+        elif item.type == 'Armor':
+            pass
+        elif item.type == 'Jewelery':
+            pass
+        else:  # no item, does this need to exist?
+            pass
+
         self.item_card = None
 
-    def generate(self):
-        pass
+        self.item_card_empty = ['                              ',
+                                '            Empty             ',
+                                '                              ']
+
+        self.item_card_weapon = ['                              ',
+                                 '            Empty             ',
+                                 '                              ']
+
+        self.item_card_armor = ['                              ',
+                                '            Empty             ',
+                                '                              ']
+
+        self.item_card_jewelery = ['                              ',
+                                   '            Empty             ',
+                                   '                              ']
+
+    @classmethod
+    def generate(cls, item):
+        return cls(item)
 
 
 class Equipment:
@@ -166,10 +208,11 @@ class Armor(Equipment):
                    max_durability, strength, dexterity, intelligence,
                    max_hp, defense, att_dmg_min, att_dmg_max, damage,
                    crit_chance, crit_multiplier)
+
     @classmethod
     def generate_random1(cls, etype='Armor', equipable_slot='chest', value=0, max_durability=10,
-                        strength=0, dexterity=0, intelligence=0, max_hp=0, defense=0,
-                        att_dmg_min=0, att_dmg_max=0, damage=0, crit_chance=0, crit_multiplier=0):
+                         strength=0, dexterity=0, intelligence=0, max_hp=0, defense=0,
+                         att_dmg_min=0, att_dmg_max=0, damage=0, crit_chance=0, crit_multiplier=0):
         quality = random.choices(sList, weights=sWeights, k=1)[0]
         quality_val = sValue.get(quality)
         equipable_slot = random.choice(['head', 'chest', 'legs', 'feet'])

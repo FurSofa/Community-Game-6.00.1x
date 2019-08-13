@@ -16,6 +16,7 @@ if __name__ == '__main__':
     h.add_item(Armor.generate_random())
     h.show_gear(h.inventory)
 
+
 class item:
     def __init__(self, quality, kind, equipable_slot, att_dmg_min="NA", att_dmg_max="NA",\
                 durability="NA", max_durability="NA"):
