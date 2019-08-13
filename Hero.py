@@ -21,8 +21,10 @@ class Hero(Person):
         :return: person instance
         """
         print()
-
         return select_from_list_horizontal(target_party.members, False, 'Choose a target:')
+
+    def choose_attack(self):
+        return select_from_list(self.get_attack_options())
 
     def choose_battle_action(self, enemy_party):
         """
@@ -31,18 +33,18 @@ class Hero(Person):
         :return: -
         """
         #  TODO: find a place to store possible actions
-        possible_actions = ['basic attack', 'Heal', 'Show Hero Stats', ]
+        possible_actions = ['attack', 'Heal', 'Show Hero Stats', ]
         action = select_from_list_horizontal(possible_actions)
-        if action.lower() == 'change gear':
-            self.change_gear()
-            self.choose_battle_action(enemy_party)
-        elif action.lower() == 'Show Hero Stats':
-            print(self.show_combat_stats())
-            self.choose_battle_action(enemy_party)
-        elif action.lower() == 'heal':
-            self.heal(10)
-        else:
-            self.attack_target(enemy_party, mode=action)
+        # if action.lower() == 'change gear':
+        #     self.change_gear()
+        #     self.choose_battle_action(enemy_party)
+        # elif action.lower() == 'Show Hero Stats':
+        #     print(self.show_combat_stats())
+        #     self.choose_battle_action(enemy_party)
+        # elif action.lower() == 'heal':
+        #     self.heal(10)
+        # else:
+        #     self.attack_target(enemy_party, mode=action)
         return action
 
 

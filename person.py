@@ -392,7 +392,10 @@ class Person:
             choice = 0
         return target_party.members[choice]
 
-    def attack_target(self, target_party, mode='single attack'):
+    def choose_attack(self):
+        return random.choice(self.get_attack_options())
+
+    def attack(self, target_party, mode='single attack'):
         """
         chooses deal_dmg func, based on mode
         executes chosen deal_dmg
@@ -400,13 +403,16 @@ class Person:
         :param mode: str
         :return:
         """
-        physical_attack_modes = ['single attack', ]
-        if mode in physical_attack_modes:
-            target = self.choose_target(target_party)
 
-            if mode == 'single attack':
-                dmg_enemy_received = self.deal_dmg(target)
-
+        target = self.choose_target(target_party)
+        mode = self.choose_attack().lower()
+        if mode == 'single attack':
+            dmg_done = self.deal_dmg(target)
+        elif mode == 'multi attack':
+            dmg_done = self.deal_multi_dmg(target, target_num='all', splash_dmg=75, primary=False)
+        elif mode == 'multi attack with primary target':
+            dmg_done = self.deal_multi_dmg(target, target_num='all', splash_dmg=50)
+        return dmg_done
 
     def choose_battle_action(self, enemy_party):
         """
@@ -427,11 +433,12 @@ class Person:
     def battle_turn(self, enemy_party):
         action = self.choose_battle_action(enemy_party)
         if action == 'attack':
-            target = self.choose_target(enemy_party)
-            # TODO: refactor to input chosen target, not party
-            # self.attack_target(target, mode=action)  # not needed until we have more options to do dmg
-            dmg_enemy_received = self.deal_dmg(target)
-            print(self.name, 'deals', dmg_enemy_received, 'to', target.name)
+            dmg_done = self.attack(enemy_party)
+            # target = self.choose_target(enemy_party)
+            # # TODO: refactor to input chosen target, not party
+            # # self.attack_target(target, mode=action)  # not needed until we have more options to do dmg
+            # dmg_enemy_received = self.deal_dmg(target)
+            # print(self.name, 'deals', dmg_enemy_received, 'to', target.name)
 
         elif action == 'show hero stats':
             print(self.show_combat_stats())
