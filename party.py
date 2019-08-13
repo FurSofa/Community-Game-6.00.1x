@@ -182,10 +182,10 @@ class Party:
             pass
 
     def inventory_menu(self):
-        x = select_from_list_horizontal(['Inventory', 'Character Inventory', 'exit'], True)
+        x = select_from_list(['Inventory', 'Character Inventory', 'exit'], True)
         if x == '0':
             self.display_inventory()
-            selection = select_from_list_horizontal(['', '', '', ''], True)
+            selection = select_from_list(['', '', '', ''], True)
         if x == '1':
             pass
         if x == '2':
