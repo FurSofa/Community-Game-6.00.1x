@@ -1,4 +1,4 @@
-from helper_functions import select_from_list
+from helper_functions import *
 from Hero import *
 from person import *
 
@@ -180,3 +180,108 @@ class Party:
         if item_to_sell.holder:
             # uneqip item
             pass
+
+    def inventory_menu(self):
+        x = select_from_list_horizontal()
+
+
+    def calculate_stats_with_gear(self):
+        """
+        updates playerstats based on equipped items
+        :return: -
+        """
+        stats = {
+            'str': self.str,
+            'dex': self.dex,
+            'int': self.int,
+            'max_hp': self.max_hp,
+            'defense': self.defense,
+            'att_dmg_min': self.att_dmg_min,
+            'att_dmg_max': self.att_dmg_max,
+            'crit_chance': self.crit_chance,
+            'crit_muliplier': self.crit_muliplier,
+        }
+        gear = self.get_equipped_items()
+        for key in stats.keys():
+            self.__dict__[key] = stats[key] + sum([item.__dict__[key] for item in gear])
+
+        # TODO: range or static dmg?
+        # self.current_crit_dmg = int(self.current_attack_dmg * (self.current_crit_modifier / 100))
+
+    #  manage gear
+    def show_gear(self):
+        items = [self.main_hand,
+                 self.off_hand,
+                 self.head,
+                 self.chest,
+                 self.legs,
+                 self.feet,
+                 self.ring,
+                 self.necklace]
+        gear = [item for item in items if item]
+        for i in gear:
+            print(i.show_stats())
+
+
+    def change_gear(self):
+        if len(self.party.equipment) > 0:
+            print('What item do you want to equip?')
+            chosen_gear = select_from_list(self.party.equipment)
+            self.equip_gear(chosen_gear)
+            self.party.equipment.remove(chosen_gear)
+
+    def pickup_gear(self, new_gear):
+        """
+        ENDPOINT to get new items to the player
+        :param new_gear: a new item
+        :return:
+        """
+        if new_gear.gear_type == 'weapon':
+            if self.main_hand:
+                print('-----------------------')
+                print('Current First Hand Weapon:')
+                self.main_hand.show_stats()
+            else:
+                self.equip_gear(new_gear)
+                return
+            if self.off_hand:
+                print('-----------------------')
+                print('Current Off Hand Weapon:')
+                self.off_hand.show_stats()
+        self.equip_gear(new_gear)
+
+    def equip_gear(self, new_gear, slot_to_change='choose'):
+        """
+        changes/fills an item in an equipment slot
+        puts old item into party inventory
+        :param slot_to_change: provide if you want to auto equip
+        :param new_gear:  new item to be equipped
+        :return: -
+        """
+        if slot_to_change == 'choose':
+            if new_gear.gear_type == 'weapon':
+                print('Where do you want to put it?')
+                weapon_slot = select_from_list(['Main Hand', 'Off Hand'], index_pos=True)
+                if weapon_slot == 0:
+                    slot_to_change = 'main_hand'
+                elif weapon_slot == 1:
+                    slot_to_change = 'off_hand'
+            elif new_gear.gear_type == 'shield':
+                slot_to_change = 'off_hand'
+            # TODO: add elifs for all equipment slots
+            elif new_gear.gear_type == 'armor':
+                slot_to_change = 'armor'
+
+        if self.__dict__[slot_to_change]:
+            old_item = self.__dict__[slot_to_change]
+            old_item.holder = None
+            self.party.equipment.append(old_item)
+        #  TODO: check and ask if switch weapon in slot
+        self.__dict__[slot_to_change] = new_gear
+        new_gear.holder = self
+        self.calculate_stats_with_gear()
+
+
+if __name__ == '__main__':
+    p1 = Party.generate()
+
