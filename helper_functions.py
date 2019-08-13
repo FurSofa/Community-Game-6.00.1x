@@ -8,6 +8,7 @@ def select_from_list(iterable, q='Whats your choice?', index_pos=False, layout="
     :param iterable, index_pos:
     :return chosen item or index position:
     """
+    #Automically choose if only 1 choice.
     if len(iterable) == 1:
         if index_pos:
             return 0
