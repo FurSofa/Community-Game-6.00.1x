@@ -170,7 +170,7 @@ class Equipment:
                 line_3_right = f'               '
 
             # Combine L an R lines
-            line_1 = f'{line_1_left:<15}{line_1_right:>15}'
+            line_1 = f'{line_1_left:<16}{line_1_right:>14}'
             line_2 = f'{line_2_left:<15}{line_2_right:>15}'
             line_3 = f'{line_3_left:<15}{line_3_right:>15}'
             return [line_1, line_2, line_3]

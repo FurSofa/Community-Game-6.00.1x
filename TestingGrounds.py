@@ -70,3 +70,4 @@ if __name__ == '__main__':
     h.add_item(Armor.generate_random())
     h.add_item(Armor.generate_random())
     h.print_inventory()
+    print(len('Legendary Weapon'))
