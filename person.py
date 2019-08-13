@@ -388,6 +388,7 @@ class Person:
         """
 
         target = self.choose_target(target_party)
+        print(target)
         mode = self.choose_attack().lower()
         if mode == 'single attack':
             dmg_done = self.deal_dmg(target)
@@ -432,12 +433,12 @@ class Person:
             self.change_gear()
             self.battle_turn(enemy_party)
         elif action == 'heal':
-            self.heal(10)
+            self.heal(self.calculate_dmg())
 
     def deal_multi_dmg(self, target, target_num='all', splash_dmg=25, primary=True, rnd_target=True):
-
         if target_num == 'all' or target_num > len(target.party.members):
             target_num = len(target.party.members)
+
         members_list = target.party.members[:]
         dmg_received = 0
 
