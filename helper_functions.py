@@ -5,7 +5,8 @@ def select_from_list(iterable, q='Whats your choice?', index_pos=False, layout="
     lets the user choose
     returns index position of user chosen item of iterable
     if index_pos=True will return index position of chosen object instead of object
-    :param iterable, index_pos:
+    layout defaults to "vertical" unless given "horizontal"
+    :param iterable, index_pos, layout:
     :return chosen item or index position:
     """
     #Automically choose if only 1 choice.
@@ -28,11 +29,11 @@ def select_from_list(iterable, q='Whats your choice?', index_pos=False, layout="
         choice = input('Number of choice: ')
         try:
             choice = 1 if not choice else int(choice)
+            if choice < 1 or choice > len(iterable):
+                print("Enter a number from the list!")
+                choice = ""
         except ValueError:
             print("Invalid choice!")
-            choice = ""
-        if choice < 1 or choice > len(iterable):
-            print("Enter a number from the list!")
             choice = ""
 
     if index_pos:
