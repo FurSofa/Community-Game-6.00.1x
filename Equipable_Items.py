@@ -124,7 +124,7 @@ class Weapon(Equipment):
         dmg = f'{self.att_dmg_min:>3}-{self.att_dmg_max:<3}'
         line2_left = f'Dur: {self.durability:>2}/{self.max_durability:<2} '
         line2_right = f'Damage: {dmg}'
-        return f'{name:<15}{slot:>15}\n{line2_left:<15}{line2_right:>15}'
+        return f'{name:<15}{slot:>15}\n{line2_left:<15}{line2_right:>15}\n'
 
 
 class Armor(Equipment):
@@ -176,9 +176,9 @@ class Armor(Equipment):
     def show_stats(self):
         name = f'{self.quality} {self.type}'
         slot = f'{self.equipable_slot.title():>9}'
-        line2_left = f'Durability: {self.durability:>2}/{self.max_durability:<2} '
+        line2_left = f'Dur: {self.durability:>2}/{self.max_durability:<2} '
         line2_right = f'Defense: {self.defense}'
-        print(f'{name:<19}{slot:>19}\n{line2_left:<20}{line2_right:>20}')
+        return f'{name:<17}{slot:>13}\n{line2_left:<15}{line2_right:>15}\n'
 
 
 # Code designed to generate item variation
