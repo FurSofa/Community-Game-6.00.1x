@@ -1,5 +1,6 @@
 from helper_functions import select_from_list
 from Equipable_Items import *
+from vfx import *
 
 
 class Person:
@@ -105,6 +106,18 @@ class Person:
     @property
     def is_alive(self) -> bool:
         return self.hp > 0
+
+    def hp_bar(self, length=10, color=bcolors.WARNING, f_char='#', m_char='-'):
+        '''
+        returns a string of an hp_bar for current hp / max hp
+        :param length: int: length of the bar without border - number of chars
+        :param color: color code
+        :param f_char: str: char to display for filled ticks
+        :param m_char: str: char to be displayed for not filled ticks
+        :return: hp bar as string
+        '''
+        bar = BarGFX(self.hp, self.max_hp, length=length, color=color, f_char=f_char, m_char=m_char)
+        return bar.bar_str()
 
     def test_equip(self):
         self.inventory.append(Weapon.generate_random(equipable_slot='main hand'))

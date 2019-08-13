@@ -9,7 +9,9 @@ class bcolors:
     BOLD = '\033[1m'
     UNDERLINE = '\033[4m'
 
-# TODO: refactor into function - no need for a class
+
+# TODO: refactor into function - no need for a class?
+# TODO: make color change depending on value
 class BarGFX:
     def __init__(self, current, full, length=10, color=bcolors.OKGREEN, f_char='#', m_char='-'):
         '''
@@ -29,7 +31,7 @@ class BarGFX:
         self.missing_char = m_char
         self.tick_percent = 100 / length
 
-    def draw_bar(self, no_color=False, border='|'):
+    def bar_str(self, no_color=False, border='|'):
         '''
         creates a string of the BarGFX
         :param no_color: bool
@@ -69,7 +71,7 @@ class BarGFX:
         return "|" + hp_bar + "|"
 
     def get_muted_char_len(self):
-        return len(self.draw_bar()) - len(self.draw_bar(no_color=True))
+        return len(self.bar_str()) - len(self.bar_str(no_color=True))
 
 
 # Example setup from the old RPG
