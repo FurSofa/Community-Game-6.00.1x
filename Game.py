@@ -101,7 +101,25 @@ class Game:
                 member.take_dmg(20)
 
     def camp(self):
-        print('\n'*10)
+        def camp_menu():
+            camp_input = combat_select_from_list(['Rest', 'Inventory', '??', 'Continue Adventuring'],
+                                            q=f'What would you like to do:\n')
+            if camp_input == 'Rest':
+                for member in self.party.members:
+                    member.heal(member.max_hp)
+                bear_attack = randint(1, 100)
+                if bear_attack < 3:
+                    print('A bear got into the camp and killed everyone!')
+                    self.party.kill_everyone()
+                camp_menu()
+            elif camp_input == 'inventory':
+                pass
+            elif camp_input == '':
+                pass
+            elif camp_input == '':
+                pass
+        # Actual Camp
+        print('\n'*20)
         print("""    
              )
             (\033[1;33m
@@ -110,21 +128,7 @@ class Game:
         .-'....`-.
         `--'.'`--' """)
         print('  You build a beautiful camp fire.\n')
-        input = combat_select_from_list(['Rest', 'Inventory', '??', 'Continue Adventuring'],
-                                        q=f'What would you like to do: ')
-        if input == 'Rest':
-            for member in self.party.members:
-                member.heal(member.max_hp)
-            bear_attack = randint(1, 100)
-            if bear_attack < 3:
-                print('A bear got into the camp and killed everyone!')
-                self.party.kill_everyone()
-        elif input == 'inventory':
-            pass
-        elif input == '':
-            pass
-        elif input == '':
-            pass
+        camp_menu()
 
     def main_options(self):
         """
