@@ -143,7 +143,7 @@ def print_combat_status(party_1, party_2):
                   f'{hero_hp:<8} '
                   f'{hero_dmg:<13} ', end='\t')
         else:
-            print(f"{' ':<48}", end=" | ")
+            print(f"{' ':<50}", end="   ")
         if e:
             enemy_name = f'{e[0]}, the {e[1]}'
             enemy_hp = f'Hp: {e[2]:>2}/{e[3]:<2}'
