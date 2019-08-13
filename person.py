@@ -107,9 +107,9 @@ class Person:
         return self.hp > 0
 
     def test_equip(self):
-        self.main_hand = Weapon.generate_random()
-        self.chest = Armor.generate_random()
-        self.legs = Armor.generate_random()
+        self.inventory.append(Weapon.generate_random(equipable_slot='main hand'))
+        self.inventory.append(Armor.generate_random(equipable_slot='Chest'))
+        self.inventory.append(Armor.generate_random(equipable_slot='Legs'))
 
     def hero_stat_buff(self):
         self.base_crit_chance = 5
@@ -153,7 +153,7 @@ class Person:
         self.calculate_stats_with_gear()
 
     def display(self):
-        return self.name + ' - ' + self.profession
+        return self.name + ', the ' + self.profession
 
     def __repr__(self):
         max_left = max(len(k) for k in self.__dict__.keys()) + 10
@@ -251,7 +251,7 @@ class Person:
     # Gear and Stat Calculations
     def get_equipped_items(self):
         """
-        :return: list of currently by the player equipped items
+        :return: list of currently equipped items
         """
         items = [self.main_hand,
                  self.off_hand,
@@ -287,6 +287,20 @@ class Person:
         # self.current_crit_dmg = int(self.current_attack_dmg * (self.current_crit_modifier / 100))
 
     #  manage gear
+    def show_gear(self):
+        items = [self.main_hand,
+                 self.off_hand,
+                 self.head,
+                 self.chest,
+                 self.legs,
+                 self.feet,
+                 self.ring,
+                 self.necklace]
+        gear = [item for item in items if item]
+        for i in gear:
+            print(i.show_stats())
+
+
     def change_gear(self):
         if len(self.party.equipment) > 0:
             print('What item do you want to equip?')
@@ -429,4 +443,6 @@ class Person:
 
 
 if __name__ == '__main__':
-    pass
+    p1 = Person.generate_random()
+    p1.test_equip()
+    p1.show_gear()
