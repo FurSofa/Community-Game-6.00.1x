@@ -1,5 +1,6 @@
 # Contains base class for equipable items
 import random
+from vfx import *
 import string
 
 sWeights = (8, 44, 22, 18, 8)
@@ -264,6 +265,18 @@ class Equipment:
     def repair(self):
         # TODO: Add repair function
         self.max_durability = int(self.max_durability * 0.9)
+
+    def hp_bar(self, length=5, color=bcolors.FAIL, f_char='#', m_char='-', no_color=True):
+        '''
+        returns a string of an hp_bar for current hp / max hp
+        :param length: int: length of the bar without border - number of chars
+        :param color: color code
+        :param f_char: str: char to display for filled ticks
+        :param m_char: str: char to be displayed for not filled ticks
+        :return: hp bar as string
+        '''
+        bar = BarGFX(self.durability, self.max_durability, length=length, color=color, f_char=f_char, m_char=m_char)
+        return bar.bar_str(no_color=no_color)
 
 
 class Weapon(Equipment):
