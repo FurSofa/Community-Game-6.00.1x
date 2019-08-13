@@ -376,7 +376,10 @@ class Person:
             choice = 0
         return target_party.members[choice]
 
-    def attack_target(self, target_party, mode='single attack'):
+    def choose_attack(self):
+        return random.choice(self.get_attack_options())
+
+    def attack(self, target_party, mode='single attack'):
         """
         chooses deal_dmg func, based on mode
         executes chosen deal_dmg
@@ -384,13 +387,16 @@ class Person:
         :param mode: str
         :return:
         """
-        physical_attack_modes = ['single attack', ]
-        if mode in physical_attack_modes:
-            target = self.choose_target(target_party)
 
-            if mode == 'single attack':
-                dmg_enemy_received = self.deal_dmg(target)
-
+        target = self.choose_target(target_party)
+        mode = self.choose_attack().lower()
+        if mode == 'single attack':
+            dmg_done = self.deal_dmg(target)
+        elif mode == 'multi attack':
+            dmg_done = self.deal_multi_dmg(target, target_num='all', splash_dmg=75, primary=False)
+        elif mode == 'multi attack with primary target':
+            dmg_done = self.deal_multi_dmg(target, target_num=2, splash_dmg=50)
+        return dmg_done
 
     def choose_battle_action(self, enemy_party):
         """
@@ -400,8 +406,10 @@ class Person:
         :return: -
         """
         possible_actions = ['attack', ]
-        action = 'attack'
-        # self.attack_target(enemy_party, mode=action)
+
+        if self.hp / self.max_hp < 0.05:
+            possible_actions.append('heal')
+        action = random.choice(possible_actions)
         return action
 
     def get_attack_options(self):
@@ -409,13 +417,14 @@ class Person:
         return ['single attack', 'multi attack', 'multi attack with primary target']
 
     def battle_turn(self, enemy_party):
-        action = self.choose_battle_action(enemy_party)
+        action = self.choose_battle_action(enemy_party).lower()
         if action == 'attack':
-            target = self.choose_target(enemy_party)
-            # TODO: refactor to input chosen target, not party
-            # self.attack_target(target, mode=action)  # not needed until we have more options to do dmg
-            dmg_enemy_received = self.deal_dmg(target)
-            print(self.name, 'deals', dmg_enemy_received, 'to', target.name)
+            dmg_done = self.attack(enemy_party)
+            # target = self.choose_target(enemy_party)
+            # # TODO: refactor to input chosen target, not party
+            # # self.attack_target(target, mode=action)  # not needed until we have more options to do dmg
+            # dmg_enemy_received = self.deal_dmg(target)
+            # print(self.name, 'deals', dmg_enemy_received, 'to', target.name)
 
         elif action == 'show hero stats':
             print(self.show_combat_stats())
@@ -428,14 +437,15 @@ class Person:
 
 
     def deal_multi_dmg(self, target, target_num='all', splash_dmg=25, primary=True, rnd_target=True):
-        if target_num == 'all':
+
+        if target_num == 'all' or target_num > len(target.party.members):
             target_num = len(target.party.members)
         members_list = target.party.members[:]
         dmg_received = 0
 
         if primary:
             dmg_dealt = self.calculate_dmg()
-            dmg_received = target.take_dmg(dmg_dealt)
+            dmg_received += target.take_dmg(dmg_dealt)
             print(self.display(), 'deals', dmg_received, 'dmg to', target.display())
             members_list.remove(target)
             target_num -= 1
@@ -458,4 +468,3 @@ class Person:
 
 if __name__ == '__main__':
     p1 = Person.generate_random()
-    p1.test_equip()
