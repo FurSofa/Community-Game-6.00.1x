@@ -133,6 +133,7 @@ def print_combat_status(party_1, party_2):
         else:
             return None
         return stat_list
+
     def member_stat_list_printer(h, e):
 
         if h:
@@ -209,3 +210,7 @@ def alternating_turn_battle(party_1, party_2):
 
 def battle(party_1, party_2):
     pass
+
+
+empty = 'Empty'
+print(f'{empty:^30}')
