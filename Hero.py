@@ -1,8 +1,8 @@
-import person
+from person import *
 from helper_functions import *
 
 
-class Hero(person.Person):
+class Hero(Person):
     def __init__(self, name, profession, level):
         super().__init__(name, profession, level)
         self.type = 'Hero'
@@ -20,46 +20,50 @@ class Hero(person.Person):
         :param target_party: party instance
         :return: person instance
         """
-        print('Choose a target:')
-        return select_from_list(target_party.members)
+        print()
+
+        return combat_select_from_list(target_party.members, False, 'Choose a target:')
 
     def choose_battle_action(self, enemy_party):
         """
-        ENDPOINT for battle
         lets player choose what to do in their turn and calls appropriate methods
         :param enemy_party: party instance
         :return: -
         """
         #  TODO: find a place to store possible actions
-        possible_actions = ['basic attack', ]
-        if self.main_hand:
-            possible_actions.append('main weapon attack')
-        if self.off_hand:
-            if self.off_hand.gear_type == 'weapon':
-                possible_actions.append('off hand weapon attack')
-        # if len(self.party.equipment) > 0:
-        #     possible_actions.append('change gear')
-        #  basic attack
-        #  main weapon attack
-        #  spell
-        #  inventory
-        possible_actions.append('Show Hero Stats')
+        possible_actions = ['basic attack', 'Heal', 'Show Hero Stats', ]
         action = combat_select_from_list(possible_actions)
-        if action == 'change gear':
+        if action.lower() == 'change gear':
             self.change_gear()
             self.choose_battle_action(enemy_party)
-        elif action == 'Show Hero Stats':
+        elif action.lower() == 'Show Hero Stats':
             print(self.show_combat_stats())
             self.choose_battle_action(enemy_party)
-        # self.attack_target(enemy_party, mode=action)
+        elif action.lower() == 'heal':
+            self.heal(10)
+        else:
+            self.attack_target(enemy_party, mode=action)
         return action
 
+
 # Testing Code!
-# p = person.Person.generate('norbnorb', 'Mage')
-# p.profession_stat_augment()
-# print(p)
-#
-# w = Hero.generate('norbnorb', 'Warrior')
-# w.profession_stat_augment()
-# print(w)
-# print(w.att_dmg_min)
+if __name__ == '__main__':
+    p = Person.generate('norbnorb', 'Mage')
+    p.stat_growth()
+    print(p)
+    w = Hero.generate('norbnorb', 'Warrior')
+    w.test_equip()
+    w.calculate_stats()
+    print(w.att_dmg_min, end='-')
+    print(w.att_dmg_max)
+    print(w.calculate_dmg(), end=' ')
+    print(w.calculate_dmg(), end=' ')
+    print(w.calculate_dmg(), end=' ')
+    print(w.calculate_dmg(), end=' ')
+    print(w.calculate_dmg(), end=' ')
+    print(w.calculate_dmg(), end=' ')
+    print(w.calculate_dmg(), end=' ')
+    print(w.calculate_dmg(), end=' ')
+    print(w.calculate_dmg(), end=' ')
+    print(w.calculate_dmg(), end=' ')
+    print(w.calculate_dmg(), end=' ')

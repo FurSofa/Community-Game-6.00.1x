@@ -37,8 +37,12 @@ class Party:
         for i in reversed(delete_index):
             self.dead_members.append(self.members.pop(i))
 
+    def heal_everyone(self):
+        for member in self.members:
+            member.heal(member.max_hp)
+
     def party_members_info(self):
-        print('=' * 6, 'Party Members Info', '=' * 6)
+        print('\n', '=' * 6, 'Party Members Info', '=' * 6)
         for member in self.members:
             print(f'- {member.name}, {member.profession} Lv: {member.level} {member.hp}/{member.max_hp}')
 
@@ -104,8 +108,8 @@ class Party:
         :param member: Person or Hero class object
         :return:
         """
-        if self.has_hero():
-            print(f'{member.name}, the {member.profession} joins the party!')
+        print(f'{member.name}, the {member.profession} joins the party!')
+        member.party = self
         self.members.append(member)
         if member.hero:
             self.hero = member
@@ -124,7 +128,7 @@ class Party:
         entry point
         lets player choose where to put new gear and starts the appropriate methods
         :param new_gear: new item to equip
-        :return: -
+        :return: -quality='Common'
         """
         #  TODO: display new and old stats to compare (for item type)
         print('You found new equipment!')

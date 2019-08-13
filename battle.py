@@ -32,7 +32,7 @@ class Battle:
                       f'{hero_hp:<8} '
                       f'{hero_dmg:<13} ', end='\t')
             else:
-                print(f"{' ':<29}", end=" | ")
+                print(f"{' ':<46}", end="\t")
             if e:
                 enemy_name = f'{e[0]}, the {e[1]}'
                 enemy_hp = f'Hp: {e[2]:>2}/{e[3]:<2}'
@@ -56,7 +56,7 @@ class Battle:
             member_stat_list_printer(member_stat_list_generator(hero), member_stat_list_generator(enemy))
 
     def single_unit_turn(self, unit, enemy_party):
-        print(unit, 'has to choose an action.')
+        print(unit.name, 'has to choose an action.')
         unit.battle_turn(enemy_party)
         enemy_party.remove_dead()
         return not enemy_party.has_units_left
@@ -133,7 +133,6 @@ def print_combat_status(party_1, party_2):
         else:
             return None
         return stat_list
-
     def member_stat_list_printer(h, e):
 
         if h:
@@ -163,43 +162,17 @@ def print_combat_status(party_1, party_2):
     print('=' * 19, end='')
     print('')
     print('=' * 100)
-
     for hero, enemy in zip_longest(party_1.members, party_2.members):
         member_stat_list_printer(member_stat_list_generator(hero), member_stat_list_generator(enemy))
 
 
 def single_unit_turn(unit, enemy_party):
-    print('\n', unit.show_combat_stats(), 'has to choose an action.')
     unit.battle_turn(enemy_party)
     enemy_party.remove_dead()
     return not enemy_party.has_units_left
 
 
-def whole_party_turn_battle(party_1, party_2):
-    rounds = 0
-    print('A Battle has started!')
-    while party_1.has_units_left and party_2.has_units_left:
-        rounds += 1
-        print('')
-        print('Round:', rounds)
-
-        if party_1.has_units_left:
-            for member in party_1.members:
-                no_enemies_left = single_unit_turn(member, party_2)
-                if no_enemies_left:
-                    break
-        if party_2.has_units_left:
-            for member in party_2.members:
-                no_enemies_left = single_unit_turn(member, party_1)
-                if no_enemies_left:
-                    break
-    if party_1.has_units_left:
-        print('Your party has won the battle!')
-    else:
-        print('Enemy party has won the battle!')
-    return party_1.has_units_left
-
-    # TODO figure out how to justify each party output
+# TODO figure out how to justify each party output
 
 
 def alternating_turn_battle(party_1, party_2):
@@ -207,7 +180,7 @@ def alternating_turn_battle(party_1, party_2):
     print('A Battle has started!')
     while party_1.has_units_left and party_2.has_units_left:
         rounds += 1
-        print('Round:', rounds)
+        print('\nRound:', rounds)
         print_combat_status(party_1, party_2)
         for i in range(max(len(party_1.members), len(party_2.members))):
             if i < len(party_1.members):
@@ -221,10 +194,13 @@ def alternating_turn_battle(party_1, party_2):
     if party_1.has_units_left:
         party_1.party_members_info()
         print('Party 1 has won the battle!')
+        input('Congrats! Press Enter!')
         for member in party_1.members:
             member.add_xp(party_2.party_worth_xp())
         party_2.__del__()
-        input('Congrats! Press Enter!')
+
+        input('Press Enter!')
+
     else:
         party_2.party_members_info()
         print('Party 2 has won the battle!')
