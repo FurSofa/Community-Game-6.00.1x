@@ -192,7 +192,8 @@ class Party:
             pass
 
     def display_inventory(self):
-        pass
+        item_cards = [item.item_card for item in self.inventory]
+
 
     def add_item(self, item):
         self.inventory.append(item)

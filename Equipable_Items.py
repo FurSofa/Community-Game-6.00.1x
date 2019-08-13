@@ -136,7 +136,8 @@ class Equipment:
         self.crit_muliplier = round(crit_multiplier * self.quality_val)
 
         self._max_left = max(len(k) for k in self.__dict__.keys()) + 10
-        self.item_card = self.item_card(self)
+
+        self.item_card = self.generate_item_card(self)
 
     @classmethod
     def generate(cls, quality='Common', quality_val=1, etype='Weapon', equipable_slot='main hand', value=0,
