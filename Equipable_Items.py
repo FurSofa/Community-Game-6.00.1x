@@ -14,6 +14,13 @@ sValue = {'Rusty': 0.9, 'Common': 1,
 class Consumable:
     pass
 
+class Item_card:
+    def __init__(self):
+        self.item_card = None
+
+    def generate(self):
+        pass
+
 
 class Equipment:
     def __init__(self, quality, quality_value=1, etype='none', equipable_slot='none', value=0,

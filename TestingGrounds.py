@@ -8,58 +8,51 @@ from party import Party
 from battle import *
 from Equipable_Items import *
 
-['Great', 'Weapon' 'Main Hand' '10/' '10' '2-' '3']
-['Legendary', 'Weapon' 'Off Hand' '10/' '10' '2-' '3']
-['Magical', 'Armor' 'Head' '5']
+if __name__ == '__main__':
+    print('===  From Test File  ===')
+    h = Party()
+    h.add_item(Weapon.generate_random())
+    h.add_item(Armor.generate_random())
+    h.add_item(Armor.generate_random())
+    h.show_gear(h.inventory)
 
-def print_combat_status(party_1, party_2):
-    def item_stat_list_generator(i):
-        if i:
-            stat_list = []
-            stat_list.append(i.quality.title())
-            stat_list.append(i.etype.title())
-            stat_list.append(i.equipable_slot.title())
-            stat_list.append(i.)
-            stat_list.append(i.)
-            stat_list.append(i.)
-        else:
-            return None
-        return stat_list
-    def member_stat_list_printer(x, y, z):
+class item:
+    def __init__(self, quality, kind, equipable_slot, att_dmg_min="NA", att_dmg_max="NA",\
+                durability="NA", max_durability="NA"):
+        self.type = kind
+        self.quality = quality
+        self.equipable_slot = equipable_slot
+        self.att_dmg_min = att_dmg_min
+        self.att_dmg_max = att_dmg_max
+        self.durability = durability
+        self.max_durability = max_durability
 
-        if x:
-            x_name = f'{x[0]} {x[1]}'
+    def show_stats(self):
+        name = f'{self.quality} {self.type}'
+        slot = f'{self.equipable_slot:>9}'
+        dmg = "" if self.att_dmg_max == "NA" else f'{self.att_dmg_min:>3}-{self.att_dmg_max:<3}'
+        line2_left = "" if self.durability == "NA" else f'Dur: {self.durability:>2}/{self.max_durability:<2}'
+        line2_right = f'Damage: {dmg}' if dmg else ""
+        return f'{name:<15}{slot:>15}\n{line2_left:<15}{line2_right:>15}'
 
-            print(f'+ {hero_name:^23} '
-                  f'{hero_hp:<8} '
-                  f'{hero_dmg:<13} ', end='\t')
-        else:
-            print(f"{' ':<50}", end="   ")
-        if e:
-            enemy_name = f'{e[0]}, the {e[1]}'
-            enemy_hp = f'Hp: {e[2]:>2}/{e[3]:<2}'
-            enemy_dmg = f'Dmg: {e[4]:>2}/{e[5]:<2}'
-            print(f'- {enemy_name:^23} '
-                  f'{enemy_hp:<8} '
-                  f'{enemy_dmg:<13} ', end='    \n')
-        else:
-            print()
-        print(f'{item_1_name}{}{}')
+hat = item("Dirty", "Hat", "Head", "NA", "NA", "13", "100")
+necklace = item("Gold", "Necklace", "Neck", "NA", "NA", "NA", "NA")
+sword_of_a_thousand_truths = item("Epic", "Sword", "Main Hand", "100",\
+                                  "100","3000","3000")
 
-    print('=' * 17, end=' ')
-    print('Hero Party', end=' ')
-    print('=' * 18, end='| |')
-    print('=' * 18, end=' ')
-    print('Enemy Party', end=' ')
-    print('=' * 19, end='')
-    print('')
-    print('=' * 100)
-    for hero, enemy in zip_longest(party_1.members, party_2.members):
-        member_stat_list_printer(item_stat_list_generator(list_1), item_stat_list_generator(list_2))
+card1 = hat.show_stats()
+card2 = necklace.show_stats()
+card3 = sword_of_a_thousand_truths.show_stats()
+print("┌" + "─" * 32 + "┬" + "─" * 32 + "┬" + "─" * 32 + "┐")
+print("\n".join(f'│ {x} │ {y} │ {z} │' for x,y,z in zip(card1.splitlines(),\
+                                                    card2.splitlines(),\
+                                                    card3.splitlines())))
+print("└" + "─" * 32 + "┴" + "─" * 32 + "┴" + "─" * 32 + "┘")
 
-print('===  From Test File  ===')
-h = Party()
-h.add_item(Weapon.generate_random())
-h.add_item(Armor.generate_random())
-h.add_item(Armor.generate_random())
-h.show_gear(h.inventory)
+
+"""
+┌───────────────────────────────┬────────────────────────────────┬───────────────────────────────┐ # len(98)
+│Dirty Hat                 Head │ Gold Necklace             Neck │ Epic Sword           Main Hand│
+│Dur: 13/100    Damage:  NA-NA  │ Dur: NA/NA     Damage:  NA-NA  │ Dur: 3000/3000 Damage: 100-100│
+└───────────────────────────────┴────────────────────────────────┴───────────────────────────────┘
+"""
