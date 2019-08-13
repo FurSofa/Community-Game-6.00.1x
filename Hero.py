@@ -31,18 +31,18 @@ class Hero(Person):
         :return: -
         """
         #  TODO: find a place to store possible actions
-        possible_actions = ['basic attack', 'Heal', 'Show Hero Stats', ]
-        action = combat_select_from_list(possible_actions)
-        if action.lower() == 'change gear':
-            self.change_gear()
-            self.choose_battle_action(enemy_party)
-        elif action.lower() == 'Show Hero Stats':
-            print(self.show_combat_stats())
-            self.choose_battle_action(enemy_party)
-        elif action.lower() == 'heal':
-            self.heal(10)
-        else:
-            self.attack_target(enemy_party, mode=action)
+        possible_actions = ['attack', 'Heal', 'Show Hero Stats', ]
+        action = combat_select_from_list(possible_actions, q='What do you want to do?').lower()
+        # if action.lower() == 'change gear':
+        #     self.change_gear()
+        #     self.choose_battle_action(enemy_party)
+        # elif action.lower() == 'Show Hero Stats':
+        #     print(self.show_combat_stats())
+        #     self.choose_battle_action(enemy_party)
+        # elif action.lower() == 'heal':
+        #     self.heal(10)
+        # else:
+        #     self.attack_target(enemy_party, mode=action)
         return action
 
 
