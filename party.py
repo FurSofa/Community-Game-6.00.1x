@@ -275,7 +275,8 @@ class Party:
             old_item = char.equip_slots[slot]
             self.inventory.append(old_item)
         char.equip_slots[slot] = item
-        self.inventory.remove(self.inventory.index(item))
+        if item in self.inventory:
+            self.inventory.remove(self.inventory.index(item))
         char.calculate_stats()
 
 
