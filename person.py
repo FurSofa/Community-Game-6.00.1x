@@ -57,7 +57,7 @@ class Person:
 
         self.equip_slots = {'main hand': Weapon.generate(quality='Common', quality_val=1, etype='Weapon',
                                                          equipable_slot='main hand',
-                                                         att_dmg_min=1, att_dmg_max=5),
+                                                         att_dmg_min=1, att_dmg_max=3),
                             'off hand': None,
                             'head': None,
                             'chest': None,
@@ -132,10 +132,6 @@ class Person:
                      m_color=m_color, f_char=f_char, m_char=m_char)
         return bar.bar_str(no_color=no_color, border=border)
 
-    def hero_stat_buff(self):
-        self.base_crit_chance = 5
-        self.base_crit_muliplier = 130
-
     def stat_growth(self):
         self.base_str += 1
         self.base_dex += 1
@@ -183,24 +179,15 @@ class Person:
              for k, v in self.__dict__.items() if v and k[0] != '_'])
 
     def __str__(self):
-        # return f'\n{self.name},the {self.profession}\n' \
-        #     f'Level:\t{self.level:>4}  XP: {self.xp:>6}/{self.xp_to_lvl_up}\n' \
-        #     f'HP:\t   {self.hp}/{self.max_hp:<4}\n' \
-        #     f'Str:\t   {self.str:<3}Damage: {self.damage:>6}\n' \
-        #     f'Dex:\t   {self.dex:<3}Crit:  {self.crit_chance}%/{self.crit_muliplier}%\n' \
-        #     f'Int:\t   {self.int:<3}Defence: {self.defense:>5}\n'
-        name = f'{self.name}, the {self.profession}'
-        hp = f'Hp: {self.hp:>2}/{self.max_hp:<2}'
-        dmg = f'Dmg: {self.att_dmg_min:>2}/{self.att_dmg_max:<2}'
-        return f'{name}'
+        return f'{self.name}, the {self.profession}'
 
     def show_stats(self):
-        return (f'\n{self.name},the {self.profession}\n'
-                f'Level:\t{self.level:>4}  XP: {self.xp:>6}/{self.next_level}\n'
-                f'HP:\t   {self.hp}/{self.max_hp:<4}\n'
-                f'Str:\t   {self.str:<3}Damage: {self.att_dmg_min:>3}/{self.att_dmg_max:<3}\n'
-                f'Dex:\t   {self.dex:<3}Crit:  {self.crit_chance}%/{self.crit_muliplier}%\n'
-                f'Int:\t   {self.int:<3}Defence: {self.defense:>5}\n')
+        print(f'\n{self.name},the {self.profession}\n'
+              f'Level:\t{self.level:>4}  XP: {self.xp:>6}/{self.next_level}\n'
+              f'HP:\t   {self.hp}/{self.max_hp:<4}\n'
+              f'Str:\t   {self.str:<3}Damage: {self.att_dmg_min:>3}/{self.att_dmg_max:<3}\n'
+              f'Dex:\t   {self.dex:<3}Crit:  {self.crit_chance}%/{self.crit_muliplier}%\n'
+              f'Int:\t   {self.int:<3}Defence: {self.defense:>5}\n')
 
     def show_combat_stats(self):
         name = f'{self.name}, the {self.profession}'
