@@ -6,6 +6,7 @@ from Equipable_Items import *
 
 class Party:
     def __init__(self, ):
+        self.game = None
         self.hero = None
         self.members = []
         self.dead_members = []

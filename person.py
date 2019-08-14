@@ -458,7 +458,7 @@ class Person:
             print(self.show_combat_stats())
             self.battle_turn(enemy_party)
         elif action == 'change gear':
-            self.change_gear()
+            # self.change_gear()
             self.battle_turn(enemy_party)
         elif action == 'heal':
             self.heal(self.calculate_dmg())

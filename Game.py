@@ -13,6 +13,7 @@ class Game:
                                      'What mode would you like? ** Recommended: Normal **', False, True)
         self.difficulty = select_from_list(['Easy', 'Medium', 'Hard'], 'Choose your difficulty:')
         print(f'You selected: {self.difficulty}!')
+        self.party.game = self
 
     @staticmethod
     def create_character(name='Jeb', profession='Astronaut', level=1):

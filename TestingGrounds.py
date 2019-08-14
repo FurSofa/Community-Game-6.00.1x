@@ -80,7 +80,15 @@ def print_member_info_cards(members):
     if len(members) > 6:
         print("├" + "─" * 23 + "┼" + "─" * 23 + "┼" + "─" * 23 + "┼" + "─" * 23 + "┤")
         print("\n".join(f'│ {w} │ {x} │ {y} │ {z} │ ' for w, x, y, z in zip(*cards[12:16])))
-    print("└" + "─" * 23 + "┴" + "─" * 23 + "┴" + "─" * 23+ "┴" + "─" * 23 + "┘")
+    print("└" + "─" * 23 + "┴" + "─" * 23 + "┴" + "─" * 23 + "┴" + "─" * 23 + "┘")
+
+
+def display_single_member_item_card(member):
+    info_card = member.info_card()
+    print('-' * 8, 'Person', '-' * 9)
+    print("┌" + "─" * 23 + "┐")
+    print("\n".join(f'│ {x} │' for x in info_card))
+    print("└" + "─" * 23 + "┘")
 
 
 if __name__ == '__main__':
@@ -89,12 +97,9 @@ if __name__ == '__main__':
     h.add_member(Person.generate_random())
     h.add_member(Person.generate_random())
     h.add_member(Person.generate_random())
-    h.add_member(Person.generate_random())
-    h.add_member(Person.generate_random())
 
     h.add_item(Weapon.generate(quality='Legendary', equipable_slot='main hand', att_dmg_max=20))
     h.add_item(Armor.generate(equipable_slot='Chest'))
 
+    h.print_members_info_cards()
     h.display_single_member_item_card(h.member(0))
-
-
