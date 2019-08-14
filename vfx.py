@@ -13,18 +13,21 @@ class bcolors:
 # TODO: refactor into function - no need for a class?
 # TODO: make color change depending on value
 class BarGFX:
-    def __init__(self, current, full, length=10, color=bcolors.OKGREEN, f_char='#', m_char='-'):
+    def __init__(self, current, full, length=10, f_color=bcolors.OKGREEN, m_color=bcolors.FAIL,
+                 f_char='#', m_char='-'):
         '''
 
         :param current: int: current value - eg hp
         :param full: int: max value - eg max_hp
         :param length: int: length of the bar without border - number of chars
-        :param color: color code
+        :param f_color: color code : for filled ticks
+        :param m_color: color code : for missing ticks
         :param f_char: str: char to display for filled ticks
         :param m_char: str: char to be displayed for not filled ticks
         '''
         self.length = length
-        self.color = color
+        self.fill_color = f_color
+        self.missing_color = m_color
         self.current = current
         self.full = full
         self.fill_char = f_char
@@ -40,10 +43,12 @@ class BarGFX:
         '''
         hp_bar = ""
         if no_color:
-            color = ''
+            f_color = ''
+            m_color = ''
             end_color = ''
         else:
-            color = self.color
+            f_color = self.fill_color
+            m_color = self.missing_color
             end_color = bcolors.ENDC
 
         hp_bar_ticks = (self.current / self.full) * 100 / self.tick_percent
@@ -52,11 +57,12 @@ class BarGFX:
             hp_bar += self.fill_char
             hp_bar_ticks -= 1
 
-        while len(hp_bar) < self.length:
+        hp_bar += m_color
+
+        while len(hp_bar) < self.length+len(m_color):
             hp_bar += self.missing_char
 
-        return (border + color + hp_bar +
-                end_color + border)
+        return (border + f_color + hp_bar + end_color + border)
 
     def draw_bar_plain(self):
         hp_bar = ""
