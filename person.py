@@ -3,6 +3,7 @@ from Equipable_Items import *
 from vfx import *
 
 
+
 class Person:
     """
     access points:
@@ -418,15 +419,21 @@ class Person:
         :return: -
         """
         possible_actions = ['attack', ]
-
-        if self.hp / self.max_hp < 0.05:
+        if self.party.game.difficulty == 'Medium':
+            heal_under = 0.2
+        elif self.party.game.difficulty == 'Hard':
+            heal_under = 0.3
+        else:
+            heal_under = 0.05
+        if self.hp / self.max_hp < heal_under:
             possible_actions.append('heal')
         action = random.choice(possible_actions)
         return action
 
     def get_attack_options(self):
         # TODO: make a list of options based on <???>
-        return ['single attack', 'multi attack', 'multi attack with primary target']
+        # return ['single attack', 'multi attack', 'multi attack with primary target']  # full list disabled for now
+        return ['single attack']
 
     def battle_turn(self, enemy_party):
         action = self.choose_battle_action(enemy_party).lower()

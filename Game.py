@@ -8,7 +8,7 @@ from battle import *
 
 class Game:
     def __init__(self):
-        self.party = Party.generate()
+        self.party = Party.generate(self)
         self.autobattle = 0
         self.difficulty = select_from_list(['Easy', 'Medium', 'Hard'], 'Choose your difficulty:')
         print(f'You selected: {self.difficulty}!')
@@ -76,7 +76,7 @@ class Game:
                 print('You bid the traveler farewell and continue on your way.\n')
         elif event == 1:
             # Battle
-            enemy_party = Party.generate()
+            enemy_party = Party.generate(self)
             x = 0
             for x in range(randrange(len(self.party.members) - 1, len(self.party.members) + 1)):
                 enemy_party.add_member(
@@ -85,7 +85,7 @@ class Game:
             alternating_turn_battle(self.party, enemy_party)
         elif event == 2:
             # Battle
-            enemy_party = Party.generate()
+            enemy_party = Party.generate(self)
             x = 0
             for x in range(randrange(len(self.party.members) - 1, len(self.party.members) + 1)):
                 enemy_party.add_member(
