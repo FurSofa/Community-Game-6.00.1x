@@ -55,16 +55,16 @@ class Person:
         self.inventory = []
         self.money = money
 
-        self.equip_slots = {'main hand': Weapon.generate(quality='Common', quality_val=1, etype='Weapon',
-                                                         equipable_slot='main hand',
+        self.equip_slots = {'Main Hand': Weapon.generate(quality='Common', quality_val=1, etype='Weapon',
+                                                         equipable_slot='Main Hand',
                                                          att_dmg_min=1, att_dmg_max=3),
-                            'off hand': None,
-                            'head': None,
-                            'chest': None,
-                            'legs': None,
-                            'feet': None,
-                            'ring': None,
-                            'necklace': None,
+                            'Off Hand': None,
+                            'Head': None,
+                            'Chest': None,
+                            'Legs': None,
+                            'Feet': None,
+                            'Ring': None,
+                            'Necklace': None,
                             }
         # Calculate stats and gear
         self.stat_growth()
@@ -297,14 +297,14 @@ class Person:
             self.__dict__[key] = stats[key] + sum([item.__dict__[key] for item in gear])
 
     def show_gear(self):
-        items = [self.equip_slot['main hand'],
-                 self.equip_slot['off hand'],
-                 self.equip_slot['head'],
-                 self.equip_slot['chest'],
-                 self.equip_slot['legs'],
-                 self.equip_slot['feet'],
-                 self.equip_slot['ring'],
-                 self.equip_slot['necklace']]
+        items = [self.equip_slot['Main Hand'],
+                 self.equip_slot['Off Hand'],
+                 self.equip_slot['Head'],
+                 self.equip_slot['Chest'],
+                 self.equip_slot['Legs'],
+                 self.equip_slot['Feet'],
+                 self.equip_slot['Ring'],
+                 self.equip_slot['Necklace']]
         gear = [item for item in items if item]
         for i in gear:
             print(i.item)
@@ -323,17 +323,17 @@ class Person:
     #     :return:
     #     """
     #     if new_gear.gear_type == 'weapon':
-    #         if self.equip_slot['main hand']:
+    #         if self.equip_slot['Main Hand']:
     #             print('-----------------------')
     #             print('Current First Hand Weapon:')
-    #             self.equip_slot['main hand'].show_stats()
+    #             self.equip_slot['Main Hand'].show_stats()
     #         else:
     #             self.equip_gear(new_gear)
     #             return
-    #         if self.equip_slot['off hand']:
+    #         if self.equip_slot['Off Hand']:
     #             print('-----------------------')
     #             print('Current Off Hand Weapon:')
-    #             self.equip_slot['off hand'].show_stats()
+    #             self.equip_slot['Off Hand'].show_stats()
     #     self.equip_gear(new_gear)
     #
     # def equip_gear(self, new_gear, slot_to_change='choose'):

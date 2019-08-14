@@ -125,7 +125,7 @@ class Game:
             print('You need a craftsman.')
             self.camp()
         elif camp_input == 'Continue Adventuring':
-            print('You head back out into the wilds..')
+            print('You Head back out into the wilds..')
 
     def main_options(self):
         """

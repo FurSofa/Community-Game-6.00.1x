@@ -218,7 +218,6 @@ class Party:
         if len(self.inventory) > 12:
             print("├" + "─" * 32 + "┼" + "─" * 32 + "┼" + "─" * 32 + "┤")
             print("\n".join(f'│ {x} │ {y} │ {z} │ ' for x, y, z in zip(*cards[12:15])))
-
         print("└" + "─" * 32 + "┴" + "─" * 32 + "┴" + "─" * 32 + "┘")
 
     @staticmethod

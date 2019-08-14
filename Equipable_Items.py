@@ -52,7 +52,7 @@ class Equipment:
         self._max_left = max(len(k) for k in self.__dict__.keys()) + 10
 
     @classmethod
-    def generate(cls, quality='Common', quality_val=1, etype='Weapon', equipable_slot='main hand', value=0,
+    def generate(cls, quality='Common', quality_val=1, etype='Weapon', equipable_slot='Main Hand', value=0,
                  max_durability=10, strength=0, dexterity=0, intelligence=0,
                  max_hp=0, defense=0, att_dmg_min=0, att_dmg_max=0, damage=0,
                  crit_chance=0, crit_multiplier=0):
@@ -63,8 +63,6 @@ class Equipment:
                    max_hp, defense, att_dmg_min, att_dmg_max, damage,
                    crit_chance, crit_multiplier)
 
-
-
     def __repr__(self):
         return self.type + ': ' + self.equipable_slot
 
@@ -74,7 +72,7 @@ class Equipment:
              for k, v in self.__dict__.items()])
 
     def __str__(self):
-        return f'{self.quality.title()} {self.type.title()}: {self.equipable_slot.title()}'
+        return f'{self.quality} {self.type}: {self.equipable_slot}'
 
     def item_card(self):
 
@@ -198,7 +196,7 @@ class Equipment:
 
 
 class Weapon(Equipment):
-    def __init__(self, quality, quality_val=1, etype='Weapon', equipable_slot='main hand', value=0,
+    def __init__(self, quality, quality_val=1, etype='Weapon', equipable_slot='Main Hand', value=0,
                  max_durability=10, strength=0, dexterity=0, intelligence=0,
                  max_hp=0, defense=0, att_dmg_min=1, att_dmg_max=3, damage=0,
                  crit_chance=1, crit_multiplier=4):
@@ -208,7 +206,7 @@ class Weapon(Equipment):
                                      crit_chance, crit_multiplier)
 
     @classmethod
-    def generate(cls, quality='Common', quality_val=1, etype='Weapon', equipable_slot='main hand', value=0,
+    def generate(cls, quality='Common', quality_val=1, etype='Weapon', equipable_slot='Main Hand', value=0,
                  max_durability=10, strength=0, dexterity=0, intelligence=0,
                  max_hp=0, defense=0, att_dmg_min=1, att_dmg_max=2, damage=0,
                  crit_chance=0, crit_multiplier=0):
@@ -218,15 +216,15 @@ class Weapon(Equipment):
                    crit_chance, crit_multiplier)
 
     @classmethod
-    def generate_random(cls, etype='Weapon', equipable_slot='main hand', value=0, max_durability=10, strength=0,
+    def generate_random(cls, etype='Weapon', equipable_slot='Main Hand', value=0, max_durability=10, strength=0,
                         dexterity=0, intelligence=0,
                         max_hp=0, defense=0, att_dmg_min=1, att_dmg_max=2, damage=0,
                         crit_chance=0, crit_multiplier=0):
         quality = random.choices(sList, weights=sWeights, k=1)[0]
         quality_val = sValue.get(quality)
-        equipable_slot = random.choice(['main hand', 'off hand'])
+        equipable_slot = random.choice(['Main Hand', 'Off Hand'])
         att_dmg_min *= quality_val
-        att_dmg_max = 1 + (random.randint(1, 3) * quality_val)
+        att_dmg_max = (1 + random.randint(1, 3)) * quality_val
 
         return cls(quality, quality_val, etype, equipable_slot, value,
                    max_durability, strength, dexterity, intelligence,
@@ -243,7 +241,7 @@ class Weapon(Equipment):
 
 
 class Armor(Equipment):
-    def __init__(self, quality='Common', quality_val=1, etype='Armor', equipable_slot='chest', value=0,
+    def __init__(self, quality='Common', quality_val=1, etype='Armor', equipable_slot='Chest', value=0,
                  max_durability=10, strength=0, dexterity=0, intelligence=0,
                  max_hp=0, defense=1, att_dmg_min=0, att_dmg_max=0, damage=0,
                  crit_chance=0, crit_multiplier=0):
@@ -253,7 +251,7 @@ class Armor(Equipment):
                                     crit_chance, crit_multiplier)
 
     @classmethod
-    def generate(cls, quality='Common', quality_val=1, etype='Armor', equipable_slot='chest', value=0,
+    def generate(cls, quality='Common', quality_val=1, etype='Armor', equipable_slot='Chest', value=0,
                  max_durability=10, strength=0, dexterity=0, intelligence=0, max_hp=0, defense=1,
                  att_dmg_min=0, att_dmg_max=0, damage=0, crit_chance=0, crit_multiplier=0):
         return cls(quality, quality_val, etype, equipable_slot, value,
@@ -262,32 +260,19 @@ class Armor(Equipment):
                    crit_chance, crit_multiplier)
 
     @classmethod
-    def generate_random(cls, etype='Armor', equipable_slot='chest', value=0, max_durability=10,
-                        strength=0, dexterity=0, intelligence=0, max_hp=0, defense=0,
+    def generate_random(cls, etype='Armor', equipable_slot='Chest', value=0, max_durability=10,
+                        strength=0, dexterity=0, intelligence=0, max_hp=0, defense=1,
                         att_dmg_min=0, att_dmg_max=0, damage=0, crit_chance=0, crit_multiplier=0):
         quality = random.choices(sList, weights=sWeights, k=1)[0]
         quality_val = sValue.get(quality)
-        equipable_slot = random.choice(['head', 'chest', 'legs', 'feet'])
-        defense = 1 + random.randint(0, 2)
+        equipable_slot = random.choice(['Head', 'Chest', 'Legs', 'Feet'])
+        defense = (1 + random.randint(0, 2)) * quality_val
 
         return cls(quality, quality_val, etype, equipable_slot, value,
                    max_durability, strength, dexterity, intelligence,
                    max_hp, defense, att_dmg_min, att_dmg_max, damage,
                    crit_chance, crit_multiplier)
 
-    @classmethod
-    def generate_random1(cls, etype='Armor', equipable_slot='chest', value=0, max_durability=10,
-                         strength=0, dexterity=0, intelligence=0, max_hp=0, defense=0,
-                         att_dmg_min=0, att_dmg_max=0, damage=0, crit_chance=0, crit_multiplier=0):
-        quality = random.choices(sList, weights=sWeights, k=1)[0]
-        quality_val = sValue.get(quality)
-        equipable_slot = random.choice(['head', 'chest', 'legs', 'feet'])
-        defense = 1 + random.randint(0, 2)
-
-        return cls(quality, quality_val, etype, equipable_slot, value,
-                   max_durability, strength, dexterity, intelligence,
-                   max_hp, defense, att_dmg_min, att_dmg_max, damage,
-                   crit_chance, crit_multiplier)
 
     def show_stats(self):
         name = f'{self.quality} {self.type}'
@@ -295,15 +280,6 @@ class Armor(Equipment):
         line2_left = f'Dur: {self.durability:>2}/{self.max_durability:<2} '
         line2_right = f'Defense: {self.defense}'
         return f'{name:<17}{slot:>13}\n{line2_left:<15}{line2_right:>15}\n'
-
-
-# Code designed to generate item variation
-# def generate_quality():
-#     return random.choices(list(sValue.keys()), weights=sWeights, k=1)[0]
-# def generate_item_variable_str(string_length=5):
-#     """Generate a random string of fixed length """
-#     letters = string.ascii_lowercase
-#     return ''.join(random.sample(letters, string_length))
 
 
 def create_random_item(class_type=1):
