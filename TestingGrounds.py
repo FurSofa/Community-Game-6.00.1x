@@ -69,6 +69,16 @@ def print_inventory(inventory):
     print("└" + "─" * 32 + "┴" + "─" * 32 + "┴" + "─" * 32 + "┘")
 
 
+def print_single_item_card(item):
+    x = item.item_card()
+    print("┌" + "─" * 30 + "┐")
+    print("\n".join(f'│ {x[0]} │'))
+    print("├" + "─" * 30 + "┤")
+    print("\n".join(f'│ {x[1]} │'))
+    print("├" + "─" * 30 + "┤")
+    print("\n".join(f'│ {x[2]} │'))
+    print("└" + "─" * 30 + "┘")
+
 if __name__ == '__main__':
     print('===  From Test File  ===')
     h = Party()
@@ -81,6 +91,5 @@ if __name__ == '__main__':
     h.add_item(Armor.generate_random())
     h.add_item(Armor.generate_random())
     h.add_item(Armor.generate_random())
-    h.print_inventory()
-    print_inventory(h.inventory)
-
+    h.display_inventory()
+    h.display_single_item_card(h.inventory[0])

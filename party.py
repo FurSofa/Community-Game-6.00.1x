@@ -231,6 +231,12 @@ class Party:
         print("\n".join(f'│ {x} │ {y} │ {z} │' for x, y, z in zip(*cards[6:])))
         print("└" + "─" * 32 + "┴" + "─" * 32 + "┴" + "─" * 32 + "┘")
 
+    def display_single_item_card(self, item):
+        item_card = item.item_card()
+        print('-' * 14, 'Item', '-' * 14)
+        print("┌" + "─" * 32 + "┐")
+        print("\n".join(f'│ {x} │' for x in item_card))
+        print("└" + "─" * 32 + "┘")
 
     def add_item(self, item):
         """
