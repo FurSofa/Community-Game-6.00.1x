@@ -181,6 +181,35 @@ class Person:
     def __str__(self):
         return f'{self.name}, the {self.profession}'
 
+    def info_card(self):
+
+        name = f'{self.name}'
+        prof = f'The {self.profession}'
+
+        hp = f'HP: {self.hp:>3}/{self.max_hp:<3}'  # 10
+        defense = f'Def: {self.defense}'  # 8
+
+        lvl = f'Lvl: {self.level}'
+        xp = f'XP: {self.xp}/{self.next_level}'
+
+        stats_str = f'Str: {self.str}'  # Trying 3 probly 2
+        stats_dex = f'Dex :{self.dex}'
+        stats_int = f'Int: {self.int}'
+
+        dmg_w = 'DMG: '
+        dmg_stat = f'{self.att_dmg_min}/{self.att_dmg_max}'  # 11
+        crit_w = f'Crit %: '
+        crit_stat = f'{self.crit_chance:>2}/{self.crit_muliplier:<3}'  # 15
+
+        # Combine L an R lines
+        name = f'{name:<1}{prof:>{21 - len(name)}}'
+        level_xp = f'{lvl}{xp:>{21 - len(lvl)}}'
+        hp_def = f'{hp}{defense:>{21 - len(hp)}}'
+        stats = f'{stats_str:<7}{stats_dex:<7}{stats_int:<7}'
+        dmg = f'{dmg_w}{dmg_stat:>{21 - len(dmg_w)}}'
+        crit = f'{crit_w}{crit_stat:>{21 - len(crit_w)}}'
+        return [name, level_xp, hp_def, stats, dmg, crit]
+
     def show_stats(self):
         print(f'\n{self.name},the {self.profession}\n'
               f'Level:\t{self.level:>4}  XP: {self.xp:>6}/{self.next_level}\n'

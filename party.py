@@ -47,6 +47,25 @@ class Party:
         for member in self.members:
             print(f'- {member.name}, {member.profession} Lv: {member.level} {member.hp}/{member.max_hp}')
 
+    def print_members_info_cards(self):
+        empty_card = [" " * 21] * 6
+        cards = [member.info_card() if member else empty_card for member in self.members
+                 + (16 - len(self.members)) * [None]]
+
+        print('=' * 41, 'Party Members', '=' * 42)
+        print("┌" + "─" * 23 + "┬" + "─" * 23 + "┬" + "─" * 23 + "┬" + "─" * 23 + "┐")
+        print("\n".join(f'│ {w} │ {x} │ {y} │ {z} │ ' for w, x, y, z in zip(*cards[:4])))
+        if len(self.members) > 3:
+            print("├" + "─" * 23 + "┼" + "─" * 23 + "┼" + "─" * 23 + "┼" + "─" * 23 + "┤")
+            print("\n".join(f'│ {w} │ {x} │ {y} │ {z} │ ' for w, x, y, z in zip(*cards[4:8])))
+        if len(self.members) > 6:
+            print("├" + "─" * 23 + "┼" + "─" * 23 + "┼" + "─" * 23 + "┼" + "─" * 23 + "┤")
+            print("\n".join(f'│ {w} │ {x} │ {y} │ {z} │ ' for w, x, y, z in zip(*cards[8:12])))
+        if len(self.members) > 6:
+            print("├" + "─" * 23 + "┼" + "─" * 23 + "┼" + "─" * 23 + "┼" + "─" * 23 + "┤")
+            print("\n".join(f'│ {w} │ {x} │ {y} │ {z} │ ' for w, x, y, z in zip(*cards[12:16])))
+        print("└" + "─" * 23 + "┴" + "─" * 23 + "┴" + "─" * 23 + "┴" + "─" * 23 + "┘")
+
     @property
     def has_units_left(self) -> bool:
         """
@@ -173,7 +192,7 @@ class Party:
     def display_inventory(self):
         empty_card = [" " * 30] * 3
         cards = [item.item_card() if item else empty_card for item in self.inventory
-                 + (9 - len(self.inventory)) * [None]]
+                 + (15 - len(self.inventory)) * [None]]
         print('\n' * 20)
         print('=' * 41, 'Party Inventory', '=' * 42)
         print("┌" + "─" * 32 + "┬" + "─" * 32 + "┬" + "─" * 32 + "┐")
@@ -246,13 +265,6 @@ class Party:
         else:
             # TODO: Split all menus into callable functions
             pass
-
-
-
-
-
-
-
 
 
 if __name__ == '__main__':
