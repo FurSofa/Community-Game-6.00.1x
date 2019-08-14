@@ -1,6 +1,6 @@
 from helper_functions import *
-# from Hero import *
-# from person import *
+from Hero import *
+from person import *
 from Equipable_Items import *
 
 
@@ -185,16 +185,40 @@ class Party:
         x = select_from_list(['Inventory', 'Character Inventory', 'exit'], True)
         if x == '0':
             self.display_inventory()
-            selection = select_from_list(['', '', '', ''], True)
+            selection = select_from_list(['Equip', 'Repair', 'Sell', 'Exit'], True)
+            if selection == '0':
+                # Equip
+                self.display_inventory()
+                item = select_from_list(['', '', '', '', '', '', '', '', ''],
+                                        'Which Item would you like to equip?', True, True)
+                if item:
+                    print('TODO: "If item, equip item to item.equipment_slot"')
+                self.inventory_menu()
+            elif selection == '1':
+                # Repair
+                self.display_inventory()
+                item = select_from_list(['', '', '', '', '', '', '', '', ''],
+                                        'Which Item would you like to repair?', True, True)
+
+                self.inventory[item].repair()
+                self.inventory_menu()
+            elif selection == '2':
+                # Sell
+                self.display_inventory()
+                item = select_from_list(['', '', '', '', '', '', '', '', ''],
+                                        'Which Item would you like to sell?', True, True)
+                self.inventory[item].sell()
+                self.inventory_menu()
+            elif selection == '3':
+                pass
+
         if x == '1':
+            # TODO: Install char equipment output. "Reuse inventory output?"
             pass
         if x == '2':
             pass
 
     def display_inventory(self):
-        pass
-
-    def print_inventory(self):
         empty_card = [" " * 30] * 3
         cards = [item.item_card() if item else empty_card for item in self.inventory
                  + (9 - len(self.inventory)) * [None]]
@@ -207,16 +231,15 @@ class Party:
         print("\n".join(f'│ {x} │ {y} │ {z} │' for x, y, z in zip(*cards[6:])))
         print("└" + "─" * 32 + "┴" + "─" * 32 + "┴" + "─" * 32 + "┘")
 
+
     def add_item(self, item):
+        """
+        adds an item to the party inventory
+        :param item:
+        :return:
+        """
+
         self.inventory.append(item)
-
-    def show_gear(self, inventory):
-
-        for i in inventory:
-            if i:
-                print(i.show_stats())
-            else:
-                print('empty')
 
     def equip_gear(self, new_gear, slot_to_change='choose'):
         """
