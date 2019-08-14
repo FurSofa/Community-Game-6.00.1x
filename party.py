@@ -66,6 +66,14 @@ class Party:
             print("\n".join(f'│ {w} │ {x} │ {y} │ {z} │ ' for w, x, y, z in zip(*cards[12:16])))
         print("└" + "─" * 23 + "┴" + "─" * 23 + "┴" + "─" * 23 + "┴" + "─" * 23 + "┘")
 
+    @staticmethod
+    def display_single_member_item_card(member):
+        info_card = member.info_card()
+        print('-' * 8, 'Person', '-' * 9)
+        print("┌" + "─" * 23 + "┐")
+        print("\n".join(f'│ {x} │' for x in info_card))
+        print("└" + "─" * 23 + "┘")
+
     @property
     def has_units_left(self) -> bool:
         """

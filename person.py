@@ -184,7 +184,7 @@ class Person:
     def info_card(self):
 
         name = f'{self.name}'
-        prof = f'The {self.profession}'
+        prof = f'{self.profession}'
 
         hp = f'HP: {self.hp:>3}/{self.max_hp:<3}'  # 10
         defense = f'Def: {self.defense}'  # 8

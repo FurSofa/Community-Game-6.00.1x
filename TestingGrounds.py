@@ -94,6 +94,7 @@ if __name__ == '__main__':
 
     h.add_item(Weapon.generate(quality='Legendary', equipable_slot='main hand', att_dmg_max=20))
     h.add_item(Armor.generate(equipable_slot='Chest'))
-    print_member_info_cards(h.members)
-    h.print_members_info_cards()
+
+    h.display_single_member_item_card(h.member(0))
+
 
