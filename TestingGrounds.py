@@ -96,10 +96,15 @@ if __name__ == '__main__':
     h = Party()
     h.add_member(Person.generate_random())
     h.add_member(Person.generate_random())
-    h.add_member(Person.generate_random())
-
-    h.add_item(Weapon.generate(quality='Legendary', equipable_slot='main hand', att_dmg_max=20))
-    h.add_item(Armor.generate(equipable_slot='Chest'))
-
     h.print_members_info_cards()
     h.display_single_member_item_card(h.member(0))
+
+    h.add_item(Weapon.generate(quality='Legendary', equipable_slot='main hand', att_dmg_max=20))
+    h.add_item(Armor.generate())
+    h.add_item(Armor.generate(create_random_equipable_item()))
+    h.add_item(Armor.generate(create_random_equipable_item()))
+    h.add_item(Armor.generate(create_random_equipable_item()))
+    h.display_inventory()
+
+
+

@@ -98,7 +98,7 @@ class Game:
             self.party.display_single_item_card(p1)
             self.party.inventory.append(p1)
             print(f'You find an item and toss it in your bag and keep moving.')
-        elif event == 5:
+        elif event == 4:
             p1 = create_random_item(randint(1, 2))
             self.party.display_single_item_card(p1)
             self.party.inventory.append(p1)
