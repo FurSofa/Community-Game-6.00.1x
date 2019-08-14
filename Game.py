@@ -65,7 +65,7 @@ class Game:
                 continue
 
     def adventure(self):
-        event = randrange(4)
+        event = randrange(5)
         print(event)
         if event == 0:
             print(f'You found another traveler You talk for a while and have a great time!')
@@ -94,6 +94,11 @@ class Game:
                 x += 1
             alternating_turn_battle(self.party, enemy_party)
         elif event == 3:
+            p1 = create_random_item(randint(1, 2))
+            self.party.display_single_item_card(p1)
+            self.party.inventory.append(p1)
+            print(f'You find an item and toss it in your bag and keep moving.')
+        elif event == 5:
             p1 = create_random_item(randint(1, 2))
             self.party.display_single_item_card(p1)
             self.party.inventory.append(p1)
