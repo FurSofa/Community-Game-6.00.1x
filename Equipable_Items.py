@@ -309,11 +309,11 @@ class Armor(Equipment):
 def create_random_item(class_type=1):
     """Generates an instance of the selected class"""
     if class_type == 1:
-        item_variable = Weapon.generate()
+        item_variable = Weapon.generate_random()
         return item_variable
 
     elif class_type == 2:
-        item_variable = Armor.generate()
+        item_variable = Armor.generate_random()
         return item_variable
 
 
