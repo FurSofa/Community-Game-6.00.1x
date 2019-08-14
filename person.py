@@ -95,10 +95,11 @@ class Person:
         return self.hp > 0
 
     def hp_bar(self, length=10, f_color=bcolors.OKGREEN, m_color=bcolors.FAIL,
-               f_char='♥', m_char='-', no_color=False):
+               f_char='♥', m_char='-', no_color=False, border='|'):
         '''
         returns a string of an hp_bar for current hp / max hp
 
+        :param border: added at the beginning and the ned of the string
         :param no_color: bool: removes special chars for colors
         :param length: int: length of the bar without border - number of chars
         :param f_color: color code : for filled ticks
@@ -109,7 +110,7 @@ class Person:
         '''
         bar = BarGFX(self.hp, self.max_hp, length=length, f_color=f_color,
                      m_color=m_color, f_char=f_char, m_char=m_char)
-        return bar.bar_str(no_color=no_color)
+        return bar.bar_str(no_color=no_color, border=border)
 
     def hero_stat_buff(self):
         self.base_crit_chance = 5
