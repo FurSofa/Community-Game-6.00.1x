@@ -94,17 +94,21 @@ class Person:
     def is_alive(self) -> bool:
         return self.hp > 0
 
-    def hp_bar(self, length=10, color=bcolors.FAIL, f_char='♥', m_char='-', no_color=False):
+    def hp_bar(self, length=10, f_color=bcolors.OKGREEN, m_color=bcolors.FAIL,
+               f_char='♥', m_char='-', no_color=False):
         '''
         returns a string of an hp_bar for current hp / max hp
+
         :param no_color: bool: removes special chars for colors
         :param length: int: length of the bar without border - number of chars
-        :param color: color code
+        :param f_color: color code : for filled tickes
+        :param m_color: color code : for missing tickes
         :param f_char: str: char to display for filled ticks
         :param m_char: str: char to be displayed for not filled ticks
         :return: hp bar as string
         '''
-        bar = BarGFX(self.hp, self.max_hp, length=length, color=color, f_char=f_char, m_char=m_char)
+        bar = BarGFX(self.hp, self.max_hp, length=length, f_color=f_color,
+                     m_color=m_color, f_char=f_char, m_char=m_char)
         return bar.bar_str(no_color=no_color)
 
     def hero_stat_buff(self):
