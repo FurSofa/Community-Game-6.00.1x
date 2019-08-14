@@ -188,6 +188,7 @@ class Party:
             pass
 
     def inventory_menu(self):
+        self.display_inventory()
         x = select_from_list(['Inventory', 'Character Inventory', 'Exit'], '', True, False)
         if x == 0:
             # Inventory
@@ -196,15 +197,14 @@ class Party:
             if selection == 0:
                 # Equip
                 self.display_inventory()
-                item = select_from_list(['', '', '', '', '', '', '', '', '', 'Exit'],
-                                        'Which Item would you like to equip?', True, True)
-                if item == 9:
-                    self.inventory_menu()
-                character = select_from_list(self.members_names_list(),
-                                             'Who do you want to equip this item?', True, True)
-                self.equip_gear(self.members[character], self.inventory[item])
-                if item:
-                    print('TODO: "If item, equip item to item.equipment_slot"')
+                if len(self.inventory) == 0:
+                    print('You have no items!')
+                else:
+                    item = select_from_list(self.inventory,
+                                            'Which Item would you like to equip?', True, True)
+                    character = select_from_list(self.members_names_list(),
+                                                 'Who do you want to equip this item?', True, True)
+                    self.equip_gear(self.members[character], self.inventory[item])
                 self.inventory_menu()
             elif selection == 1:
                 # Repair
@@ -239,6 +239,7 @@ class Party:
         empty_card = [" " * 30] * 3
         cards = [item.item_card() if item else empty_card for item in self.inventory
                  + (9 - len(self.inventory)) * [None]]
+        print('\n' * 20)
         print('=' * 41, 'Party Inventory', '=' * 42)
         print("┌" + "─" * 32 + "┬" + "─" * 32 + "┬" + "─" * 32 + "┐")
         print("\n".join(f'│ {x} │ {y} │ {z} │' for x, y, z in zip(*cards[:3])))

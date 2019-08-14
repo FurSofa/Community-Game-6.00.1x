@@ -74,7 +74,7 @@ class Equipment:
              for k, v in self.__dict__.items()])
 
     def __str__(self):
-        return self.type + ': ' + self.equipable_slot
+        return f'{self.quality.title()}{self.type.title()}: {self.equipable_slot.title()}'
 
     def item_card(self):
 

@@ -114,7 +114,6 @@ class Game:
                 member.heal(member.max_hp)
             self.camp()
         elif camp_input == 'Inventory':
-            self.party.display_inventory()
             self.party.inventory_menu()
         elif camp_input == 'Craft':
             print('You need a craftsman.')
