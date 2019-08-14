@@ -9,9 +9,11 @@ from battle import *
 class Game:
     def __init__(self):
         self.party = Party.generate(self)
-        self.autobattle = 0
+        self.Mode = select_from_list(['Normal', 'AutoCombat'],
+                                     'What mode would you like? ** Recommended: Normal **', False, True)
         self.difficulty = select_from_list(['Easy', 'Medium', 'Hard'], 'Choose your difficulty:')
         print(f'You selected: {self.difficulty}!')
+        self.party.game = self
 
     @staticmethod
     def create_character(name='Jeb', profession='Astronaut', level=1):
@@ -158,5 +160,5 @@ class Game:
 
 
 if __name__ == '__main__':
-    g = Game()
-    g.gameloop()
+    game = Game()
+    game.gameloop()

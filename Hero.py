@@ -52,12 +52,8 @@ class Hero(Person):
 if __name__ == '__main__':
     p = Person.generate('norbnorb', 'Mage')
     p.stat_growth()
-    print(p)
+    p.show_stats()
     w = Hero.generate('norbnorb', 'Warrior')
-    w.test_equip()
-    w.main_hand = Weapon.generate('Legendary', quality_val=2, equipable_slot='main hand', att_dmg_min=20,
-                                  att_dmg_max=40, crit_chance=100)
-    print(w.main_hand.item_card())
     w.calculate_stats()
     print(w.att_dmg_min, end='-')
     print(w.att_dmg_max)
