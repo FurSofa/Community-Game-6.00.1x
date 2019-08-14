@@ -113,7 +113,7 @@ class Person:
         return bar.bar_str(no_color=no_color, border=border)
 
     def xp_bar(self, length=10, f_color=bcolors.OKBLUE, m_color=bcolors.OKGREEN,
-               f_char='|', m_char='-', no_color=False, border=''):
+               f_char='|', m_char='-', no_color=True, border=''):
         '''
         returns a string of an xp_bar for current xp / next_level
 
