@@ -62,6 +62,12 @@ class Party:
         """
         return ', '.join(member.name for member in self.members)
 
+    def members_names_list(self):
+        """
+        :return: string of active members separated my ','
+        """
+        return [member.name for member in self.members]
+
     def member(self, position=0):
         """
         :return: party member class @ position
@@ -191,6 +197,9 @@ class Party:
                 self.display_inventory()
                 item = select_from_list(['', '', '', '', '', '', '', '', ''],
                                         'Which Item would you like to equip?', True, True)
+                character = select_from_list(self.members_names_list(),
+                                             'Who do you want to equip this item?', True, True)
+                self.equip_gear(character, item)
                 if item:
                     print('TODO: "If item, equip item to item.equipment_slot"')
                 self.inventory_menu()
@@ -228,7 +237,7 @@ class Party:
         print("├" + "─" * 32 + "┼" + "─" * 32 + "┼" + "─" * 32 + "┤")
         print("\n".join(f'│ {x} │ {y} │ {z} │' for x, y, z in zip(*cards[3:6])))
         print("├" + "─" * 32 + "┼" + "─" * 32 + "┼" + "─" * 32 + "┤")
-        print("\n".join(f'│ {x} │ {y} │ {z} │' for x, y, z in zip(*cards[6:])))
+        print("\n".join(f'│ {x} │ {y} │ {z} │' for x, y, z in zip(*cards[6:9])))
         print("└" + "─" * 32 + "┴" + "─" * 32 + "┴" + "─" * 32 + "┘")
 
     def display_single_item_card(self, item):
@@ -247,46 +256,31 @@ class Party:
 
         self.inventory.append(item)
 
-    def equip_gear(self, new_gear, slot_to_change='choose'):
+    def equip_gear(self, char, item):
         """
-        changes/fills an item in an equipment slot
-        puts old item into party inventory
-        :param slot_to_change: provide if you want to auto equip
-        :param new_gear:  new item to be equipped
-        :return: -
+        Equips item in the item.Equip_slot
+        :param char: what person to equip
+        :param item:  new item to be equipped
         """
-        if slot_to_change == 'choose':
-            if new_gear.gear_type == 'weapon':
-                print('Where do you want to put it?')
-                weapon_slot = select_from_list(['Main Hand', 'Off Hand'], index_pos=True)
-                if weapon_slot == 0:
-                    slot_to_change = 'main_hand'
-                elif weapon_slot == 1:
-                    slot_to_change = 'off_hand'
-            elif new_gear.gear_type == 'shield':
-                slot_to_change = 'off_hand'
-            # TODO: add elifs for all equipment slots
-            elif new_gear.gear_type == 'armor':
-                slot_to_change = 'armor'
+        slot = item.equipable_slot
+        if char.equip_slots[slot]:
+            old_item = char.equip_slots[slot]
+            self.inventory.append(old_item)
+        char.equip_slots[slot] = item
+        char.calculate_stats()
 
-        if self.__dict__[slot_to_change]:
-            old_item = self.__dict__[slot_to_change]
-            old_item.holder = None
-            self.party.equipment.append(old_item)
-        #  TODO: check and ask if switch weapon in slot
-        self.__dict__[slot_to_change] = new_gear
-        new_gear.holder = self
-        self.calculate_stats_with_gear()
 
-# if __name__ == '__main__':
-#
-#     def gen_n_items(n=1):
-#
-#         for i in range(1,n):
-#             p1.add_item(Weapon.generate_random())
-#             p1.add_item(Armor.generate_random())
-#             i += 1
-#
-#     p1 = Party.generate()
-#     gen_n_items(5)
-#     p1.show_gear(p1.inventory)
+
+if __name__ == '__main__':
+
+    def gen_n_items(n=1):
+
+        for i in range(1, n):
+            p1.add_item(Weapon.generate_random())
+            p1.add_item(Armor.generate_random())
+            i += 1
+
+
+    p1 = Party.generate()
+    gen_n_items(10)
+    p1.display_inventory()

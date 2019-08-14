@@ -55,28 +55,15 @@ class Person:
         self.inventory = []
         self.money = money
 
-        # weapons
-        self.main_hand = Weapon.generate(att_dmg_min=1, att_dmg_max=3)
-        self.off_hand = None
-
-        # armor
-        self.head = None
-        self.chest = Armor.generate(etype='Armor', equipable_slot='chest', defense=2)
-        self.legs = Armor.generate(etype='Armor', equipable_slot='legs')
-        self.feet = None
-
-        # accessories
-        self.ring = None
-        self.necklace = None
-        self.relevant_gear = [self.main_hand,
-                              self.off_hand,
-                              self.head,
-                              self.chest,
-                              self.legs,
-                              self.feet,
-                              self.ring,
-                              self.necklace]
-
+        self.equip_slots = {'main hand': None,
+                            'off hand': None,
+                            'head': None,
+                            'chest': None,
+                            'legs': None,
+                            'feet': None,
+                            'ring': None,
+                            'necklace': None,
+                            }
         # Calculate stats and gear
         self.stat_growth()
         self.calculate_stats()
@@ -119,11 +106,6 @@ class Person:
         '''
         bar = BarGFX(self.hp, self.max_hp, length=length, color=color, f_char=f_char, m_char=m_char)
         return bar.bar_str(no_color=no_color)
-
-    def test_equip(self):
-        self.inventory.append(Weapon.generate_random(equipable_slot='main hand'))
-        self.inventory.append(Armor.generate_random(equipable_slot='Chest'))
-        self.inventory.append(Armor.generate_random(equipable_slot='Legs'))
 
     def hero_stat_buff(self):
         self.base_crit_chance = 5
@@ -251,15 +233,7 @@ class Person:
         """
         :return: list of currently equipped items
         """
-        items = [self.main_hand,
-                 self.off_hand,
-                 self.head,
-                 self.chest,
-                 self.legs,
-                 self.feet,
-                 self.ring,
-                 self.necklace]
-        return [item for item in items if item]
+        return [value for value in self.equip_slots.values() if value]
 
     def calculate_stats_with_gear(self):
         """
@@ -277,19 +251,19 @@ class Person:
             'crit_chance': self.crit_chance,
             'crit_muliplier': self.crit_muliplier,
         }
-        gear = self.get_equipped_items()
+        gear = [value for value in self.equip_slots.values() if value]
         for key in stats.keys():
             self.__dict__[key] = stats[key] + sum([item.__dict__[key] for item in gear])
 
     def show_gear(self):
-        items = [self.main_hand,
-                 self.off_hand,
-                 self.head,
-                 self.chest,
-                 self.legs,
-                 self.feet,
-                 self.ring,
-                 self.necklace]
+        items = [self.equip_slot['main hand'],
+                 self.equip_slot['off hand'],
+                 self.equip_slot['head'],
+                 self.equip_slot['chest'],
+                 self.equip_slot['legs'],
+                 self.equip_slot['feet'],
+                 self.equip_slot['ring'],
+                 self.equip_slot['necklace']]
         gear = [item for item in items if item]
         for i in gear:
             print(i.show_stats())
@@ -308,17 +282,17 @@ class Person:
     #     :return:
     #     """
     #     if new_gear.gear_type == 'weapon':
-    #         if self.main_hand:
+    #         if self.equip_slot['main hand']:
     #             print('-----------------------')
     #             print('Current First Hand Weapon:')
-    #             self.main_hand.show_stats()
+    #             self.equip_slot['main hand'].show_stats()
     #         else:
     #             self.equip_gear(new_gear)
     #             return
-    #         if self.off_hand:
+    #         if self.equip_slot['off hand']:
     #             print('-----------------------')
     #             print('Current Off Hand Weapon:')
-    #             self.off_hand.show_stats()
+    #             self.equip_slot['off hand'].show_stats()
     #     self.equip_gear(new_gear)
     #
     # def equip_gear(self, new_gear, slot_to_change='choose'):
