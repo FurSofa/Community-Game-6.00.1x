@@ -188,22 +188,24 @@ class Party:
             pass
 
     def inventory_menu(self):
-        x = select_from_list(['Inventory', 'Character Inventory', 'exit'], True)
-        if x == '0':
+        x = select_from_list(['Inventory', 'Character Inventory', 'exit'], '', True, False)
+        if x == 0:
             self.display_inventory()
-            selection = select_from_list(['Equip', 'Repair', 'Sell', 'Exit'], True)
-            if selection == '0':
+            selection = select_from_list(['Equip', 'Repair', 'Sell', 'Exit'], '', True, True)
+            if selection == 0:
                 # Equip
                 self.display_inventory()
-                item = select_from_list(['', '', '', '', '', '', '', '', ''],
+                item = select_from_list(['', '', '', '', '', '', '', '', '', 'Exit'],
                                         'Which Item would you like to equip?', True, True)
+                if item == 9:
+                    self.inventory_menu()
                 character = select_from_list(self.members_names_list(),
                                              'Who do you want to equip this item?', True, True)
-                self.equip_gear(character, item)
+                self.equip_gear(self.members[character], self.inventory[item])
                 if item:
                     print('TODO: "If item, equip item to item.equipment_slot"')
                 self.inventory_menu()
-            elif selection == '1':
+            elif selection == 1:
                 # Repair
                 self.display_inventory()
                 item = select_from_list(['', '', '', '', '', '', '', '', ''],
@@ -211,20 +213,20 @@ class Party:
 
                 self.inventory[item].repair()
                 self.inventory_menu()
-            elif selection == '2':
+            elif selection == 2:
                 # Sell
                 self.display_inventory()
                 item = select_from_list(['', '', '', '', '', '', '', '', ''],
                                         'Which Item would you like to sell?', True, True)
                 self.inventory[item].sell()
                 self.inventory_menu()
-            elif selection == '3':
+            elif selection == 3:
                 pass
 
-        if x == '1':
+        if x == 1:
             # TODO: Install char equipment output. "Reuse inventory output?"
             pass
-        if x == '2':
+        if x == 2:
             pass
 
     def display_inventory(self):
@@ -268,7 +270,6 @@ class Party:
             self.inventory.append(old_item)
         char.equip_slots[slot] = item
         char.calculate_stats()
-
 
 
 if __name__ == '__main__':

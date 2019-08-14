@@ -92,42 +92,34 @@ class Game:
                 x += 1
             alternating_turn_battle(self.party, enemy_party)
         elif event == 3:
-            print(f'You found another traveler You talk for a while and have a great time!')
-            print('You bid the traveler farewell and continue on your way.\n')
+            p1 = create_random_item(randint(1, 2))
+            self.party.display_single_item_card(p1)
+            self.party.inventory.append(p1)
+            print(f'You find an item and toss it in your bag and keep moving.')
+
         else:
             print('\nA tree falls on the party!')
             for member in self.party.members:
                 member.take_dmg(20)
 
-    def camp(self):
-        def camp_menu():
-            camp_input = select_from_list(['Rest', 'Inventory', 'Craft', 'Continue Adventuring'],
-                                          f'What would you like to do:\n', False, True)
-            if camp_input == 'Rest':
-                for member in self.party.members:
-                    member.heal(member.max_hp)
-                camp_menu()
-            elif camp_input == 'Inventory':
-                self.party.print_inventory()
-                input('')
-                camp_menu()
-            elif camp_input == 'Craft':
-                print('You need a craftsman.')
-                camp_menu()
-            elif camp_input == 'Continue Adventuring':
-                print('You head back out into the wilds..')
+    def inventory(self):
+        self.party.inventory_menu()
 
-        # Actual Camp
-        print('\n' * 20)
-        print("""    
-             )
-            (\033[1;33m
-           /`/\\
-          (% \033[1;31m%)\033[1;33m)\033[0;0m
-        .-'....`-.
-        `--'.'`--' """)
-        print('  You build a beautiful camp fire.\n')
-        camp_menu()
+    def camp(self):
+        camp_input = select_from_list(['Rest', 'Inventory', 'Craft', 'Continue Adventuring'],
+                                      f'What would you like to do:\n', False, True)
+        if camp_input == 'Rest':
+            for member in self.party.members:
+                member.heal(member.max_hp)
+            self.camp()
+        elif camp_input == 'Inventory':
+            self.party.display_inventory()
+            self.party.inventory_menu()
+        elif camp_input == 'Craft':
+            print('You need a craftsman.')
+            self.camp()
+        elif camp_input == 'Continue Adventuring':
+            print('You head back out into the wilds..')
 
     def main_options(self):
         """
@@ -138,6 +130,15 @@ class Game:
         if choice == 0:
             self.adventure()
         elif choice == 1:
+            print('\n' * 20)
+            print("""    
+                 )
+                (\033[1;33m
+               /`/\\
+              (% \033[1;31m%)\033[1;33m)\033[0;0m
+            .-'....`-.
+            `--'.'`--' """)
+            print('  You build a beautiful camp fire.\n')
             self.camp()
         elif choice == 2:
             self.party.party_members_info()
