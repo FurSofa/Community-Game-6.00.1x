@@ -198,6 +198,7 @@ class Party:
         empty_card = [" " * 30] * 3
         cards = [item.item_card() if item else empty_card for item in self.inventory
                  + (9 - len(self.inventory)) * [None]]
+        print('=' * 41, 'Party Inventory', '=' * 42)
         print("┌" + "─" * 32 + "┬" + "─" * 32 + "┬" + "─" * 32 + "┐")
         print("\n".join(f'│ {x} │ {y} │ {z} │' for x, y, z in zip(*cards[:3])))
         print("├" + "─" * 32 + "┼" + "─" * 32 + "┼" + "─" * 32 + "┤")
