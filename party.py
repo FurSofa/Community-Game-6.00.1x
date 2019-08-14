@@ -188,8 +188,9 @@ class Party:
             pass
 
     def inventory_menu(self):
-        x = select_from_list(['Inventory', 'Character Inventory', 'exit'], '', True, False)
+        x = select_from_list(['Inventory', 'Character Inventory', 'Exit'], '', True, False)
         if x == 0:
+            # Inventory
             self.display_inventory()
             selection = select_from_list(['Equip', 'Repair', 'Sell', 'Exit'], '', True, True)
             if selection == 0:
@@ -224,9 +225,14 @@ class Party:
                 pass
 
         if x == 1:
+            # Char Inventory
             # TODO: Install char equipment output. "Reuse inventory output?"
-            pass
+            char = select_from_list(self.members_names_list(),
+                                    'Who do you want to view?', True, True)
+            self.members[char].show_stats()
+            self.members[char].get_equipped_items()
         if x == 2:
+            # Exit
             pass
 
     def display_inventory(self):
@@ -269,6 +275,7 @@ class Party:
             old_item = char.equip_slots[slot]
             self.inventory.append(old_item)
         char.equip_slots[slot] = item
+        self.inventory.remove(self.inventory.index(item))
         char.calculate_stats()
 
 

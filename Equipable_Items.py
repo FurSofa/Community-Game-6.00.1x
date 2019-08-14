@@ -77,8 +77,6 @@ class Equipment:
         return self.type + ': ' + self.equipable_slot
 
     def item_card(self):
-        # TODO: Trumpify possible len() conflicts
-        # if len(left_item)>15, then f'{right_item:>15-len(left_item)}'
 
         if self.type == 'Weapon':
             # Line 1

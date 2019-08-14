@@ -68,10 +68,11 @@ class Game:
         print(event)
         if event == 0:
             print(f'You found another traveler You talk for a while and have a great time!')
-            choice = select_from_list(['Yes', 'No'], 'The traveler offers to join your party, what do you say?')
-            if choice == 'yes':
+            choice = select_from_list(['Yes', 'No'],
+                                      'The traveler offers to join your party, what do you say?', False, True)
+            if choice == 'Yes':
                 self.party.add_member(self.create_random_character)
-            elif choice == 'no':
+            elif choice == 'No':
                 print('You bid the traveler farewell and continue on your way.\n')
         elif event == 1:
             # Battle
