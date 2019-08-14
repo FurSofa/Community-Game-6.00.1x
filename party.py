@@ -242,7 +242,7 @@ class Party:
         you_sure = select_from_list(['Yes', 'No'], question, True, True)
         if you_sure == 0:
             self.gold += item_to_sell.value
-            self.inventory.remove(choice)
+            self.inventory.remove(item_to_sell)
         else:
             # TODO: Split all menus into callable functions
             pass
