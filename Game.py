@@ -108,7 +108,8 @@ class Game:
                     member.heal(member.max_hp)
                 camp_menu()
             elif camp_input == 'Inventory':
-                print('You are too tired.')
+                self.party.print_inventory()
+                input('')
                 camp_menu()
             elif camp_input == 'Craft':
                 print('You need a craftsman.')

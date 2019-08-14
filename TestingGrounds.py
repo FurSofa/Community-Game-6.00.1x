@@ -55,13 +55,15 @@ def print_inventory1(card_list):
 def print_inventory(inventory):
     empty_card = [" " * 30] * 3
     cards = [item.item_card() if item else empty_card for item in inventory + (9 - len(inventory)) * [None]]
-    print("┌" + "─" * 32 + "┬" + "─" * 32 + "┬" + "─" * 32 + "┐")
-    print("\n".join(f'│ {x} │ {y} │ {z} │' for x,y,z in zip(*cards[:3])))
-    print("├" + "─" * 32 + "┼" + "─" * 32 + "┼" + "─" * 32 + "┤")
-    print("\n".join(f'│ {x} │ {y} │ {z} │' for x,y,z in zip(*cards[3:6])))
-    print("├" + "─" * 32 + "┼" + "─" * 32 + "┼" + "─" * 32 + "┤")
-    print("\n".join(f'│ {x} │ {y} │ {z} │' for x,y,z in zip(*cards[6:])))
-    print("└" + "─" * 32 + "┴" + "─" * 32 + "┴" + "─" * 32 + "┘")
+    inv = ' Party Inventory '
+    print(f'{inv:^100}')
+    print(" ┌" + "─" * 32 + "┬" + "─" * 32 + "┬" + "─" * 32 + "┐ ")
+    print("\n".join(f' │ {x} │ {y} │ {z} │ ' for x,y,z in zip(*cards[:3])))
+    print(" ├" + "─" * 32 + "┼" + "─" * 32 + "┼" + "─" * 32 + "┤ ")
+    print("\n".join(f' │ {x} │ {y} │ {z} │ ' for x,y,z in zip(*cards[3:6])))
+    print(" ├" + "─" * 32 + "┼" + "─" * 32 + "┼" + "─" * 32 + "┤ ")
+    print("\n".join(f' │ {x} │ {y} │ {z} │ ' for x,y,z in zip(*cards[6:])))
+    print(" └" + "─" * 32 + "┴" + "─" * 32 + "┴" + "─" * 32 + "┘ ")
 
 if __name__ == '__main__':
     print('===  From Test File  ===')
@@ -76,3 +78,6 @@ if __name__ == '__main__':
     h.add_item(Armor.generate_random())
     h.add_item(Armor.generate_random())
     h.print_inventory()
+    print_inventory(h.inventory)
+    print(len('                                         '))
+    print(len('                                          '))

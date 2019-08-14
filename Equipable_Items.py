@@ -100,9 +100,9 @@ class Equipment:
                 line_3_right = " " * 15
 
             # Combine L an R lines
-            line_1 = f'{line_1_left:<16}{line_1_right:>14}'
-            line_2 = f'{line_2_left:<15}{line_2_right:>15}'
-            line_3 = f'{line_3_left:<15}{line_3_right:>15}'
+            line_1 = f'{line_1_left}{line_1_right:>{30 - len(line_1_left)}}'
+            line_2 = f'{line_2_left}{line_2_right:>{30 - len(line_2_left)}}'
+            line_3 = f'{line_3_left}{line_3_right:>{30 - len(line_3_left)}}'
             return [line_1, line_2, line_3]
 
         elif self.type == 'Armor':
@@ -125,9 +125,9 @@ class Equipment:
                 line_3_right = " " * 15
 
             # Combine L an R lines
-            line_1 = f'{line_1_left:<15}{line_1_right:>15}'
-            line_2 = f'{line_2_left:<15}{line_2_right:>15}'
-            line_3 = f'{line_3_left:<15}{line_3_right:>15}'
+            line_1 = f'{line_1_left}{line_1_right:>{30 - len(line_1_left)}}'
+            line_2 = f'{line_2_left}{line_2_right:>{30 - len(line_2_left)}}'
+            line_3 = f'{line_3_left}{line_3_right:>{30 - len(line_3_left)}}'
             return [line_1, line_2, line_3]
 
         elif self.type == 'Jewelry':
@@ -156,9 +156,9 @@ class Equipment:
                 line_3_right = " " * 15
 
             # Combine L an R lines
-            line_1 = f'{line_1_left:<15}{line_1_right:>15}'
-            line_2 = f'{line_2_left:<15}{line_2_right:>15}'
-            line_3 = f'{line_3_left:<15}{line_3_right:>15}'
+            line_1 = f'{line_1_left}{line_1_right:>{30 - len(line_1_left)}}'
+            line_2 = f'{line_2_left}{line_2_right:>{30 - len(line_2_left)}}'
+            line_3 = f'{line_3_left}{line_3_right:>{30 - len(line_3_left)}}'
             return [line_1, line_2, line_3]
         else:
             return ['                              ',

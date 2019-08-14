@@ -55,6 +55,9 @@ if __name__ == '__main__':
     print(p)
     w = Hero.generate('norbnorb', 'Warrior')
     w.test_equip()
+    w.main_hand = Weapon.generate('Legendary', quality_val=2, equipable_slot='main hand', att_dmg_min=20,
+                                  att_dmg_max=40, crit_chance=100)
+    print(w.main_hand.item_card())
     w.calculate_stats()
     print(w.att_dmg_min, end='-')
     print(w.att_dmg_max)
