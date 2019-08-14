@@ -21,12 +21,12 @@ from Equipable_Items import *
 # party2.party_members_info()
 # battle.whole_party_turn_battle(party1, party2)
 # battle.alternating_turn_battle(party1, party2)
+dummy_game = {'difficulty': 'Hard'}
 
-
-p1 = Party.generate()
+p1 = Party.generate(dummy_game)
 p1.add_member(Hero.generate('Fur', 'Jr.Coder'))
 p1.add_member(Person.generate_random())
-p2 = Party.generate()
+p2 = Party.generate(dummy_game)
 p2.add_member(Person.generate('Kefka', 'Drama Queen'))
 p2.add_member(Person.generate_random())
 p2.add_member(Person.generate_random())

@@ -47,7 +47,6 @@ class Game:
                                                q=f'Now, {hero_name}, What is your profession?:\n')
             print(f'You look like a great {hero_profession}, {hero_name}. I should have guessed.')
             our_hero = self.create_character(hero_name, hero_profession)
-            our_hero.hero_stat_buff()
             print(our_hero.show_stats())
             return our_hero
 

@@ -3,7 +3,6 @@ from Equipable_Items import *
 from vfx import *
 
 
-
 class Person:
     """
     access points:
@@ -400,10 +399,17 @@ class Person:
         :return: person from party
         """
         if len(target_party.members) > 1:
-            choice = random.randrange(len(target_party.members))
+            if self.party.has_hero() or self.party.game.difficulty == 'Medium':
+                choice = random.randrange(len(target_party.members))
+                target = target_party.members[choice]
+            else:
+                if self.party.game.difficulty == 'Hard':
+                    target = min(target_party.members, key=lambda member: member.hp)
+                elif self.party.game.difficulty == 'Easy':
+                    target = max(target_party.members, key=lambda member: member.hp)
         else:
-            choice = 0
-        return target_party.members[choice]
+            target = target_party.members[0]
+        return target
 
     def choose_attack(self):
         return random.choice(self.get_attack_options())
