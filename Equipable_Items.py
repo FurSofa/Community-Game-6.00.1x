@@ -181,16 +181,20 @@ class Equipment:
         # TODO: Add repair function
         self.max_durability = int(self.max_durability * 0.9)
 
-    def hp_bar(self, length=5, color=bcolors.FAIL, f_char='#', m_char='-', no_color=True):
+    def hp_bar(self, length=5, f_color=bcolors.OKGREEN, m_color=bcolors.FAIL,
+               f_char='#', m_char='-', no_color=True):
         '''
         returns a string of an hp_bar for current hp / max hp
+        :param no_color: bool
         :param length: int: length of the bar without border - number of chars
-        :param color: color code
+        :param f_color: color code : for filled ticks
+        :param m_color: color code : for missing ticks
         :param f_char: str: char to display for filled ticks
         :param m_char: str: char to be displayed for not filled ticks
         :return: hp bar as string
         '''
-        bar = BarGFX(self.durability, self.max_durability, length=length, color=color, f_char=f_char, m_char=m_char)
+        bar = BarGFX(self.durability, self.max_durability, length=length, f_color=f_color, m_color=m_color,
+                     f_char=f_char, m_char=m_char)
         return bar.bar_str(no_color=no_color)
 
 

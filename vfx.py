@@ -13,13 +13,15 @@ class bcolors:
 # TODO: refactor into function - no need for a class?
 # TODO: make color change depending on value
 class BarGFX:
-    def __init__(self, current, full, length=10, f_color=bcolors.OKGREEN, m_color=bcolors.OKGREEN, f_char='#', m_char='-'):
+    def __init__(self, current, full, length=10, f_color=bcolors.OKGREEN, m_color=bcolors.FAIL,
+                 f_char='#', m_char='-'):
         '''
 
         :param current: int: current value - eg hp
         :param full: int: max value - eg max_hp
         :param length: int: length of the bar without border - number of chars
-        :param color: color code
+        :param f_color: color code : for filled ticks
+        :param m_color: color code : for missing ticks
         :param f_char: str: char to display for filled ticks
         :param m_char: str: char to be displayed for not filled ticks
         '''

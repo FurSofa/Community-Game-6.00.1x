@@ -101,8 +101,8 @@ class Person:
 
         :param no_color: bool: removes special chars for colors
         :param length: int: length of the bar without border - number of chars
-        :param f_color: color code : for filled tickes
-        :param m_color: color code : for missing tickes
+        :param f_color: color code : for filled ticks
+        :param m_color: color code : for missing ticks
         :param f_char: str: char to display for filled ticks
         :param m_char: str: char to be displayed for not filled ticks
         :return: hp bar as string
