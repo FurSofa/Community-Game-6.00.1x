@@ -283,8 +283,8 @@ class Armor(Equipment):
 
 class Jewelry(Equipment):
     def __init__(self, quality='Common', quality_val=1, etype='Jewelry', equipable_slot='Ring', value=50,
-                 strength, dexterity, intelligence, max_hp, defense,
-                 att_dmg_min, att_dmg_max, damage, crit_chance, crit_multiplier):
+                 strength=0, dexterity=0, intelligence=0, max_hp=0, defense=0,
+                 att_dmg_min=0, att_dmg_max=0, damage=0, crit_chance=0, crit_multiplier=0):
         # TODO: Fix this!!
         super(Jewelry, self).__init__(quality, quality_val, etype, equipable_slot, value,
                                       strength, dexterity, intelligence, max_hp, defense,
