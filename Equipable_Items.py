@@ -273,6 +273,45 @@ class Armor(Equipment):
                    max_hp, defense, att_dmg_min, att_dmg_max, damage,
                    crit_chance, crit_multiplier)
 
+    def show_stats(self):
+        name = f'{self.quality} {self.type}'
+        slot = f'{self.equipable_slot.title():>9}'
+        line2_left = f'Dur: {self.durability:>2}/{self.max_durability:<2} '
+        line2_right = f'Defense: {self.defense}'
+        return f'{name:<17}{slot:>13}\n{line2_left:<15}{line2_right:>15}\n'
+
+
+class Jewelry(Equipment):
+    def __init__(self, quality='Common', quality_val=1, etype='Jewelry', equipable_slot='Ring', value=50,
+                 strength, dexterity, intelligence, max_hp, defense,
+                 att_dmg_min, att_dmg_max, damage, crit_chance, crit_multiplier):
+        # TODO: Fix this!!
+        super(Jewelry, self).__init__(quality, quality_val, etype, equipable_slot, value,
+                                      strength, dexterity, intelligence, max_hp, defense,
+                                      att_dmg_min, att_dmg_max, damage, crit_chance, crit_multiplier)
+
+    @classmethod
+    def generate(cls, quality='Common', quality_val=1, etype='Jewelry', equipable_slot='Ring', value=0,
+                 max_durability=10, strength=0, dexterity=0, intelligence=0, max_hp=0, defense=1,
+                 att_dmg_min=0, att_dmg_max=0, damage=0, crit_chance=0, crit_multiplier=0):
+        return cls(quality, quality_val, etype, equipable_slot, value,
+                   strength, dexterity, intelligence,
+                   max_hp, defense, att_dmg_min, att_dmg_max, damage,
+                   crit_chance, crit_multiplier)
+
+    @classmethod
+    def generate_random(cls, etype='Armor', equipable_slot='Chest', value=0, max_durability=10,
+                        strength=0, dexterity=0, intelligence=0, max_hp=0, defense=1,
+                        att_dmg_min=0, att_dmg_max=0, damage=0, crit_chance=0, crit_multiplier=0):
+        quality = random.choices(sList, weights=sWeights, k=1)[0]
+        quality_val = sValue.get(quality)
+        equipable_slot = random.choice(['Head', 'Chest', 'Legs', 'Feet'])
+        defense = (1 + random.randint(0, 2)) * quality_val
+
+        return cls(quality, quality_val, etype, equipable_slot, value,
+                   max_durability, strength, dexterity, intelligence,
+                   max_hp, defense, att_dmg_min, att_dmg_max, damage,
+                   crit_chance, crit_multiplier)
 
     def show_stats(self):
         name = f'{self.quality} {self.type}'
