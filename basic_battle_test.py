@@ -30,7 +30,7 @@ p2 = Party.generate()
 p2.add_member(Person.generate('Kefka', 'Drama Queen'))
 p2.add_member(Person.generate_random())
 p2.add_member(Person.generate_random())
-print_combat_status(p1, p2)
+# print_combat_status(p1, p2)
 
 # while p1.has_units_left:
 #

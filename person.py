@@ -112,6 +112,24 @@ class Person:
                      m_color=m_color, f_char=f_char, m_char=m_char)
         return bar.bar_str(no_color=no_color, border=border)
 
+    def xp_bar(self, length=10, f_color=bcolors.OKBLUE, m_color=bcolors.OKGREEN,
+               f_char='|', m_char='-', no_color=False, border=''):
+        '''
+        returns a string of an xp_bar for current xp / next_level
+
+        :param border: added at the beginning and the ned of the string
+        :param no_color: bool: removes special chars for colors
+        :param length: int: length of the bar without border - number of chars
+        :param f_color: color code : for filled ticks
+        :param m_color: color code : for missing ticks
+        :param f_char: str: char to display for filled ticks
+        :param m_char: str: char to be displayed for not filled ticks
+        :return: xp bar as string
+        '''
+        bar = BarGFX(self.xp, self.next_level, length=length, f_color=f_color,
+                     m_color=m_color, f_char=f_char, m_char=m_char)
+        return bar.bar_str(no_color=no_color, border=border)
+
     def hero_stat_buff(self):
         self.base_crit_chance = 5
         self.base_crit_muliplier = 130
