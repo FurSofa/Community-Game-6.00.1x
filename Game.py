@@ -10,7 +10,7 @@ class Game:
     def __init__(self):
         self.party = Party.generate()
         self.autobattle = 0
-        self.difficulty = select_from_list(['Easy', 'Medium', 'Hard'], 'Choose your difficulty:', False, True)
+        self.difficulty = select_from_list(['Easy', 'Medium', 'Hard'], 'Choose your difficulty:')
         print(f'You selected: {self.difficulty}!')
 
     @staticmethod
@@ -108,7 +108,8 @@ class Game:
                     member.heal(member.max_hp)
                 camp_menu()
             elif camp_input == 'Inventory':
-                print('You are too tired.')
+                self.party.print_inventory()
+                input('')
                 camp_menu()
             elif camp_input == 'Craft':
                 print('You need a craftsman.')

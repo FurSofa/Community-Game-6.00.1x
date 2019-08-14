@@ -8,48 +8,10 @@ from party import Party
 from battle import *
 from Equipable_Items import *
 
-if __name__ == '__main__':
-    print('===  From Test File  ===')
-    h = Party()
-    h.add_item(Weapon.generate_random())
-    h.add_item(Armor.generate_random())
-    h.add_item(Armor.generate_random())
-    h.show_gear(h.inventory)
-
-
-class item:
-    def __init__(self, quality, kind, equipable_slot, att_dmg_min="NA", att_dmg_max="NA", \
-                 durability="NA", max_durability="NA"):
-        self.type = kind
-        self.quality = quality
-        self.equipable_slot = equipable_slot
-        self.att_dmg_min = att_dmg_min
-        self.att_dmg_max = att_dmg_max
-        self.durability = durability
-        self.max_durability = max_durability
-
-    def show_stats(self):
-        name = f'{self.quality} {self.type}'
-        slot = f'{self.equipable_slot:>9}'
-        dmg = "" if self.att_dmg_max == "NA" else f'{self.att_dmg_min:>3}-{self.att_dmg_max:<3}'
-        line2_left = "" if self.durability == "NA" else f'Dur: {self.durability:>2}/{self.max_durability:<2}'
-        line2_right = f'Damage: {dmg}' if dmg else ""
-        return f'{name:<15}{slot:>15}\n{line2_left:<15}{line2_right:>15}'
-
-
-hat = item("Dirty", "Hat", "Head", "NA", "NA", "13", "100")
-necklace = item("Gold", "Necklace", "Neck", "NA", "NA", "NA", "NA")
-sword_of_a_thousand_truths = item("Epic", "Sword", "Main Hand", "100", \
-                                  "100", "3000", "3000")
-
-card1 = hat.show_stats()
-card2 = necklace.show_stats()
-card3 = sword_of_a_thousand_truths.show_stats()
-print("┌" + "─" * 32 + "┬" + "─" * 32 + "┬" + "─" * 32 + "┐")
-print("\n".join(f'│ {x} │ {y} │ {z} │' for x, y, z in zip(card1.splitlines(), \
-                                                          card2.splitlines(), \
-                                                          card3.splitlines())))
-print("└" + "─" * 32 + "┴" + "─" * 32 + "┴" + "─" * 32 + "┘")
+# Original text generator
+# print("┌" + "─" * 32 + "┬" + "─" * 32 + "┬" + "─" * 32 + "┐")
+# print("\n".join(f'│ {x} │ {y} │ {z} │' for x, y, z in zip(card1.splitlines(), card2.splitlines(), card3.splitlines())))
+# print("└" + "─" * 32 + "┴" + "─" * 32 + "┴" + "─" * 32 + "┘")
 
 """
 ┌───────────────────────────────┬────────────────────────────────┬───────────────────────────────┐ # len(98)
@@ -57,3 +19,86 @@ print("└" + "─" * 32 + "┴" + "─" * 32 + "┴" + "─" * 32 + "┘")
 │Dur: 13/100    Damage:  NA-NA  │ Dur: NA/NA     Damage:  NA-NA  │ Dur: 3000/3000 Damage: 100-100│
 └───────────────────────────────┴────────────────────────────────┴───────────────────────────────┘
 """
+
+
+# def generate_card_list(inventory):
+#     card_list = []
+#     empty_card = ['                              ',
+#                   '            Empty             ',
+#                   '                              ']
+#     for item in inventory:
+#         card_list.append(item.item_card)
+#
+#     for item in inventory + (9 - len(inventory)) * [None]:
+#         if item:
+#             card_list.append(item.item_card)
+#         else:
+#             card_list.append(empty_card)
+#     return card_list
+
+
+def print_inventory1(card_list):
+    # Print Top
+    print("┌" + "─" * 32 + "┬" + "─" * 32 + "┬" + "─" * 32 + "┐")
+    # Print inventory
+    i = 0
+    j, k, l = 0, 1, 2
+    while i < 3:
+        print("\n".join(f'│ {x} │ {y} │ {z} │' for x, y, z in
+                        zip(card_list[j].splitlines(), card_list[k].splitlines(), card_list[l].splitlines())))
+    j += 3
+    k += 3
+    l += 3
+    i += 1
+
+    # Print Bottom
+    print("└" + "─" * 32 + "┴" + "─" * 32 + "┴" + "─" * 32 + "┘")
+
+
+def print_inventory(inventory):
+    empty_card = [" " * 30] * 3
+    cards = [item.item_card() if item else empty_card for item in inventory + (9 - len(inventory)) * [None]]
+    inv = ' Party Inventory '
+    print('=' * 41, 'Party Inventory', '=' * 42)
+    print("┌" + "─" * 32 + "┬" + "─" * 32 + "┬" + "─" * 32 + "┐")
+    print("\n".join(f'│ {x} │ {y} │ {z} │ ' for x, y, z in zip(*cards[:3])))
+    print("├" + "─" * 32 + "┼" + "─" * 32 + "┼" + "─" * 32 + "┤")
+    print("\n".join(f'│ {x} │ {y} │ {z} │ ' for x, y, z in zip(*cards[3:6])))
+    print("├" + "─" * 32 + "┼" + "─" * 32 + "┼" + "─" * 32 + "┤")
+    print("\n".join(f'│ {x} │ {y} │ {z} │ ' for x, y, z in zip(*cards[6:])))
+    print("└" + "─" * 32 + "┴" + "─" * 32 + "┴" + "─" * 32 + "┘")
+
+
+def print_single_item_card(item):
+    x = item.item_card()
+    print("┌" + "─" * 30 + "┐")
+    print("\n".join(f'│ {x[0]} │'))
+    print("├" + "─" * 30 + "┤")
+    print("\n".join(f'│ {x[1]} │'))
+    print("├" + "─" * 30 + "┤")
+    print("\n".join(f'│ {x[2]} │'))
+    print("└" + "─" * 30 + "┘")
+
+
+if __name__ == '__main__':
+    print('===  From Test File  ===')
+    h = Party()
+    p1 = Person.generate_random()
+    h.add_member(p1)
+    p1.equip_slots['main hand'] = Weapon.generate(equipable_slot='main hand', att_dmg_max=10)
+    p1.calculate_stats()
+    h.add_item(Weapon.generate(quality='Magical', quality_val=1, equipable_slot='main hand', att_dmg_max=20))
+    h.add_item(Armor.generate(equipable_slot='head'))
+    h.add_item(Armor.generate(equipable_slot='chest'))
+    h.display_inventory()
+    print(p1.att_dmg_min, end='-')
+    print(p1.att_dmg_max)
+
+    print(p1.get_equipped_items())
+    h.display_single_item_card(p1.equip_slots['main hand'])
+    h.equip_gear(p1, h.inventory[0])
+    print(p1.get_equipped_items())
+    h.display_single_item_card(p1.equip_slots['main hand'])
+
+    print(p1.att_dmg_min, end='-')
+    print(p1.att_dmg_max)

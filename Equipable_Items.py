@@ -16,55 +16,6 @@ class Consumable:
     pass
 
 
-class Item_card:
-    def __init__(self, item):
-
-        if item.type == 'Weapon':
-            # Line 1
-            line_1_left = f'{item.quality} {item.type}'
-            line_1_right = f'{item.equipable_slot}'
-            line_1 = f'{line_1_left:<15}{line_1_right:>15}'
-            # Line 2
-            line_2_left = f'Dur: {item.durability:>2}/{item.max_durability:<2}'
-            line_2_right = f'Damage: {item.att_dmg_min:>3}/{item.att_dmg_max:<3}'
-            line_2 = f'{line_2_left:<15}{line_2_right:>15}'
-            # Line 3
-            line_3_left = f''
-            line_3_right = f''
-            line_3 = f'{line_3_left:<15}{line_3_right:>15}'
-            self.i = [line_1, line_2, line_3]
-
-
-        elif item.type == 'Armor':
-            pass
-        elif item.type == 'Jewelery':
-            pass
-        else:  # no item, does this need to exist?
-            pass
-
-        self.item_card = None
-
-        self.item_card_empty = ['                              ',
-                                '            Empty             ',
-                                '                              ']
-
-        self.item_card_weapon = ['                              ',
-                                 '            Empty             ',
-                                 '                              ']
-
-        self.item_card_armor = ['                              ',
-                                '            Empty             ',
-                                '                              ']
-
-        self.item_card_jewelery = ['                              ',
-                                   '            Empty             ',
-                                   '                              ']
-
-    @classmethod
-    def generate(cls, item):
-        return cls(item)
-
-
 class Equipment:
     def __init__(self, quality, quality_value=1, etype='none', equipable_slot='none', value=0,
                  max_durability=10, strength=0, dexterity=0, intelligence=0,
@@ -75,6 +26,14 @@ class Equipment:
         self.value = value + int(10 * quality_value + 10)
         self.max_durability = max_durability
         self.durability = self.max_durability
+        self.enchant_1 = None
+        self.enchant_1_val = None
+        self.enchant_2 = None
+        self.enchant_2_val = None
+        self.enchant_3 = None
+        self.enchant_3_val = None
+        self.enchant_4 = None
+        self.enchant_4_val = None
 
         self.type = etype
         self.equipable_slot = equipable_slot
@@ -104,6 +63,8 @@ class Equipment:
                    max_hp, defense, att_dmg_min, att_dmg_max, damage,
                    crit_chance, crit_multiplier)
 
+
+
     def __repr__(self):
         return self.type + ': ' + self.equipable_slot
 
@@ -114,6 +75,95 @@ class Equipment:
 
     def __str__(self):
         return self.type + ': ' + self.equipable_slot
+
+    def item_card(self):
+        # TODO: Trumpify possible len() conflicts
+        # if len(left_item)>15, then f'{right_item:>15-len(left_item)}'
+
+        if self.type == 'Weapon':
+            # Line 1
+            line_1_left = f'{self.quality} {self.type}'
+            line_1_right = f'{self.equipable_slot}'
+
+            # Line 2
+            line_2_left = f'Dur: {self.durability:>2}/{self.max_durability:<2}'
+            line_2_right = f'Damage: {self.att_dmg_min:>3}-{self.att_dmg_max:<3}'
+
+            # Line 3
+            if self.enchant_1:
+                line_3_left = f'{self.enchant_1}{self.enchant_1_val}'
+            else:
+                line_3_left = " " * 15
+            if self.enchant_2:
+                line_3_right = f'{self.enchant_2}{self.enchant_2_val}'
+            else:
+                line_3_right = " " * 15
+
+            # Combine L an R lines
+            line_1 = f'{line_1_left}{line_1_right:>{30 - len(line_1_left)}}'
+            line_2 = f'{line_2_left}{line_2_right:>{30 - len(line_2_left)}}'
+            line_3 = f'{line_3_left}{line_3_right:>{30 - len(line_3_left)}}'
+            return [line_1, line_2, line_3]
+
+        elif self.type == 'Armor':
+            # Line 1
+            line_1_left = f'{self.quality} {self.type}'
+            line_1_right = f'{self.equipable_slot}'
+
+            # Line 2
+            line_2_left = f'Dur: {self.durability:>2}/{self.max_durability:<2}'
+            line_2_right = f'Defense: {self.defense:>3}'
+
+            # Line 3
+            if self.enchant_1:
+                line_3_left = f'{self.enchant_1}{self.enchant_1_val}'
+            else:
+                line_3_left = " " * 15
+            if self.enchant_2:
+                line_3_right = f'{self.enchant_2}{self.enchant_2_val}'
+            else:
+                line_3_right = " " * 15
+
+            # Combine L an R lines
+            line_1 = f'{line_1_left}{line_1_right:>{30 - len(line_1_left)}}'
+            line_2 = f'{line_2_left}{line_2_right:>{30 - len(line_2_left)}}'
+            line_3 = f'{line_3_left}{line_3_right:>{30 - len(line_3_left)}}'
+            return [line_1, line_2, line_3]
+
+        elif self.type == 'Jewelry':
+            # Line 1
+            line_1_left = f'{self.quality} {self.type}'
+            line_1_right = f'{self.equipable_slot}'
+
+            # Line 2
+            if self.enchant_1:
+                line_2_left = f'{self.enchant_1}{self.enchant_1_val}'
+            else:
+                line_2_left = " " * 15
+            if self.enchant_2:
+                line_2_right = f'{self.enchant_2}{self.enchant_2_val}'
+            else:
+                line_2_right = " " * 15
+
+            # Line 3
+            if self.enchant_1:
+                line_3_left = f'{self.enchant_3}{self.enchant_3_val}'
+            else:
+                line_3_left = " " * 15
+            if self.enchant_2:
+                line_3_right = f'{self.enchant_4}{self.enchant_4_val}'
+            else:
+                line_3_right = " " * 15
+
+            # Combine L an R lines
+            line_1 = f'{line_1_left}{line_1_right:>{30 - len(line_1_left)}}'
+            line_2 = f'{line_2_left}{line_2_right:>{30 - len(line_2_left)}}'
+            line_3 = f'{line_3_left}{line_3_right:>{30 - len(line_3_left)}}'
+            return [line_1, line_2, line_3]
+        else:
+            return ['                              ',
+                    '            Empty             ',
+                    '                              ']
 
     def info(self):
         return '\n'.join(
