@@ -28,7 +28,7 @@ class Person:
         self.base_str = 4
         self.base_dex = 4
         self.base_int = 4
-        self.base_max_hp = 20 + (self.base_str * 5) + (self.level * 5)
+        self.base_max_hp = (self.base_str * 5) + (self.level * 5)
         self.base_defense = 1
         self.base_att_dmg_min = 1
         self.base_att_dmg_max = 3
@@ -55,7 +55,9 @@ class Person:
         self.inventory = []
         self.money = money
 
-        self.equip_slots = {'main hand': None,
+        self.equip_slots = {'main hand': Weapon.generate(quality='Common', quality_val=1, etype='Weapon',
+                                                         equipable_slot='main hand',
+                                                         att_dmg_min=1, att_dmg_max=5),
                             'off hand': None,
                             'head': None,
                             'chest': None,
@@ -289,7 +291,7 @@ class Person:
                  self.equip_slot['necklace']]
         gear = [item for item in items if item]
         for i in gear:
-            print(i.show_stats())
+            print(i.item)
 
     # def change_gear(self):
     #     if len(self.party.equipment) > 0:

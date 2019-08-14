@@ -121,89 +121,27 @@ class Party:
             self.hero = member
 
     #  inventory and trading
-    def change_gold(self, gold_amount):
-        #  check if person has enough gold might be better in merchant class
-        if self.gold + gold_amount < 0:
-            print('Not enough gold!')
-            return 'Error'
-        self.gold += gold_amount
-        return gold_amount
-
-    def pickup_gear(self, new_gear):
-        """
-        entry point
-        lets player choose where to put new gear and starts the appropriate methods
-        :param new_gear: new item to equip
-        :return: -quality='Common'
-        """
-        #  TODO: display new and old stats to compare (for item type)
-        print('You found new equipment!')
-        print('------------------------')
-        print(new_gear.show_stats())  # TODO: print this
-        choices = self.members[:]
-        choices.append('equipment')
-        print('Where do you want to put it?')
-        choice = select_from_list(choices)
-        if choice == 'equipment':
-            self.equipment.append(new_gear)
-        else:
-            choice.pickup_gear(new_gear)
-
-    def get_equipment(self, equipped=True):  # , holder=False):
-        """
-        :param equipped: -> bool: includes equipped items
-        # :param holder: -> bool:
-        :return: equipment in the party
-        """
-        equipment = []
-        [equipment.append(item) for item in self.equipment]
-        if equipped:
-            # if holder:
-            [[equipment.append(item) for item in member.get_equipped_items()] for member in self.members]
-        return equipment
-
-    def get_equpiment_holder_list(self):  # combine with get equipment?
-        """
-        :return: list of string with item and holder
-        """
-        equipment_list = self.get_equipment(equipped=True)
-        equipment_and_holder_list = []
-        for item in equipment_list:
-            if item.holder:
-                s = str(item) + ', ' + str(item.holder)
-            else:
-                s = str(item) + ', ' + 'Unused'
-            equipment_and_holder_list.append(s)
-        return equipment_and_holder_list
-
-    def sell_equipment(self):
-        items = self.get_equipment(equipped=True)
-        choice = select_from_list(self.get_equpiment_holder_list(), index_pos=True)
-
-        item_to_sell = items[choice]
-        self.gold += item_to_sell.value
-        print('You sold', item_to_sell, 'for', item_to_sell.value, 'gold')
-        if item_to_sell.holder:
-            # uneqip item
-            pass
 
     def inventory_menu(self):
-        x = select_from_list(['Inventory', 'Character Inventory', 'exit'], True)
-        if x == '0':
+        self.display_inventory()
+        x = select_from_list(['Inventory', 'Character Inventory', 'Exit'], '', True, False)
+        if x == 0:
+            # Inventory
             self.display_inventory()
-            selection = select_from_list(['Equip', 'Repair', 'Sell', 'Exit'], True)
-            if selection == '0':
+            selection = select_from_list(['Equip', 'Repair', 'Sell', 'Exit'], '', True, True)
+            if selection == 0:
                 # Equip
                 self.display_inventory()
-                item = select_from_list(['', '', '', '', '', '', '', '', ''],
-                                        'Which Item would you like to equip?', True, True)
-                character = select_from_list(self.members_names_list(),
-                                             'Who do you want to equip this item?', True, True)
-                self.equip_gear(character, item)
-                if item:
-                    print('TODO: "If item, equip item to item.equipment_slot"')
+                if len(self.inventory) == 0:
+                    print('You have no items!')
+                else:
+                    item = select_from_list(self.inventory,
+                                            'Which Item would you like to equip?', True, True)
+                    character = select_from_list(self.members_names_list(),
+                                                 'Who do you want to equip this item?', True, True)
+                    self.equip_gear(self.members[character], self.inventory[item])
                 self.inventory_menu()
-            elif selection == '1':
+            elif selection == 1:
                 # Repair
                 self.display_inventory()
                 item = select_from_list(['', '', '', '', '', '', '', '', ''],
@@ -211,36 +149,52 @@ class Party:
 
                 self.inventory[item].repair()
                 self.inventory_menu()
-            elif selection == '2':
+            elif selection == 2:
                 # Sell
                 self.display_inventory()
                 item = select_from_list(['', '', '', '', '', '', '', '', ''],
                                         'Which Item would you like to sell?', True, True)
                 self.inventory[item].sell()
                 self.inventory_menu()
-            elif selection == '3':
+            elif selection == 3:
                 pass
 
-        if x == '1':
+        if x == 1:
+            # Char Inventory
             # TODO: Install char equipment output. "Reuse inventory output?"
-            pass
-        if x == '2':
+            char = select_from_list(self.members_names_list(),
+                                    'Who do you want to view?', True, True)
+            self.members[char].show_stats()
+            self.members[char].get_equipped_items()
+        if x == 2:
+            # Exit
             pass
 
     def display_inventory(self):
         empty_card = [" " * 30] * 3
         cards = [item.item_card() if item else empty_card for item in self.inventory
                  + (9 - len(self.inventory)) * [None]]
+        print('\n' * 20)
         print('=' * 41, 'Party Inventory', '=' * 42)
         print("┌" + "─" * 32 + "┬" + "─" * 32 + "┬" + "─" * 32 + "┐")
         print("\n".join(f'│ {x} │ {y} │ {z} │' for x, y, z in zip(*cards[:3])))
-        print("├" + "─" * 32 + "┼" + "─" * 32 + "┼" + "─" * 32 + "┤")
-        print("\n".join(f'│ {x} │ {y} │ {z} │' for x, y, z in zip(*cards[3:6])))
-        print("├" + "─" * 32 + "┼" + "─" * 32 + "┼" + "─" * 32 + "┤")
-        print("\n".join(f'│ {x} │ {y} │ {z} │' for x, y, z in zip(*cards[6:9])))
+        if len(self.inventory) > 3:
+            print("├" + "─" * 32 + "┼" + "─" * 32 + "┼" + "─" * 32 + "┤")
+            print("\n".join(f'│ {x} │ {y} │ {z} │ ' for x, y, z in zip(*cards[3:6])))
+        if len(self.inventory) > 6:
+            print("├" + "─" * 32 + "┼" + "─" * 32 + "┼" + "─" * 32 + "┤")
+            print("\n".join(f'│ {x} │ {y} │ {z} │ ' for x, y, z in zip(*cards[6:9])))
+        if len(self.inventory) > 9:
+            print("├" + "─" * 32 + "┼" + "─" * 32 + "┼" + "─" * 32 + "┤")
+            print("\n".join(f'│ {x} │ {y} │ {z} │ ' for x, y, z in zip(*cards[9:12])))
+        if len(self.inventory) > 12:
+            print("├" + "─" * 32 + "┼" + "─" * 32 + "┼" + "─" * 32 + "┤")
+            print("\n".join(f'│ {x} │ {y} │ {z} │ ' for x, y, z in zip(*cards[12:15])))
+
         print("└" + "─" * 32 + "┴" + "─" * 32 + "┴" + "─" * 32 + "┘")
 
-    def display_single_item_card(self, item):
+    @staticmethod
+    def display_single_item_card(item):
         item_card = item.item_card()
         print('-' * 14, 'Item', '-' * 14)
         print("┌" + "─" * 32 + "┐")
@@ -267,7 +221,37 @@ class Party:
             old_item = char.equip_slots[slot]
             self.inventory.append(old_item)
         char.equip_slots[slot] = item
+        if item in self.inventory:
+            self.inventory.remove(item)
         char.calculate_stats()
+
+    def change_gold(self, gold_amount):
+        #  check if person has enough gold might be better in merchant class
+        if self.gold + gold_amount < 0:
+            print('Not enough gold!')
+            return 'Error'
+        self.gold += gold_amount
+        return gold_amount
+
+    def sell_equipment(self):
+        choice = select_from_list(self.inventory, 'What do you want to sell?', True)
+
+        item_to_sell = self.inventory[choice]
+        self.display_single_item_card(item_to_sell)
+        question = f'Confirm selling \'{item_to_sell}\' for {item_to_sell.value} gold'
+        you_sure = select_from_list(['Yes', 'No'], question, True, True)
+        if you_sure == 0:
+            self.gold += item_to_sell.value
+            self.inventory.remove(item_to_sell)
+        else:
+            # TODO: Split all menus into callable functions
+            pass
+
+
+
+
+
+
 
 
 

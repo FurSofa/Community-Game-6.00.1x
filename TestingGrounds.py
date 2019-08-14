@@ -55,7 +55,7 @@ def print_inventory1(card_list):
     print("└" + "─" * 32 + "┴" + "─" * 32 + "┴" + "─" * 32 + "┘")
 
 
-def print_inventory(inventory):
+def print_inventory_default(inventory):
     empty_card = [" " * 30] * 3
     cards = [item.item_card() if item else empty_card for item in inventory + (9 - len(inventory)) * [None]]
     inv = ' Party Inventory '
@@ -66,6 +66,22 @@ def print_inventory(inventory):
     print("\n".join(f'│ {x} │ {y} │ {z} │ ' for x, y, z in zip(*cards[3:6])))
     print("├" + "─" * 32 + "┼" + "─" * 32 + "┼" + "─" * 32 + "┤")
     print("\n".join(f'│ {x} │ {y} │ {z} │ ' for x, y, z in zip(*cards[6:])))
+    print("└" + "─" * 32 + "┴" + "─" * 32 + "┴" + "─" * 32 + "┘")
+
+
+def print_inventory(inventory):
+    empty_card = [" " * 30] * 3
+    cards = [item.item_card() if item else empty_card for item in inventory + (9 - len(inventory)) * [None]]
+    inv = ' Party Inventory '
+    print('=' * 41, 'Party Inventory', '=' * 42)
+    print("┌" + "─" * 32 + "┬" + "─" * 32 + "┬" + "─" * 32 + "┐")
+    print("\n".join(f'│ {x} │ {y} │ {z} │ ' for x, y, z in zip(*cards[:3])))
+    if len(inventory) > 3:
+        print("├" + "─" * 32 + "┼" + "─" * 32 + "┼" + "─" * 32 + "┤")
+        print("\n".join(f'│ {x} │ {y} │ {z} │ ' for x, y, z in zip(*cards[3:6])))
+    if len(inventory) > 6:
+        print("├" + "─" * 32 + "┼" + "─" * 32 + "┼" + "─" * 32 + "┤")
+        print("\n".join(f'│ {x} │ {y} │ {z} │ ' for x, y, z in zip(*cards[6:])))
     print("└" + "─" * 32 + "┴" + "─" * 32 + "┴" + "─" * 32 + "┘")
 
 
@@ -90,6 +106,19 @@ if __name__ == '__main__':
     h.add_item(Weapon.generate(quality='Magical', quality_val=1, equipable_slot='main hand', att_dmg_max=20))
     h.add_item(Armor.generate(equipable_slot='head'))
     h.add_item(Armor.generate(equipable_slot='chest'))
+    h.add_item(Armor.generate(equipable_slot='chest'))
+    h.add_item(Weapon.generate(quality='Magical', quality_val=1, equipable_slot='main hand', att_dmg_max=20))
+    h.add_item(Armor.generate(equipable_slot='head'))
+    h.add_item(Armor.generate(equipable_slot='chest'))
+    h.add_item(Armor.generate(equipable_slot='chest'))
+    h.add_item(Weapon.generate(quality='Magical', quality_val=1, equipable_slot='main hand', att_dmg_max=20))
+    h.add_item(Armor.generate(equipable_slot='head'))
+    h.add_item(Armor.generate(equipable_slot='chest'))
+    h.add_item(Armor.generate(equipable_slot='chest'))
+    h.add_item(Weapon.generate(quality='Magical', quality_val=1, equipable_slot='main hand', att_dmg_max=20))
+    h.add_item(Armor.generate(equipable_slot='head'))
+    h.add_item(Armor.generate(equipable_slot='chest'))
+    h.add_item(Armor.generate(equipable_slot='chest'))
     h.display_inventory()
     print(p1.att_dmg_min, end='-')
     print(p1.att_dmg_max)
@@ -102,3 +131,4 @@ if __name__ == '__main__':
 
     print(p1.att_dmg_min, end='-')
     print(p1.att_dmg_max)
+    h.sell_equipment()
