@@ -29,7 +29,7 @@ class Person:
         self.base_dex = 4
         self.base_int = 4
         self.base_max_hp = (self.base_str * 5) + (self.level * 5)
-        self.base_defense = 1
+        self.base_defense = 0
         self.base_att_dmg_min = 1
         self.base_att_dmg_max = 3
         self.base_crit_chance = 5
@@ -44,7 +44,7 @@ class Person:
         self.defense = self.base_defense
         self.att_dmg_min = self.base_att_dmg_min
         self.att_dmg_max = self.base_att_dmg_max
-        self.crit_chance = self.base_crit_chance
+        self.crit_chance = self.base_crit_chance + round(self.dex * 0.8)
         self.crit_muliplier = self.base_crit_muliplier + self.dex
 
         self.damage = random.randint(self.att_dmg_min, self.att_dmg_max)
@@ -165,7 +165,7 @@ class Person:
         self.defense = self.base_defense
         self.att_dmg_min = self.base_att_dmg_min
         self.att_dmg_max = self.base_att_dmg_max
-        self.crit_chance = self.base_crit_chance
+        self.crit_chance = self.base_crit_chance + round(self.dex * 0.8)
         self.crit_muliplier = self.base_crit_muliplier + self.dex
         self.calculate_stats_with_gear()
 
