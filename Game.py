@@ -130,7 +130,7 @@ class Game:
         """
         Contains Choices after new game and settings
         """
-        print('\n' * 4)
+        print('*' * 100)
         choice = select_from_list(['Adventure', 'Camp', 'Party Info'], f'\nWhat would you like to do\n ', True, True)
         if choice == 0:
             self.adventure()
