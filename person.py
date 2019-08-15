@@ -468,7 +468,7 @@ class Person:
             # print(self.name, 'deals', dmg_enemy_received, 'to', target.name)
 
         elif action == 'show hero stats':
-            print(self.show_combat_stats())
+            self.party.display_single_member_item_card(self)
             self.battle_turn(enemy_party)
         elif action == 'change gear':
             # self.change_gear()
