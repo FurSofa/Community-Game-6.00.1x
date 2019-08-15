@@ -324,9 +324,8 @@ class Jewelry(Equipment):
         defense = (1 + random.randint(0, 2)) * quality_val
 
         return cls(quality, quality_val, etype, equipable_slot, value,
-                   max_durability, strength, dexterity, intelligence,
-                   max_hp, defense, att_dmg_min, att_dmg_max, damage,
-                   crit_chance, crit_multiplier)
+                   strength, dexterity, intelligence, max_hp, defense,
+                   att_dmg_min, att_dmg_max, damage, crit_chance, crit_multiplier)
 
     def show_stats(self):
         name = f'{self.quality} {self.type}'

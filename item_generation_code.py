@@ -2,7 +2,7 @@
 # if you want dot notation you can use class / dynamic storage / simplenamespace
 # so you can call it via stats.main_stats.str for example
 # not just stats['main_stats']['str']
-# 
+# #
 # self.stats = {
 #     'main_stats': {
 #         'str': strength,

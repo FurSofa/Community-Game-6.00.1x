@@ -244,7 +244,7 @@ class Person:
 
     # stats
 
-    def take_dmg(self, amount, dmg_type='physical') -> int:
+    def take_dmg_OBSOLETE(self, amount, dmg_type='physical') -> int:
         """
         reduces person hp by dmg_amount
         :param: amount: int
@@ -260,6 +260,15 @@ class Person:
         actual_dmg = round(amount * dmg_multi)
         self.hp -= actual_dmg
         return actual_dmg
+
+    def take_damage(self, amount):
+        """
+        reduces person hp by amount
+        :param: amount: int
+        """
+        self.hp -= amount
+
+
 
     def heal(self, amount) -> int:
         """
