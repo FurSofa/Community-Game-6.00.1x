@@ -330,6 +330,10 @@ def create_random_item(class_type=1):
         item_variable = Armor.generate_random()
         return item_variable
 
+    elif class_type == 3:
+        item_variable = Jewelry.generate_random()
+        return item_variable
+
 
 def create_random_equipable_item(how_many=1, etype=random.randint(1, 2)):
     for i in range(0, how_many):
