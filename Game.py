@@ -118,7 +118,6 @@ class Game:
         if camp_input == 'Rest':
             for member in self.party.members:
                 member.heal(member.max_hp)
-            self.camp()
         elif camp_input == 'Inventory':
             self.party.inventory_menu()
         elif camp_input == 'Craft':
@@ -131,7 +130,7 @@ class Game:
         """
         Contains Choices after new game and settings
         """
-
+        print('\n' * 20)
         choice = select_from_list(['Adventure', 'Camp', 'Party Info'], f'\nWhat would you like to do\n ', True, True)
         if choice == 0:
             self.adventure()
@@ -147,7 +146,7 @@ class Game:
             print('  You build a beautiful camp fire.\n')
             self.camp()
         elif choice == 2:
-            self.party.party_members_info()
+            self.party.print_members_info_cards()
 
     def game_over(self):
         print('Game Over, Thanks for playing!')

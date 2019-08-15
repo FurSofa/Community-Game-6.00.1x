@@ -193,7 +193,7 @@ class Person:
         xp = f'XP: {self.xp}/{self.next_level}'
 
         stats_str = f'Str: {self.str}'  # Trying 3 probly 2
-        stats_dex = f'Dex :{self.dex}'
+        stats_dex = f'Dex: {self.dex}'
         stats_int = f'Int: {self.int}'
 
         dmg_w = 'DMG: '

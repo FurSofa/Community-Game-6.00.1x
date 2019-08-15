@@ -184,8 +184,8 @@ class Party:
                 item = select_from_list(['', '', '', '', '', '', '', '', ''],
                                         'Which Item would you like to sell?', True, True)
 
-                self.gold += item.value
-                self.inventory.remove(item)
+                # self.gold += self.inventory[item].value
+                self.inventory.pop(item)
                 self.inventory_menu()
             elif selection == 3:
                 pass
