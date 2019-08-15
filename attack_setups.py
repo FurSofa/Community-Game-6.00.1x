@@ -5,7 +5,7 @@ weapon_setups = {
         'primary': True,
         'primary_percent': 100,
         'rnd_target': True,
-        'dmg_type': 'pysical',
+        'dmg_type': 'physical',
     },
 
     'multi_attack_setup' : {
@@ -14,7 +14,7 @@ weapon_setups = {
         'primary': False,
         'primary_percent': 100,
         'rnd_target': True,
-        'dmg_type': 'pysical',
+        'dmg_type': 'physical',
     },
 
     'multi_attack_setup_prim_true': {
