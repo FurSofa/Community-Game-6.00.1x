@@ -8,7 +8,7 @@ weapon_setups = {
         'dmg_type': 'physical',
     },
 
-    'multi_attack_setup' : {
+    'multi_attack_setup': {
         'target_num': 'all',
         'splash_dmg': 50,
         'primary': False,

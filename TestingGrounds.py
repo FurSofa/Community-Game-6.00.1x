@@ -7,7 +7,7 @@ from person import Person
 from Hero import Hero
 from party import Party
 from battle import *
-from Equipable_Items import *
+from Item_Bases import *
 
 # Original text generator
 # print("┌" + "─" * 32 + "┬" + "─" * 32 + "┬" + "─" * 32 + "┐")

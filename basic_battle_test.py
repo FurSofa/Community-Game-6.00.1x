@@ -4,7 +4,7 @@ from party import Party
 from battle import *
 from battle import Battle
 from itertools import zip_longest
-from Equipable_Items import *
+from Item_Bases import *
 from combat_funcs import *
 
 # party1 = Party()

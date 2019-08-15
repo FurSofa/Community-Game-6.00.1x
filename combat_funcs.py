@@ -41,17 +41,15 @@ def deal_multi_dmg(attacker, target_party, target_num='all', splash_dmg=25,
         dmg_dealt, is_crit = attacker.calculate_dmg(dmg_type)
         if is_crit:
             print('CRIT CRIT CRIT YAY!')
-        dmg_dealt = dmg_dealt * dmg_mod // 100
-        dmg_received_single = target.take_dmg(dmg_dealt, dmg_type)
+            dmg_dealt = dmg_dealt * dmg_mod // 100
+            dmg_received_single = target.take_dmg(dmg_dealt, dmg_type)
         print(attacker.name, 'hits', target.name, 'for', dmg_dealt, dmg_type, 'dmg and does', dmg_received_single, 'dmg')
         dmg_received += dmg_received_single
         members_list.remove(target)
         target_num -= 1
     return dmg_received
 
-
 # def attack(attacker,)
-
 # attack = {
 #     'dmg_type': ['true', 'physical', 'magic'],
 #     'dmg': 'amount or range',

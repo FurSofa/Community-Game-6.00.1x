@@ -1,7 +1,7 @@
 from helper_functions import *
 from Hero import *
 from person import *
-from Equipable_Items import *
+from Item_Bases import *
 
 
 class Party:

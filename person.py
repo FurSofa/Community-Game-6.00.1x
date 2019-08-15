@@ -1,5 +1,5 @@
 from helper_functions import select_from_list
-from Equipable_Items import *
+from Item_Bases import *
 from vfx import *
 from attack_setups import weapon_setups
 from combat_funcs import deal_multi_dmg
