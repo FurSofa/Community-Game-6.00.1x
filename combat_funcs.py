@@ -127,4 +127,17 @@ def combat(hero_party, enemy_party, person='remove when really coding'):
             # Ect
         pass
 
+    def unpack_item_stats():
+        pass
+
+    def deal_damage(person, damage=100, damage_type='physical', targets=['list of targets']):
+
+        for target in targets:
+            defense = target.defense[damage_type]
+            dmg_multi = damage / (damage + defense)
+            actual_dmg = round(damage * dmg_multi)
+            print(f'{person.name} deals {actual_dmg} to {target}!')
+
+
+
         pass

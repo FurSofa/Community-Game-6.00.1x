@@ -250,10 +250,10 @@ class Person:
         :param: amount: int
         :return: actual_dmg: int
         """
+        # TODO: is only hotfixed! needs to move to combat_functions
         if dmg_type == 'true':
             dmg_multi = 1
         elif dmg_type == 'magic':
-            # TODO: implement magic resi
             dmg_multi = amount / (amount + (self.int / 4))
         else:
             dmg_multi = amount / (amount + self.defense)
@@ -276,7 +276,7 @@ class Person:
         :param amount: int
         :return: amount healed for: int
         """
-        # TODO: is only hotfixed! needs to move to deal_multi_dmg
+        # TODO: is only hotfixed! needs to move to combat_functions
         amount, is_crit = amount
         self.hp += amount
         if self.hp > self.max_hp:
