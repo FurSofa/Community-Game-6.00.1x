@@ -115,5 +115,8 @@ if __name__ == '__main__':
     h.add_item(create_random_item(1))
     h.display_inventory()
 
-
-
+    h2 = Party(dummy_game)
+    h2.add_member(Person.generate_random())
+    h2.add_member(Person.generate_random())
+    h2.add_item(create_random_item(2))
+    h2.add_item(create_random_item(1))

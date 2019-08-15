@@ -1,6 +1,8 @@
 from helper_functions import select_from_list
 from Equipable_Items import *
 from vfx import *
+from attack_setups import weapon_setups
+from combat_funcs import deal_multi_dmg
 
 
 class Person:
@@ -242,13 +244,19 @@ class Person:
 
     # stats
 
-    def take_dmg(self, amount) -> int:
+    def take_dmg(self, amount, dmg_type='physical') -> int:
         """
         reduces person hp by dmg_amount
         :param: amount: int
         :return: actual_dmg: int
         """
-        dmg_multi = amount / (amount + self.defense)
+        if dmg_type == 'true':
+            dmg_multi = 1
+        elif dmg_type == 'magic':
+            # TODO: implement magic resi
+            dmg_multi = amount / (amount + (self.int / 4))
+        else:
+            dmg_multi = amount / (amount + self.defense)
         actual_dmg = round(amount * dmg_multi)
         self.hp -= actual_dmg
         return actual_dmg
@@ -259,6 +267,8 @@ class Person:
         :param amount: int
         :return: amount healed for: int
         """
+        # TODO: is only hotfixed! needs to move to deal_multi_dmg
+        amount, is_crit = amount
         self.hp += amount
         if self.hp > self.max_hp:
             healed_amount = self.max_hp - self.hp
@@ -369,16 +379,24 @@ class Person:
 
     # battle
 
-    def calculate_dmg(self) -> int:
+    def calculate_dmg(self, dmg_type='physical', can_crit=True):
         """
         generates dmg
         determines hit is critical
         :return: dmg int
         """
-        dmg = random.randint(self.att_dmg_min, self.att_dmg_max)
-        if random.randrange(100) < self.crit_chance:
-            dmg = (dmg * self.crit_muliplier) // 100
-        return dmg
+        is_crit = False
+        # TODO: how calc true dmg?
+        if dmg_type == 'magic':
+            dmg = self.int
+        else:  # if dmg_type == 'physical':
+            dmg = random.randint(self.att_dmg_min, self.att_dmg_max)
+        if can_crit:
+            if random.randrange(100) < self.crit_chance:
+                is_crit = True
+                dmg = (dmg * self.crit_muliplier) // 100
+
+        return dmg, is_crit
 
     #  TODO: refactor combat functions to Combat.py
     def deal_dmg(self, target) -> int:
@@ -398,21 +416,22 @@ class Person:
         :param target_party: party instance
         :return: person from party
         """
-        if len(target_party.members) > 1:
+        if len(target_party) > 1:
             if self.party.has_hero() or self.party.game.difficulty == 'Medium':
-                choice = random.randrange(len(target_party.members))
-                target = target_party.members[choice]
+                choice = random.randrange(len(target_party))
+                target = target_party[choice]
             else:
                 if self.party.game.difficulty == 'Hard':
-                    target = min(target_party.members, key=lambda member: member.hp)
+                    target = min(target_party, key=lambda member: member.hp)
                 elif self.party.game.difficulty == 'Easy':
-                    target = max(target_party.members, key=lambda member: member.hp)
+                    target = max(target_party, key=lambda member: member.hp)
         else:
-            target = target_party.members[0]
+            target = target_party[0]
         return target
 
     def choose_attack(self):
-        return random.choice(self.get_attack_options())
+        choice = random.choice(self.get_attack_options())
+        return choice
 
     def attack(self, target_party, mode='single attack'):
         """
@@ -422,15 +441,18 @@ class Person:
         :param mode: str
         :return:
         """
-
-        target = self.choose_target(target_party)
-        mode = self.choose_attack().lower()
-        if mode == 'single attack':
-            dmg_done = self.deal_dmg(target)
-        elif mode == 'multi attack':
-            dmg_done = self.deal_multi_dmg(target, target_num='all', splash_dmg=75, primary=False)
-        elif mode == 'multi attack with primary target':
-            dmg_done = self.deal_multi_dmg(target, target_num=2, splash_dmg=50)
+        # TODO: make this independent of setup file! (get the setup from the weapon)
+        setup_key = self.choose_attack()
+        setup = weapon_setups[setup_key]
+        dmg_done = deal_multi_dmg(self, target_party, **setup)
+        # target = self.choose_target(target_party)
+        # mode = self.choose_attack().lower()
+        # if mode == 'single attack':
+        #     dmg_done = self.deal_dmg(target)
+        # elif mode == 'multi attack':
+        #     dmg_done = self.deal_multi_dmg(target, target_num='all', splash_dmg=75, primary=False)
+        # elif mode == 'multi attack with primary target':
+        #     dmg_done = self.deal_multi_dmg(target, target_num=2, splash_dmg=50)
         return dmg_done
 
     def choose_battle_action(self, enemy_party):
@@ -455,7 +477,8 @@ class Person:
     def get_attack_options(self):
         # TODO: make a list of options based on <???>
         # return ['single attack', 'multi attack', 'multi attack with primary target']  # full list disabled for now
-        return ['single attack']
+        return [item.attack_name for item in [self.equip_slots['Main Hand'], self.equip_slots['Off Hand']] if item]
+        # return ['single attack']
 
     def battle_turn(self, enemy_party):
         action = self.choose_battle_action(enemy_party).lower()
