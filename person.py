@@ -399,10 +399,17 @@ class Person:
         :return: person from party
         """
         if len(target_party.members) > 1:
-            choice = random.randrange(len(target_party.members))
+            if self.party.has_hero() or self.party.game.difficulty == 'Medium':
+                choice = random.randrange(len(target_party.members))
+                target = target_party.members[choice]
+            else:
+                if self.party.game.difficulty == 'Hard':
+                    target = min(target_party.members, key=lambda member: member.hp)
+                elif self.party.game.difficulty == 'Easy':
+                    target = max(target_party.members, key=lambda member: member.hp)
         else:
-            choice = 0
-        return target_party.members[choice]
+            target = target_party.members[0]
+        return target
 
     def choose_attack(self):
         return random.choice(self.get_attack_options())
@@ -434,15 +441,21 @@ class Person:
         :return: -
         """
         possible_actions = ['attack', ]
-
-        if self.hp / self.max_hp < 0.05:
+        if self.party.game.difficulty == 'Medium':
+            heal_under = 0.2
+        elif self.party.game.difficulty == 'Hard':
+            heal_under = 0.3
+        else:
+            heal_under = 0.05
+        if self.hp / self.max_hp < heal_under:
             possible_actions.append('heal')
         action = random.choice(possible_actions)
         return action
 
     def get_attack_options(self):
         # TODO: make a list of options based on <???>
-        return ['single attack', 'multi attack', 'multi attack with primary target']
+        # return ['single attack', 'multi attack', 'multi attack with primary target']  # full list disabled for now
+        return ['single attack']
 
     def battle_turn(self, enemy_party):
         action = self.choose_battle_action(enemy_party).lower()

@@ -93,7 +93,8 @@ def display_single_member_item_card(member):
 
 if __name__ == '__main__':
     print('===  From Test File  ===')
-    h = Party()
+    dummy_game = {'difficulty': 'Hard'}
+    h = Party(dummy_game)
     h.add_member(Person.generate_random())
     h.add_member(Person.generate_random())
     h.print_members_info_cards()

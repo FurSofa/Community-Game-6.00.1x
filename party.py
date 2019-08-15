@@ -5,8 +5,7 @@ from Equipable_Items import *
 
 
 class Party:
-    def __init__(self, ):
-        self.game = None
+    def __init__(self, game):
         self.hero = None
         self.members = []
         self.dead_members = []
@@ -15,12 +14,14 @@ class Party:
         self.equipment = []  # used for armor and weapons
         self.gold = 0
 
+        self.game = game
+
     def __str__(self):
         return 'h: ' + str(self.hero()) + ' ' + str(self.members)
 
     @classmethod
-    def generate(cls):
-        return cls()
+    def generate(cls, game):
+        return cls(game)
 
     @classmethod
     def __del__(cls):

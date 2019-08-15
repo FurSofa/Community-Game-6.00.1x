@@ -8,12 +8,12 @@ from battle import *
 
 class Game:
     def __init__(self):
-        self.party = Party.generate()
+        self.party = Party.generate(self)
         self.Mode = select_from_list(['Normal', 'AutoCombat'],
                                      'What mode would you like? ** Recommended: Normal **', False, True)
         self.difficulty = select_from_list(['Easy', 'Medium', 'Hard'], 'Choose your difficulty:')
         print(f'You selected: {self.difficulty}!')
-        self.party.game = self
+        # self.party.game = self
 
     @staticmethod
     def create_character(name='Jeb', profession='Astronaut', level=1):
@@ -77,7 +77,7 @@ class Game:
                 print('You bid the traveler farewell and continue on your way.\n')
         elif event == 1:
             # Battle
-            enemy_party = Party.generate()
+            enemy_party = Party.generate(self)
             x = 0
             for x in range(randrange(len(self.party.members) - 1, len(self.party.members) + 1)):
                 enemy_party.add_member(
@@ -86,7 +86,7 @@ class Game:
             alternating_turn_battle(self.party, enemy_party)
         elif event == 2:
             # Battle
-            enemy_party = Party.generate()
+            enemy_party = Party.generate(self)
             x = 0
             for x in range(randrange(len(self.party.members) - 1, len(self.party.members) + 1)):
                 enemy_party.add_member(
