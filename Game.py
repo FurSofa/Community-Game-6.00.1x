@@ -113,7 +113,7 @@ class Game:
         self.party.inventory_menu()
 
     def camp(self):
-        camp_input = select_from_list(['Rest', 'Inventory', 'Craft', 'Continue Adventuring'],
+        camp_input = select_from_list(['Exit', 'Rest', 'Inventory', 'Craft', 'Continue Adventuring'],
                                       f'What would you like to do:\n', False, True)
         if camp_input == 'Rest':
             for member in self.party.members:
@@ -123,14 +123,14 @@ class Game:
         elif camp_input == 'Craft':
             print('You need a craftsman.')
             self.camp()
-        elif camp_input == 'Continue Adventuring':
+        elif camp_input == 'Exit':
             print('You Head back out into the wilds..')
 
     def main_options(self):
         """
         Contains Choices after new game and settings
         """
-        print('\n' * 20)
+        print('\n' * 4)
         choice = select_from_list(['Adventure', 'Camp', 'Party Info'], f'\nWhat would you like to do\n ', True, True)
         if choice == 0:
             self.adventure()
@@ -142,7 +142,7 @@ class Game:
                /`/\\
               (% \033[1;31m%)\033[1;33m)\033[0;0m
             .-'....`-.
-            `--'.'`--' """)
+            `--'.'`--' """'\n')
             print('  You build a beautiful camp fire.\n')
             self.camp()
         elif choice == 2:
