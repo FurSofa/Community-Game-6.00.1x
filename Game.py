@@ -94,12 +94,12 @@ class Game:
                 x += 1
             alternating_turn_battle(self.party, enemy_party)
         elif event == 3:
-            p1 = create_random_item(randint(1, 2))
+            p1 = create_random_item(2)
             self.party.display_single_item_card(p1)
             self.party.inventory.append(p1)
             print(f'You find an item and toss it in your bag and keep moving.')
         elif event == 4:
-            p1 = create_random_item(randint(1, 2))
+            p1 = create_random_item(1)
             self.party.display_single_item_card(p1)
             self.party.inventory.append(p1)
             print(f'You find an item and toss it in your bag and keep moving.')

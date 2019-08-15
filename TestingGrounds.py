@@ -99,10 +99,19 @@ if __name__ == '__main__':
     h.print_members_info_cards()
     h.display_single_member_item_card(h.member(0))
 
-    h.add_item(Weapon.generate(quality='Legendary', equipable_slot='Main Hand', att_dmg_max=20))
+    # h.add_item(Weapon.generate(quality='Legendary', equipable_slot='Main Hand', att_dmg_max=20))
     h.add_item(create_random_equipable_item())
     h.add_item(create_random_equipable_item())
     h.add_item(create_random_equipable_item())
+    h.add_item(create_random_item(2))
+    h.add_item(create_random_item(2))
+    h.add_item(create_random_item(2))
+    h.add_item(create_random_item(1))
+    h.add_item(create_random_item(1))
+    h.add_item(create_random_item(1))
+    h.add_item(create_random_item(1))
+    h.add_item(create_random_item(1))
+    h.add_item(create_random_item(1))
     h.display_inventory()
 
 

@@ -3,13 +3,13 @@ import random
 from vfx import *
 import string
 
-sWeights = (8, 44, 22, 18, 8)
+sWeights = (6, 44, 28, 18, 4)
 sList = ['Rusty', 'Common',
          'Great', 'Magical',
          'Legendary']
-sValue = {'Rusty': 0.9, 'Common': 1,
-          'Great': 1.25, 'Magical': 1.6,
-          'Legendary': 2}
+sValue = {'Rusty': 0.8, 'Common': 1,
+          'Great': 1.5, 'Magical': 2,
+          'Legendary': 2.5}
 
 
 class Consumable:
@@ -266,7 +266,7 @@ class Armor(Equipment):
         quality = random.choices(sList, weights=sWeights, k=1)[0]
         quality_val = sValue.get(quality)
         equipable_slot = random.choice(['Head', 'Chest', 'Legs', 'Feet'])
-        defense = (1 + random.randint(0, 2)) * quality_val
+        defense = (1 + random.randint(1, 4)) * quality_val
 
         return cls(quality, quality_val, etype, equipable_slot, value,
                    max_durability, strength, dexterity, intelligence,
