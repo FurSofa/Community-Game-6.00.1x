@@ -9,6 +9,35 @@ from party import Party
 from battle import *
 from Equipable_Items import *
 
+# Original text generator
+# print("┌" + "─" * 32 + "┬" + "─" * 32 + "┬" + "─" * 32 + "┐")
+# print("\n".join(f'│ {x} │ {y} │ {z} │' for x, y, z in zip(card1.splitlines(), card2.splitlines(), card3.splitlines())))
+# print("└" + "─" * 32 + "┴" + "─" * 32 + "┴" + "─" * 32 + "┘")
+
+"""
+┌───────────────────────────────┬────────────────────────────────┬───────────────────────────────┐ # len(98)
+│Dirty Hat                 Head │ Gold Necklace             Neck │ Epic Sword           Main Hand│
+│Dur: 13/100    Damage:  NA-NA  │ Dur: NA/NA     Damage:  NA-NA  │ Dur: 3000/3000 Damage: 100-100│
+└───────────────────────────────┴────────────────────────────────┴───────────────────────────────┘
+"""
+
+
+# def generate_card_list(inventory):
+#     card_list = []
+#     empty_card = ['                              ',
+#                   '            Empty             ',
+#                   '                              ']
+#     for item in inventory:
+#         card_list.append(item.item_card)
+#
+#     for item in inventory + (9 - len(inventory)) * [None]:
+#         if item:
+#             card_list.append(item.item_card)
+#         else:
+#             card_list.append(empty_card)
+#     return card_list
+
+
 def print_inventory_default(inventory):
     empty_card = [" " * 30] * 3
     cards = [item.item_card() if item else empty_card for item in inventory + (9 - len(inventory)) * [None]]
@@ -22,6 +51,7 @@ def print_inventory_default(inventory):
     print("\n".join(f'│ {x} │ {y} │ {z} │ ' for x, y, z in zip(*cards[6:])))
     print("└" + "─" * 32 + "┴" + "─" * 32 + "┴" + "─" * 32 + "┘")
 
+
 def print_single_item_card(item):
     x = item.item_card()
     print("┌" + "─" * 30 + "┐")
@@ -31,6 +61,7 @@ def print_single_item_card(item):
     print("├" + "─" * 30 + "┤")
     print("\n".join(f'│ {x[2]} │'))
     print("└" + "─" * 30 + "┘")
+
 
 def print_member_info_cards(members):
     empty_card = [" " * 21] * 6
@@ -51,40 +82,13 @@ def print_member_info_cards(members):
         print("\n".join(f'│ {w} │ {x} │ {y} │ {z} │ ' for w, x, y, z in zip(*cards[12:16])))
     print("└" + "─" * 23 + "┴" + "─" * 23 + "┴" + "─" * 23 + "┴" + "─" * 23 + "┘")
 
+
 def display_single_member_item_card(member):
     info_card = member.info_card()
     print('-' * 8, 'Person', '-' * 9)
     print("┌" + "─" * 23 + "┐")
     print("\n".join(f'│ {x} │' for x in info_card))
     print("└" + "─" * 23 + "┘")
-# =================================================================================================
-# TODO: working line
-
-# Create a list of tuples that represent each 'enchant and their values
-enchantment_list = [('str', 5), ('str', -2), ('str', 10)]
-# use random.choices for applying weights.
-# Use randint based on the quality of the item to produce better stuff at higher qual
-class Weapon:
-    def __init__(self, name, power):
-        self.name = name
-        self.base_power = power
-        self.enchantments = []
-
-    @property
-    def power(self):
-        _power = self.base_power
-        for stat, mod in self.enchantments:
-            if stat == 'str':
-                _power += mod
-        return _power
-
-    sword = Weapon('sword', 10)
-    print(sword.base_power)
-    print(sword.power)
-    sword.enchantments.append(choice(enchantment_list))
-    print(sword.power)
-
-
 
 
 if __name__ == '__main__':
@@ -92,14 +96,27 @@ if __name__ == '__main__':
     dummy_game = {'difficulty': 'Hard'}
     h = Party(dummy_game)
     h.add_member(Person.generate_random())
-    h.add_item(create_random_item(randint(1, 2)))
+    h.add_member(Person.generate_random())
+    h.print_members_info_cards()
+    h.display_single_member_item_card(h.member(0))
 
-    sword = Weapon('sword', 10)
-    print(sword.base_power)
-    print(sword.power)
-    sword.enchantments.append(choice([('str', 5), ('str', -2)]))
-    print(sword.power)
-# Create a list of tuples that represent each 'enchant and their values
-enchantment_list = [('str', 5), ('str', -2)]
-# use random.choices for applying weights.
-# Use randint based on the quality of the item to produce better stuff at higher qual
+    # h.add_item(Weapon.generate(quality='Legendary', equipable_slot='Main Hand', att_dmg_max=20))
+    h.add_item(create_random_equipable_item())
+    h.add_item(create_random_equipable_item())
+    h.add_item(create_random_equipable_item())
+    h.add_item(create_random_item(2))
+    h.add_item(create_random_item(2))
+    h.add_item(create_random_item(2))
+    h.add_item(create_random_item(1))
+    h.add_item(create_random_item(1))
+    h.add_item(create_random_item(1))
+    h.add_item(create_random_item(1))
+    h.add_item(create_random_item(1))
+    h.add_item(create_random_item(1))
+    h.display_inventory()
+
+    h2 = Party(dummy_game)
+    h2.add_member(Person.generate_random())
+    h2.add_member(Person.generate_random())
+    h2.add_item(create_random_item(2))
+    h2.add_item(create_random_item(1))

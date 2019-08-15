@@ -21,7 +21,7 @@ class Hero(Person):
         :return: person instance
         """
         print()
-        return select_from_list(target_party.members, index_pos=False, q='Choose a target:')
+        return select_from_list(target_party, index_pos=False, q='Choose a target:')
 
     def choose_attack(self):
         return select_from_list(self.get_attack_options())

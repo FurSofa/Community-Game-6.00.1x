@@ -5,6 +5,7 @@ from battle import *
 from battle import Battle
 from itertools import zip_longest
 from Equipable_Items import *
+from combat_funcs import *
 
 # party1 = Party()
 # party1.add_member(Hero.generate('Norb', 'Codesmith'))
@@ -26,10 +27,19 @@ dummy_game = {'difficulty': 'Hard'}
 p1 = Party.generate(dummy_game)
 p1.add_member(Hero.generate('Fur', 'Jr.Coder'))
 p1.add_member(Person.generate_random())
+
 p2 = Party.generate(dummy_game)
 p2.add_member(Person.generate('Kefka', 'Drama Queen'))
 p2.add_member(Person.generate_random())
 p2.add_member(Person.generate_random())
+
+p1.add_item(create_random_equipable_item(5, etype=1))
+p2.add_item(create_random_equipable_item(5, etype=1))
+
+
+per1 = p1.members[0]
+pers2 = p2.members[0]
+
 # print_combat_status(p1, p2)
 
 # while p1.has_units_left:
