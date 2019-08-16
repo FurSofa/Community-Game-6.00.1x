@@ -84,19 +84,17 @@ class Equipment:
             line_2_right = f'Damage: {self.att_dmg_min:>3}-{self.att_dmg_max:<3}'
 
             # Line 3
-
+            line_3_left = " " * 15
+            line_3_right = " " * 15
             if self.enchants[0]:
                 for enchant, value in self.enchants[0]:
                     chant1 = f'{enchant}: {value}'
                     line_3_left = f'{chant1}'
-            else:
-                line_3_left = " " * 15
-            if self.enchants[0]:
-                for enchant, value in self.enchants[0]:
+            if self.enchants[1]:
+                for enchant, value in self.enchants[1]:
                     chant2 = f'{enchant}: {value}'
                     line_3_right = f'{chant2}'
-            else:
-                line_3_right = " " * 15
+
 
             # Combine L an R lines
             line_1 = f'{line_1_left}{line_1_right:>{30 - len(line_1_left)}}'

@@ -9,34 +9,6 @@ from party import Party
 from battle import *
 from Item_Bases import *
 
-# Original text generator
-# print("┌" + "─" * 32 + "┬" + "─" * 32 + "┬" + "─" * 32 + "┐")
-# print("\n".join(f'│ {x} │ {y} │ {z} │' for x, y, z in zip(card1.splitlines(), card2.splitlines(), card3.splitlines())))
-# print("└" + "─" * 32 + "┴" + "─" * 32 + "┴" + "─" * 32 + "┘")
-
-"""
-┌───────────────────────────────┬────────────────────────────────┬───────────────────────────────┐ # len(98)
-│Dirty Hat                 Head │ Gold Necklace             Neck │ Epic Sword           Main Hand│
-│Dur: 13/100    Damage:  NA-NA  │ Dur: NA/NA     Damage:  NA-NA  │ Dur: 3000/3000 Damage: 100-100│
-└───────────────────────────────┴────────────────────────────────┴───────────────────────────────┘
-"""
-
-
-# def generate_card_list(inventory):
-#     card_list = []
-#     empty_card = ['                              ',
-#                   '            Empty             ',
-#                   '                              ']
-#     for item in inventory:
-#         card_list.append(item.item_card)
-#
-#     for item in inventory + (9 - len(inventory)) * [None]:
-#         if item:
-#             card_list.append(item.item_card)
-#         else:
-#             card_list.append(empty_card)
-#     return card_list
-
 
 def print_inventory_default(inventory):
     empty_card = [" " * 30] * 3

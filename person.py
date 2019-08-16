@@ -35,7 +35,7 @@ class Person:
         self.base_att_dmg_min = 1
         self.base_att_dmg_max = 3
         self.base_crit_chance = 5
-        self.base_crit_muliplier = 120
+        self.base_crit_multiplier = 120
 
         # Stats Section
         self.str = self.base_str
@@ -47,7 +47,7 @@ class Person:
         self.att_dmg_min = self.base_att_dmg_min
         self.att_dmg_max = self.base_att_dmg_max
         self.crit_chance = self.base_crit_chance + round(self.dex * 0.8)
-        self.crit_multiplier = self.base_crit_muliplier + self.dex
+        self.crit_multiplier = self.base_crit_multiplier + self.dex
 
         self.damage = random.randint(self.att_dmg_min, self.att_dmg_max)
 
@@ -168,7 +168,7 @@ class Person:
         self.att_dmg_min = self.base_att_dmg_min
         self.att_dmg_max = self.base_att_dmg_max
         self.crit_chance = self.base_crit_chance + round(self.dex * 0.8)
-        self.crit_multiplier = self.base_crit_muliplier + self.dex
+        self.crit_multiplier = self.base_crit_multiplier + self.dex
         self.calculate_stats_with_gear()
 
     def display(self):
