@@ -43,7 +43,6 @@ class Equipment:
         self.crit_chance = round(crit_chance * self.quality_val)
         self.crit_muliplier = round(crit_multiplier * self.quality_val)
 
-
     @classmethod
     def generate(cls, quality='Common', quality_val=1, etype='Weapon', equipable_slot='Main Hand', value=0,
                  max_durability=10, strength=0, dexterity=0, intelligence=0,
@@ -85,26 +84,17 @@ class Equipment:
             line_2_right = f'Damage: {self.att_dmg_min:>3}-{self.att_dmg_max:<3}'
 
             # Line 3
+
             if self.enchants[0]:
-                for enchant,value in self.enchants[0]:
-                    chant = f'{enchant}: {value}'
-                    line_3_left =  line_3_left + f'{chant}'
+                for enchant, value in self.enchants[0]:
+                    chant1 = f'{enchant}: {value}'
+                    line_3_left = f'{chant1}'
             else:
                 line_3_left = " " * 15
             if self.enchants[0]:
-                for enchant,value in self.enchants[0]:
-                    chant = f'{enchant}: {value}'
-                    line_3_right =  line_3_right + f'{chant}'
-
-
-
-
-            if self.enchant_1:
-                line_3_left = f'{self.enchant_1}{self.enchant_1_val}'
-            else:
-                line_3_left = " " * 15
-            if self.enchant_2:
-                line_3_right = f'{self.enchant_2}{self.enchant_2_val}'
+                for enchant, value in self.enchants[0]:
+                    chant2 = f'{enchant}: {value}'
+                    line_3_right = f'{chant2}'
             else:
                 line_3_right = " " * 15
 
