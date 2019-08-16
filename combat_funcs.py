@@ -88,11 +88,18 @@ def combat(hero_party, enemy_party, person='remove when really coding'):
         """
         # put logic for AI here
         # put hero choice here
-        pass
+        return []
 
-    def calculate_damage(person):
+    def is_crit(pesron) -> bool:
+        _chance = person.crit
+        if _chance < random.randint(1,100):
+            return True
+        else:
+            return False
+
+    def calculate_damage(person, crit=is_crit(person)):
         damage = person.damage
-        crit = person.is_crit
+        damage_type = person.equip_slots['Main Hand'].weapon_setups[key]
         crit_multi = person.crit_muliplier
         if crit:
             damage = damage * crit_multi // 100
@@ -103,20 +110,6 @@ def combat(hero_party, enemy_party, person='remove when really coding'):
         #     damage *= (person.str * 80 // 100)
         return damage
 
-    def defense_calc(target, damage, damage_type):
-        """
-        :param target: list
-        :return: damage
-        """
-        if len(target) > 1:
-            pass  # get the most common defense type for 'all' with count()
-        else:
-            defense = target[0].defense_type[damage_type]  # dict containing types and values
-
-        dmg_multi = damage / (damage + target[0].defense_type[damage_type])
-        actual_dmg = round(damage * dmg_multi)
-        return actual_dmg
-        pass
 
     def attack_type_logic(not_sure_yet):
         attack_type = ['single']
@@ -136,8 +129,22 @@ def combat(hero_party, enemy_party, person='remove when really coding'):
             defense = target.defense[damage_type]
             dmg_multi = damage / (damage + defense)
             actual_dmg = round(damage * dmg_multi)
+            target.hp -= actual_dmg
             print(f'{person.name} deals {actual_dmg} to {target}!')
 
+
+    def heal(pesron,ammount):
+        amount = person.damage()
+        amount, is_crit = amount
+        self.hp += amount
+        if self.hp > self.max_hp:
+            healed_amount = self.max_hp - self.hp
+            self.hp = self.max_hp
+            print(f'{self.name} is fully Healed! HP: {self.hp}/{self.max_hp}')
+        else:
+            healed_amount = amount
+            print(f'{self.name} healed for {amount} hp! HP: {self.hp}/{self.max_hp}')
+        return healed_amount
 
 
         pass

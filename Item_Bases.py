@@ -27,14 +27,7 @@ class Equipment:
         self.value = value + int(10 * quality_value + 10)
         self.max_durability = max_durability
         self.durability = self.max_durability
-        self.enchant_1 = None
-        self.enchant_1_val = None
-        self.enchant_2 = None
-        self.enchant_2_val = None
-        self.enchant_3 = None
-        self.enchant_3_val = None
-        self.enchant_4 = None
-        self.enchant_4_val = None
+        self.enchants = []
 
         self.type = etype
         self.equipable_slot = equipable_slot
@@ -50,7 +43,6 @@ class Equipment:
         self.crit_chance = round(crit_chance * self.quality_val)
         self.crit_muliplier = round(crit_multiplier * self.quality_val)
 
-        self._max_left = max(len(k) for k in self.__dict__.keys()) + 10
 
     @classmethod
     def generate(cls, quality='Common', quality_val=1, etype='Weapon', equipable_slot='Main Hand', value=0,
@@ -65,12 +57,18 @@ class Equipment:
                    crit_chance, crit_multiplier)
 
     def __repr__(self):
-        return self.type + ': ' + self.equipable_slot
-
-    def stats(self):
+        _max_left = max(len(k) for k in self.__dict__.keys()) + 10
         return '\n'.join(
-            [f"{k.title()}: {str(v).rjust(self._max_left - len(k), ' ')}"
+            [f"{k.title()}: {str(v).rjust(_max_left - len(k), ' ')}"
              for k, v in self.__dict__.items()])
+
+    def show_stats(self):
+        name = f'{self.quality} {self.type}'
+        slot = f'{self.equipable_slot.title():>9}'
+        dmg = f'{self.att_dmg_min:>3}-{self.att_dmg_max:<3}'
+        line2_left = f'Dur: {self.durability:>2}/{self.max_durability:<2} '
+        line2_right = f'Damage: {dmg}'
+        return f'{name:<15}{slot:>15}\n{line2_left:<15}{line2_right:>15}\n'
 
     def __str__(self):
         return f'{self.quality} {self.type}: {self.equipable_slot}'
@@ -87,6 +85,20 @@ class Equipment:
             line_2_right = f'Damage: {self.att_dmg_min:>3}-{self.att_dmg_max:<3}'
 
             # Line 3
+            if self.enchants[0]:
+                for enchant,value in self.enchants[0]:
+                    chant = f'{enchant}: {value}'
+                    line_3_left =  line_3_left + f'{chant}'
+            else:
+                line_3_left = " " * 15
+            if self.enchants[0]:
+                for enchant,value in self.enchants[0]:
+                    chant = f'{enchant}: {value}'
+                    line_3_right =  line_3_right + f'{chant}'
+
+
+
+
             if self.enchant_1:
                 line_3_left = f'{self.enchant_1}{self.enchant_1_val}'
             else:
