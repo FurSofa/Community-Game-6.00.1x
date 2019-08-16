@@ -169,9 +169,9 @@ class Equipment:
 
     def sell(self):
         # TODO: remove item and add value to player money
-        # hero.money += self.value
+        # hero.money += attacker.value
         # remove from inventory.pop[item_slot]
-        # self.del
+        # attacker.del
         pass
 
     def repair(self):

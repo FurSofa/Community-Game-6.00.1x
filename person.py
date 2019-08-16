@@ -2,10 +2,10 @@ from helper_functions import select_from_list
 from Equipable_Items import *
 from vfx import *
 from attack_setups import weapon_setups
-from combat_funcs import deal_multi_dmg
+from combat_funcs import execute_attack
 
 
-class Person:
+class NPC:
     """
     access points:
     pickup_gear() to give the player a new weapon
@@ -242,28 +242,10 @@ class Person:
         print(f'{self.name} is now {self.level}!')
         self.stat_growth()
 
-    # stats
-
-    def take_dmg(self, amount, dmg_type='physical') -> int:
-        """
-        reduces person hp by dmg_amount
-        :param: amount: int
-        :return: actual_dmg: int
-        """
-        if dmg_type == 'true':
-            dmg_multi = 1
-        elif dmg_type == 'magic':
-            # TODO: implement magic resi
-            dmg_multi = amount / (amount + (self.int / 4))
-        else:
-            dmg_multi = amount / (amount + self.defense)
-        actual_dmg = round(amount * dmg_multi)
-        self.hp -= actual_dmg
-        return actual_dmg
 
     def heal(self, amount) -> int:
         """
-        heals self for amount
+        heals attacker for amount
         :param amount: int
         :return: amount healed for: int
         """
@@ -319,100 +301,9 @@ class Person:
         for i in gear:
             print(i.item)
 
-    # def change_gear(self):
-    #     if len(self.party.equipment) > 0:
-    #         print('What item do you want to equip?')
-    #         chosen_gear = select_from_list(self.party.equipment)
-    #         self.equip_gear(chosen_gear)
-    #         self.party.equipment.remove(chosen_gear)
-    #
-    # def pickup_gear(self, new_gear):
-    #     """
-    #     ENDPOINT to get new items to the player
-    #     :param new_gear: a new item
-    #     :return:
-    #     """
-    #     if new_gear.gear_type == 'weapon':
-    #         if self.equip_slot['Main Hand']:
-    #             print('-----------------------')
-    #             print('Current First Hand Weapon:')
-    #             self.equip_slot['Main Hand'].show_stats()
-    #         else:
-    #             self.equip_gear(new_gear)
-    #             return
-    #         if self.equip_slot['Off Hand']:
-    #             print('-----------------------')
-    #             print('Current Off Hand Weapon:')
-    #             self.equip_slot['Off Hand'].show_stats()
-    #     self.equip_gear(new_gear)
-    #
-    # def equip_gear(self, new_gear, slot_to_change='choose'):
-    #     """
-    #     changes/fills an item in an equipment slot
-    #     puts old item into party inventory
-    #     :param slot_to_change: provide if you want to auto equip
-    #     :param new_gear:  new item to be equipped
-    #     :return: -
-    #     """
-    #     if slot_to_change == 'choose':
-    #         if new_gear.gear_type == 'weapon':
-    #             print('Where do you want to put it?')
-    #             weapon_slot = select_from_list(['Main Hand', 'Off Hand'], index_pos=True)
-    #             if weapon_slot == 0:
-    #                 slot_to_change = 'main_hand'
-    #             elif weapon_slot == 1:
-    #                 slot_to_change = 'off_hand'
-    #         elif new_gear.gear_type == 'shield':
-    #             slot_to_change = 'off_hand'
-    #         # TODO: add elifs for all equipment slots
-    #         elif new_gear.gear_type == 'armor':
-    #             slot_to_change = 'armor'
-    #
-    #     if self.__dict__[slot_to_change]:
-    #         old_item = self.__dict__[slot_to_change]
-    #         old_item.holder = None
-    #         self.party.equipment.append(old_item)
-    #     #  TODO: check and ask if switch weapon in slot
-    #     self.__dict__[slot_to_change] = new_gear
-    #     new_gear.holder = self
-    #     self.calculate_stats_with_gear()
-
-    # battle
-
-    def calculate_dmg(self, dmg_type='physical', can_crit=True):
-        """
-        generates dmg
-        determines hit is critical
-        :return: dmg int
-        """
-        is_crit = False
-        # TODO: how calc true dmg?
-        if dmg_type == 'magic':
-            dmg = self.int
-        else:  # if dmg_type == 'physical':
-            dmg = random.randint(self.att_dmg_min, self.att_dmg_max)
-        if can_crit:
-            if random.randrange(100) < self.crit_chance:
-                is_crit = True
-                dmg = (dmg * self.crit_muliplier) // 100
-
-        return dmg, is_crit
-
-    #  TODO: refactor combat functions to Combat.py
-    def deal_dmg(self, target) -> int:
-        """
-        generates dmg and lets target take dmg
-        :param target: person instance
-        :return: actual dmg dealt -> int
-        """
-        dmg_dealt = self.calculate_dmg()
-        dmg_enemy_received = target.take_dmg(dmg_dealt)
-        # print(self, 'deals', dmg_enemy_received, 'to', target)
-        return dmg_enemy_received
-
     def choose_target(self, target_party):
         """
-        picks random target from target_party.members
+        picks random target from enemy_party.members
         :param target_party: party instance
         :return: person from party
         """
@@ -429,31 +320,9 @@ class Person:
             target = target_party[0]
         return target
 
-    def choose_attack(self):
-        choice = random.choice(self.get_attack_options())
+    def choose_attack(self, attack_options):
+        choice = random.choice(attack_options)
         return choice
-
-    def attack(self, target_party, mode='single attack'):
-        """
-        chooses deal_dmg func, based on mode
-        executes chosen deal_dmg
-        :param target_party: party instance
-        :param mode: str
-        :return:
-        """
-        # TODO: make this independent of setup file! (get the setup from the weapon)
-        setup_key = self.choose_attack()
-        setup = weapon_setups[setup_key]
-        dmg_done = deal_multi_dmg(self, target_party, **setup)
-        # target = self.choose_target(target_party)
-        # mode = self.choose_attack().lower()
-        # if mode == 'single attack':
-        #     dmg_done = self.deal_dmg(target)
-        # elif mode == 'multi attack':
-        #     dmg_done = self.deal_multi_dmg(target, target_num='all', splash_dmg=75, primary=False)
-        # elif mode == 'multi attack with primary target':
-        #     dmg_done = self.deal_multi_dmg(target, target_num=2, splash_dmg=50)
-        return dmg_done
 
     def choose_battle_action(self, enemy_party):
         """
@@ -474,59 +343,75 @@ class Person:
         action = random.choice(possible_actions)
         return action
 
-    def get_attack_options(self):
-        # TODO: make a list of options based on <???>
-        # return ['single attack', 'multi attack', 'multi attack with primary target']  # full list disabled for now
-        return [item.attack_name for item in [self.equip_slots['Main Hand'], self.equip_slots['Off Hand']] if item]
-        # return ['single attack']
+    #
+    # def take_dmg(self, amount, dmg_type='physical') -> int:
+    #     """
+    #     reduces person hp by dmg_amount
+    #     :param: amount: int
+    #     :return: actual_dmg: int
+    #     """
+    #     if dmg_type == 'true':
+    #         dmg_multi = 1
+    #     elif dmg_type == 'magic':
+    #         # TODO: implement magic resi
+    #         dmg_multi = amount / (amount + (self.int / 4))
+    #     else:
+    #         dmg_multi = amount / (amount + self.defense)
+    #     actual_dmg = round(amount * dmg_multi)
+    #     self.hp -= actual_dmg
+    #     return actual_dmg
+    #
+    # def calculate_dmg(self, dmg_type='physical', can_crit=True):
+    #     """
+    #     generates dmg
+    #     determines hit is critical
+    #     :return: dmg int
+    #     """
+    #     is_crit = False
+    #     # TODO: how calc true dmg?
+    #     if dmg_type == 'magic':
+    #         dmg = self.int
+    #     else:  # if dmg_type == 'physical':
+    #         dmg = random.randint(self.att_dmg_min, self.att_dmg_max)
+    #     if can_crit:
+    #         if random.randrange(100) < self.crit_chance:
+    #             is_crit = True
+    #             dmg = (dmg * self.crit_muliplier) // 100
+    #     return dmg, is_crit
 
-    def battle_turn(self, enemy_party):
-        action = self.choose_battle_action(enemy_party).lower()
-        if action == 'attack':
-            dmg_done = self.attack(enemy_party)
-            # target = self.choose_target(enemy_party)
-            # # TODO: refactor to input chosen target, not party
-            # # self.attack_target(target, mode=action)  # not needed until we have more options to do dmg
-            # dmg_enemy_received = self.deal_dmg(target)
-            # print(self.name, 'deals', dmg_enemy_received, 'to', target.name)
+    # def attack(self, target_party):
+    #     """
+    #     chooses deal_dmg func, based on mode
+    #     executes chosen deal_dmg
+    #     :param target_party: party instance
+    #     :param mode: str
+    #     :return:
+    #     """
+    #     # TODO: make this independent of setup file! (get the setup from the weapon)
+    #     setup_key = self.choose_attack()
+    #     setup = weapon_setups[setup_key]
+    #     dmg_done = execute_attack(self, target_party, **setup)
+    #     return dmg_done
 
-        elif action == 'show hero stats':
-            self.party.display_single_member_item_card(self)
-            self.battle_turn(enemy_party)
-        elif action == 'change gear':
-            # self.change_gear()
-            self.battle_turn(enemy_party)
-        elif action == 'heal':
-            self.heal(self.calculate_dmg())
-
-    def deal_multi_dmg(self, target, target_num='all', splash_dmg=25, primary=True, rnd_target=True):
-        if target_num == 'all' or target_num > len(target.party.members):
-            target_num = len(target.party.members)
-
-        members_list = target.party.members[:]
-        dmg_received = 0
-
-        if primary:
-            dmg_dealt = self.calculate_dmg()
-            dmg_received += target.take_dmg(dmg_dealt)
-            print(self.display(), 'deals', dmg_received, 'dmg to', target.display())
-            members_list.remove(target)
-            target_num -= 1
-
-        while target_num > 0:
-            if rnd_target:
-                target = random.choice(members_list)
-            elif target_num < len(members_list):
-                target = select_from_list(members_list, q='Select next target')
-            else:
-                target = members_list[0]
-            dmg_received2 = target.take_dmg(self.calculate_dmg() * splash_dmg // 100)
-            print('and', dmg_received2, 'dmg to', target)
-            dmg_received += dmg_received2
-            members_list.remove(target)
-            target_num -= 1
-        return dmg_received
+    # def battle_turn(self, enemy_party):
+    #     action = self.choose_battle_action(enemy_party).lower()
+    #     if action == 'attack':
+    #         dmg_done = self.attack(enemy_party)
+    #         # target = attacker.choose_target(enemy_party)
+    #         # # TODO: refactor to input chosen target, not party
+    #         # # attacker.attack_target(target, mode=action)  # not needed until we have more options to do dmg
+    #         # dmg_enemy_received = attacker.deal_dmg(target)
+    #         # print(attacker.name, 'deals', dmg_enemy_received, 'to', target.name)
+    #
+    #     elif action == 'show hero stats':
+    #         self.party.display_single_member_item_card(self)
+    #         self.battle_turn(enemy_party)
+    #     elif action == 'change gear':
+    #         # attacker.change_gear()
+    #         self.battle_turn(enemy_party)
+    #     elif action == 'heal':
+    #         self.heal(self.calculate_dmg())
 
 
 if __name__ == '__main__':
-    p1 = Person.generate_random()
+    p1 = NPC.generate_random()

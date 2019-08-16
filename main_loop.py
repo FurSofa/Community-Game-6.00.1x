@@ -1,5 +1,5 @@
 from helper_functions import select_from_list
-from person import Person, Hero
+from person import NPC, Hero
 from party import Party
 from battle import Battle
 from weapons import Sword
@@ -21,7 +21,7 @@ while hero_party.has_units_left:
 
         # todo: make it a method
         enemy_party = Party()
-        enemy1 = Person('Goomba')
+        enemy1 = NPC('Goomba')
         enemy_party.add_member(enemy1)
         battle = Battle()
         hero_won = battle.alternating_turn_battle(hero_party, enemy_party)
