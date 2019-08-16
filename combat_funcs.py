@@ -96,3 +96,86 @@ def execute_attack(attacker, target_party, target_num='all', splash_dmg=25,
 # }
 
 
+def combat(hero_party, enemy_party, person='remove when really coding'):
+    """
+    A start to gathering functions and calculations for combat consolidation
+
+    :param hero_party: first party
+    :param enemy_party: second party
+    :param person: Not needed as a param
+    :return:
+    """
+
+    def alternating_turns(hero_party, enemy_party):
+        # Magic
+        pass
+
+    def choose_target(person, opposing_party):
+        """
+        generates a list of the targets
+        :param person:
+        :param opposing_party:
+        :return: list of targets  # this is so we can use count() later
+        """
+        # put logic for AI here
+        # put hero choice here
+        return []
+
+    def is_crit(pesron) -> bool:
+        _chance = person.crit
+        if _chance < random.randint(1,100):
+            return True
+        else:
+            return False
+
+    def calculate_damage(person, crit=is_crit(person)):
+        damage = person.damage
+        damage_type = person.equip_slots['Main Hand'].weapon_setups[key]
+        crit_multi = person.crit_muliplier
+        if crit:
+            damage = damage * crit_multi // 100
+
+        # if damage_type == 'Magic':
+        #     damage *= (person.int *80//100)
+        # elif damage_type == 'Physical':
+        #     damage *= (person.str * 80 // 100)
+        return damage
+
+
+    def attack_type_logic(not_sure_yet):
+        attack_type = ['single']
+        if attack_type == 'heal':
+            target = select_from_list(person.party)
+        elif attack_type == 'single':
+            choose_target(person='', opposing_party='')
+            # Ect
+        pass
+
+    def unpack_item_stats():
+        pass
+
+    def deal_damage(person, damage=100, damage_type='physical', targets=['list of targets']):
+
+        for target in targets:
+            defense = target.defense[damage_type]
+            dmg_multi = damage / (damage + defense)
+            actual_dmg = round(damage * dmg_multi)
+            target.hp -= actual_dmg
+            print(f'{person.name} deals {actual_dmg} to {target}!')
+
+
+    def heal(pesron,ammount):
+        amount = person.damage()
+        amount, is_crit = amount
+        self.hp += amount
+        if self.hp > self.max_hp:
+            healed_amount = self.max_hp - self.hp
+            self.hp = self.max_hp
+            print(f'{self.name} is fully Healed! HP: {self.hp}/{self.max_hp}')
+        else:
+            healed_amount = amount
+            print(f'{self.name} healed for {amount} hp! HP: {self.hp}/{self.max_hp}')
+        return healed_amount
+
+
+        pass

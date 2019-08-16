@@ -8,7 +8,7 @@ weapon_setups = {
         'dmg_type': 'physical',
     },
 
-    'multi_attack_setup' : {
+    'multi_attack_setup': {
         'target_num': 'all',
         'splash_dmg': 50,
         'primary': False,
@@ -26,3 +26,19 @@ weapon_setups = {
         'dmg_type': 'magic',
     },
 }
+
+single = {'target_num': 1,
+          'splash_dmg': 0,
+          'primary': True,
+          'primary_percent': 100,
+          'rnd_target': True,
+          'dmg_type': 'physical'
+          }
+
+all_enemies = {'target_num': 'all',
+               'splash_dmg': 50,
+               'primary': False,
+               'primary_percent': 100,
+               'rnd_target': True,
+               'dmg_type': 'physical'
+               }

@@ -1,5 +1,5 @@
 from helper_functions import select_from_list
-from Equipable_Items import *
+from Item_Bases import *
 from vfx import *
 from attack_setups import weapon_setups
 from combat_funcs import execute_attack
@@ -35,7 +35,7 @@ class NPC:
         self.base_att_dmg_min = 1
         self.base_att_dmg_max = 3
         self.base_crit_chance = 5
-        self.base_crit_muliplier = 120
+        self.base_crit_multiplier = 120
 
         # Stats Section
         self.str = self.base_str
@@ -47,7 +47,7 @@ class NPC:
         self.att_dmg_min = self.base_att_dmg_min
         self.att_dmg_max = self.base_att_dmg_max
         self.crit_chance = self.base_crit_chance + round(self.dex * 0.8)
-        self.crit_muliplier = self.base_crit_muliplier + self.dex
+        self.crit_multiplier = self.base_crit_multiplier + self.dex
 
         self.damage = random.randint(self.att_dmg_min, self.att_dmg_max)
 
@@ -168,7 +168,7 @@ class NPC:
         self.att_dmg_min = self.base_att_dmg_min
         self.att_dmg_max = self.base_att_dmg_max
         self.crit_chance = self.base_crit_chance + round(self.dex * 0.8)
-        self.crit_muliplier = self.base_crit_muliplier + self.dex
+        self.crit_multiplier = self.base_crit_multiplier + self.dex
         self.calculate_stats_with_gear()
 
     def display(self):
@@ -201,7 +201,7 @@ class NPC:
         dmg_w = 'DMG: '
         dmg_stat = f'{self.att_dmg_min}/{self.att_dmg_max}'  # 11
         crit_w = f'Crit %: '
-        crit_stat = f'{self.crit_chance:>2}/{self.crit_muliplier:<3}'  # 15
+        crit_stat = f'{self.crit_chance:>2}/{self.crit_multiplier:<3}'  # 15
 
         # Combine L an R lines
         name = f'{name:<1}{prof:>{21 - len(name)}}'
@@ -217,7 +217,7 @@ class NPC:
               f'Level:\t{self.level:>4}  XP: {self.xp:>6}/{self.next_level}\n'
               f'HP:\t   {self.hp}/{self.max_hp:<4}\n'
               f'Str:\t   {self.str:<3}Damage: {self.att_dmg_min:>3}/{self.att_dmg_max:<3}\n'
-              f'Dex:\t   {self.dex:<3}Crit:  {self.crit_chance}%/{self.crit_muliplier}%\n'
+              f'Dex:\t   {self.dex:<3}Crit:  {self.crit_chance}%/{self.crit_multiplier}%\n'
               f'Int:\t   {self.int:<3}Defence: {self.defense:>5}\n')
 
     def show_combat_stats(self):
@@ -282,7 +282,7 @@ class NPC:
             'att_dmg_min': self.att_dmg_min,
             'att_dmg_max': self.att_dmg_max,
             'crit_chance': self.crit_chance,
-            'crit_muliplier': self.crit_muliplier,
+            'crit_multiplier': self.crit_multiplier,
         }
         gear = [value for value in self.equip_slots.values() if value]
         for key in stats.keys():
@@ -303,7 +303,7 @@ class NPC:
 
     def choose_target(self, target_party):
         """
-        picks random target from enemy_party.members
+        picks random target from target_party.members
         :param target_party: party instance
         :return: person from party
         """
