@@ -250,7 +250,7 @@ class Person:
         :param: amount: int
         :return: actual_dmg: int
         """
-        # TODO: is only hotfixed! needs to move to combat_functions
+        # TODO: is only hot fixed! needs to move to combat_functions
         if dmg_type == 'true':
             dmg_multi = 1
         elif dmg_type == 'magic':
@@ -267,8 +267,6 @@ class Person:
         :param: amount: int
         """
         self.hp -= amount
-
-
 
     def heal(self, amount) -> int:
         """
