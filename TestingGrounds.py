@@ -3,7 +3,7 @@
 Use this space to test out features!
 """
 import Game
-from person import Person
+from person import NPC
 from Hero import Hero
 from party import Party
 from battle import *
@@ -57,7 +57,7 @@ def print_member_info_cards(members):
 
 def display_single_member_item_card(member):
     info_card = member.info_card()
-    print('-' * 8, 'Person', '-' * 9)
+    print('-' * 8, 'NPC', '-' * 9)
     print("┌" + "─" * 23 + "┐")
     print("\n".join(f'│ {x} │' for x in info_card))
     print("└" + "─" * 23 + "┘")
@@ -67,8 +67,8 @@ if __name__ == '__main__':
     print('===  From Test File  ===')
     dummy_game = {'difficulty': 'Hard'}
     h = Party(dummy_game)
-    h.add_member(Person.generate_random())
-    h.add_member(Person.generate_random())
+    h.add_member(NPC.generate_random())
+    h.add_member(NPC.generate_random())
     h.print_members_info_cards()
     h.display_single_member_item_card(h.member(0))
 
@@ -88,7 +88,7 @@ if __name__ == '__main__':
     h.display_inventory()
 
     h2 = Party(dummy_game)
-    h2.add_member(Person.generate_random())
-    h2.add_member(Person.generate_random())
+    h2.add_member(NPC.generate_random())
+    h2.add_member(NPC.generate_random())
     h2.add_item(create_random_item(2))
     h2.add_item(create_random_item(1))

@@ -71,7 +71,7 @@ class Party:
     @staticmethod
     def display_single_member_item_card(member):
         info_card = member.info_card()
-        print('-' * 8, 'Person', '-' * 9)
+        print('-' * 8, 'NPC', '-' * 9)
         print("┌" + "─" * 23 + "┐")
         print("\n".join(f'│ {x} │' for x in info_card))
         print("└" + "─" * 23 + "┘")
@@ -140,7 +140,7 @@ class Party:
     def add_member(self, member):
         """
         adds a member to the party
-        :param member: Person or Hero class object
+        :param member: NPC or Hero class object
         :return:
         """
         print(f'{member.name}, the {member.profession} joins the party!')
@@ -184,7 +184,7 @@ class Party:
                 item = select_from_list(['', '', '', '', '', '', '', '', ''],
                                         'Which Item would you like to sell?', True, True)
 
-                # self.gold += self.inventory[item].value
+                # attacker.gold += attacker.inventory[item].value
                 self.inventory.pop(item)
                 self.inventory_menu()
             elif selection == 3:
@@ -237,7 +237,6 @@ class Party:
         :param item:
         :return:
         """
-
         self.inventory.append(item)
 
     def equip_gear(self, char, item):

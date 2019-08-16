@@ -82,11 +82,11 @@ class BarGFX:
 
 # Example setup from the old RPG
 #    @property
-#     def hp_bar(self):
-#         hp_bar = BarGFX(20, bcolors.OKGREEN, self.hp, self.maxhp)
+#     def hp_bar(attacker):
+#         hp_bar = BarGFX(20, bcolors.OKGREEN, attacker.hp, attacker.maxhp)
 #         return hp_bar
 #
 #     @property
-#     def hp_bar_short(self):
-#         hp_bar = BarGFX(10, bcolors.OKGREEN, self.hp, self.maxhp)
+#     def hp_bar_short(attacker):
+#         hp_bar = BarGFX(10, bcolors.OKGREEN, attacker.hp, attacker.maxhp)
 #         return hp_bar

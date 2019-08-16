@@ -13,7 +13,7 @@ class Game:
                                      'What mode would you like? ** Recommended: Normal **', False, True)
         self.difficulty = select_from_list(['Easy', 'Medium', 'Hard'], 'Choose your difficulty:')
         print(f'You selected: {self.difficulty}!')
-        # self.party.game = self
+        # attacker.party.game = attacker
 
     @staticmethod
     def create_character(name='Jeb', profession='Astronaut', level=1):
@@ -28,7 +28,7 @@ class Game:
         """
          Create new random character the same level as the party leader
          """
-        return Person.generate_random(randint(1, self.party.hero.level))
+        return NPC.generate_random(randint(1, self.party.hero.level))
 
     def create_hero(self):
 
@@ -81,7 +81,7 @@ class Game:
             x = 0
             for x in range(randrange(len(self.party.members) - 1, len(self.party.members) + 1)):
                 enemy_party.add_member(
-                    Person.generate_random(randint(self.party.hero.level - 1, self.party.hero.level)))
+                    NPC.generate_random(randint(self.party.hero.level - 1, self.party.hero.level)))
                 x += 1
             alternating_turn_battle(self.party, enemy_party)
         elif event == 2:
@@ -90,7 +90,7 @@ class Game:
             x = 0
             for x in range(randrange(len(self.party.members) - 1, len(self.party.members) + 1)):
                 enemy_party.add_member(
-                    Person.generate_random(randint(self.party.hero.level - 1, self.party.hero.level)))
+                    NPC.generate_random(randint(self.party.hero.level - 1, self.party.hero.level)))
                 x += 1
             alternating_turn_battle(self.party, enemy_party)
         elif event == 3:

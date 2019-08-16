@@ -2,7 +2,7 @@ from person import *
 from helper_functions import *
 
 
-class Hero(Person):
+class Hero(NPC):
     def __init__(self, name, profession, level):
         super().__init__(name, profession, level)
         self.type = 'Hero'
@@ -23,34 +23,23 @@ class Hero(Person):
         print()
         return select_from_list(target_party, index_pos=False, q='Choose a target:')
 
-    def choose_attack(self):
-        return select_from_list(self.get_attack_options())
+    def choose_attack(self, attack_options):
+        return select_from_list(attack_options)
 
-    def choose_battle_action(self, enemy_party):
+    def choose_battle_action(self, possible_actions):
         """
         lets player choose what to do in their turn and calls appropriate methods
         :param enemy_party: party instance
         :return: -
         """
         #  TODO: find a place to store possible actions
-        possible_actions = ['attack', 'Heal', 'Show Hero Stats', ]
         action = select_from_list(possible_actions, q='What do you want to do?')
-        # if action.lower() == 'change gear':
-        #     self.change_gear()
-        #     self.choose_battle_action(enemy_party)
-        # elif action.lower() == 'Show Hero Stats':
-        #     print(self.show_combat_stats())
-        #     self.choose_battle_action(enemy_party)
-        # elif action.lower() == 'heal':
-        #     self.heal(10)
-        # else:
-        #     self.attack_target(enemy_party, mode=action)
         return action
 
 
 # Testing Code!
 if __name__ == '__main__':
-    p = Person.generate('norbnorb', 'Mage')
+    p = NPC.generate('norbnorb', 'Mage')
     p.stat_growth()
     p.show_stats()
     w = Hero.generate('norbnorb', 'Warrior')
