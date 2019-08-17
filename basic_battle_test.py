@@ -2,10 +2,11 @@ from person import NPC
 from Hero import Hero
 from party import Party
 from battle import *
-from battle import Battle
+# from battle import Battle
 from itertools import zip_longest
 from Item_Bases import *
 from combat_funcs import *
+from attack_setups import *
 
 # party1 = Party()
 # party1.add_member(Hero.generate('Norb', 'Codesmith'))
@@ -40,6 +41,9 @@ p2.add_item(create_random_equipable_item(5, etype=1))
 per1 = p1.members[0]
 pers2 = p2.members[0]
 
+per1.hp -= 20
+
+per1.__dict__['fire_res'] = 2
 # print_combat_status(p1, p2)
 
 # while p1.has_units_left:

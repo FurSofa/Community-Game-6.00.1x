@@ -287,6 +287,7 @@ class NPC:
         gear = [value for value in self.equip_slots.values() if value]
         for key in stats.keys():
             self.__dict__[key] = stats[key] + sum([item.__dict__[key] for item in gear])
+        pass
 
     def show_gear(self):
         items = [self.equip_slot['Main Hand'],
@@ -376,7 +377,7 @@ class NPC:
     #     if can_crit:
     #         if random.randrange(100) < self.crit_chance:
     #             is_crit = True
-    #             dmg = (dmg * self.crit_muliplier) // 100
+    #             dmg = (dmg * self.crit_multiplier) // 100
     #     return dmg, is_crit
 
     # def attack(self, target_party):
