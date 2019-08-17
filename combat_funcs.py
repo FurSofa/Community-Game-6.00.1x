@@ -24,8 +24,9 @@ def battle_menu(attacker, enemy_party):
 
 def execute_attack(attacker, target_party, target_num=1, splash_dmg=0,
                    primary=True, primary_percent=100, rnd_target=True,
-                   dmg_type='pysical', can_crit=True, is_true_dmg=False,
-                   is_heal=False, vamp=0, forced_primary_target=None):
+                   dmg_base='pysical', can_crit=True, is_true_dmg=False,
+                   is_heal=False, vamp=0,
+                   elemental='physical', forced_primary_target=None):
     '''
 
     :param attacker: npc or subclass
@@ -35,15 +36,14 @@ def execute_attack(attacker, target_party, target_num=1, splash_dmg=0,
     :param primary: bool: is there a primary target hit for primary percent
     :param primary_percent: percent of full dmg the primary target is hit for
     :param rnd_target: bool: chooses non primary targets randomly
-    :param dmg_type: 'physical' or 'magic'. for dmg generation (and reduction)
+    :param dmg_base: 'physical' or 'magic'. for dmg generation (and reduction)
     :param can_crit: bool:
     :param is_true_dmg: bool: will ignore defense
-    :param is_heal: bool: will add hp, not reduce it. always ignores defense
+    :param is_heal: bool: inverts dmg / will add hp, not reduce it. always ignores defense
     :param vamp: int: percentage of dmg dealt affecting attacker hp. can be negative
-    :param forced_primary_target:
+    :param forced_primary_target: npc or subclass: used as primary target
     :return: int: overall dmg done
     '''
-
 
     if target_num == 'all' or target_num > len(target_party.members):
         target_num = len(target_party.members)
@@ -70,9 +70,9 @@ def execute_attack(attacker, target_party, target_num=1, splash_dmg=0,
 
         # generate dmg
         is_crit = False
-        if dmg_type == 'magic':
+        if dmg_base == 'magic':
             dmg = attacker.int
-        else:  # if dmg_type == 'physical':
+        else:  # if dmg_base == 'physical':
             dmg = random.randint(attacker.att_dmg_min, attacker.att_dmg_max)
         if can_crit:
             if random.randrange(100) < attacker.crit_chance:
@@ -85,6 +85,7 @@ def execute_attack(attacker, target_party, target_num=1, splash_dmg=0,
         dmg_dealt = dmg * dmg_mod // 100
 
         print('dmg_dealt', dmg_dealt)
+
         # target take dmg
         if is_true_dmg or is_heal:
             print('is true dmg')
@@ -93,23 +94,23 @@ def execute_attack(attacker, target_party, target_num=1, splash_dmg=0,
                 print('is heal')
                 dmg_done = -dmg_done
         else:
-            if dmg_type == 'magic':
-                # TODO: implement magic resi
-                dmg_multi = dmg_dealt / (dmg_dealt + (target.int / 4))
+            # TODO: generalise resistances
+            if not elemental == 'physical':
+                dmg_multi = dmg_dealt / (dmg_dealt + target.__dict__[elemental+'_res'])
             else:
                 dmg_multi = dmg_dealt / (dmg_dealt + target.defense)
             dmg_done = round(dmg_dealt * dmg_multi)
 
-        target.hp -= dmg_done
+        target.set_hp(-dmg_done)
 
         if not vamp == 0:
-
             vamp_is_heal = (vamp > 0)
             print('vamp is heal', vamp_is_heal)
             execute_attack(attacker, attacker.party, 1, forced_primary_target=attacker,
-                           primary_percent=abs(vamp), is_heal=vamp_is_heal, dmg_type=dmg_type, is_true_dmg=True)
+                           primary_percent=abs(vamp), is_heal=vamp_is_heal, dmg_base=dmg_base, is_true_dmg=True)
 
-        print(attacker.name, 'hits', target.name, 'for', dmg_dealt, dmg_type, 'dmg and does', dmg_done, 'dmg')
+
+        print(attacker.name, 'hits', target.name, 'for', dmg_dealt, dmg_base, 'dmg and does', dmg_done, elemental, 'dmg')
 
         dmg_received += dmg_done
         members_list.remove(target)
@@ -117,10 +118,108 @@ def execute_attack(attacker, target_party, target_num=1, splash_dmg=0,
     return dmg_received
 
 
+def check_crit(attacker, can_crit):
+    return (random.randrange(100) < attacker.crit_chance) if can_crit else False
+
+
+def generate_dmg(attacker, dmg_base='pysical', is_crit=False,):
+    if dmg_base == 'magic':
+        dmg = attacker.int
+    else:  # if dmg_base == 'physical':
+        dmg = random.randint(attacker.att_dmg_min, attacker.att_dmg_max)
+    if is_crit:
+        dmg = (dmg * attacker.crit_multiplier) // 100
+    return dmg
+
+
+def reduce_dmg(dmg, target, elemental):
+    # TODO: generalise resistances
+    # if not elemental == 'physical':
+    #     dmg_multi = dmg / (dmg + target.__dict__[elemental + '_res'])
+    # else:
+    #     dmg_multi = dmg / (dmg + target.defense)
+    # dmg_done = round(dmg * dmg_multi)
+    if elemental == 'physical':  # untill we have the new npc
+        defense = target.defense
+    else:
+        defense = target.__dict__[elemental + '_res']
+    if defense > dmg:
+        dmg_done = 0
+    else:
+        dmg_done = dmg - defense
+    return dmg_done
+
+
+def get_target(attacker, primary, forced_primary_target,
+               target_num, members_list, rnd_target):
+    if primary:
+        if forced_primary_target:
+            target = forced_primary_target
+        else:
+            target = attacker.choose_target(members_list)
+    else:
+        if rnd_target:
+            target = random.choice(members_list)
+        elif target_num < len(members_list):
+            target = attacker.choose_target(members_list)
+        else:
+            target = members_list[0]
+    return target
+
+
+def run_attack(attacker, target_party, target_num=1, primary=True, rnd_target=True,
+               forced_primary_target=None, primary_percent=100, splash_dmg=0,
+               elemental='physical', vamp=0, can_crit=True, dmg_base='physical'):
+
+    if elemental == 'heal':
+        members_list = attacker.party.members
+    else:
+        members_list = target_party.members[:]
+
+    if target_num == 'all' or target_num > len(target_party.members):
+        target_num = len(target_party.members)
+
+
+    dmg_combined = 0
+
+    while target_num > 0:
+        dmg_mod = primary_percent if primary else splash_dmg
+        target = get_target(attacker, primary, forced_primary_target, target_num,
+                            members_list, rnd_target)
+        primary = False
+        is_crit = check_crit(attacker, can_crit)
+        dmg = generate_dmg(attacker, dmg_base, is_crit)
+
+        dmg_dealt = dmg * dmg_mod // 100  # modify for splash or primary dmg factor
+
+        if elemental in ('true', 'heal'):
+            dmg_received = dmg_dealt
+        else:
+            dmg_received = reduce_dmg(dmg_dealt, target, elemental)
+        if elemental == 'heal':
+            dmg_received = -dmg_received
+        target.set_hp(-dmg_received)
+
+        if not vamp == 0:
+            vamp_is_heal = (vamp > 0)
+            print('vamp is heal', vamp_is_heal)
+            run_attack(attacker, attacker.party, 1, forced_primary_target=attacker,
+                           primary_percent=abs(vamp),
+                           dmg_base=dmg_base, elemental='heal')
+
+        dmg_combined += dmg_received
+        members_list.remove(target)
+        target_num -= 1
+
+        # generate print
+        verb = 'healed' if elemental == 'heal' else 'hit'
+        crit_str = ' with a crit!' if is_crit else '.'
+        print(f'{attacker.name} {verb} {target.name} for {dmg_dealt} pts{crit_str} {dmg_received} stuck.')
+    return dmg_combined
 # def attack(attacker,)
 
 # attack = {
-#     'dmg_type': ['true', 'physical', 'magic'],
+#     'dmg_base': ['true', 'physical', 'magic'],
 #     'dmg': 'amount or range',
 #     'is_crit': 'bool',  # or percentage and calc it through that
 #     'crit_dmg': 'multiplicator if is_crit',

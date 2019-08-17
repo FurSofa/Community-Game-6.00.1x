@@ -44,6 +44,7 @@ pers2 = p2.members[0]
 per1.hp -= 20
 
 per1.__dict__['fire_res'] = 2
+pers2.__dict__['fire_res'] = 2
 # print_combat_status(p1, p2)
 
 # while p1.has_units_left:

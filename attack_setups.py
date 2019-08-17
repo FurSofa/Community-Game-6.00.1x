@@ -5,7 +5,7 @@ weapon_setups = {
         'primary': True,
         'primary_percent': 100,
         'rnd_target': True,
-        'dmg_type': 'physical',
+        'dmg_base': 'physical',
         'is_true_dmg': False
     },
 
@@ -15,7 +15,7 @@ weapon_setups = {
         'primary': False,
         'primary_percent': 100,
         'rnd_target': True,
-        'dmg_type': 'physical',
+        'dmg_base': 'physical',
     },
 
     'multi_attack_setup_prim_true': {
@@ -24,7 +24,7 @@ weapon_setups = {
         'primary': True,
         'primary_percent': 100,
         'rnd_target': True,
-        'dmg_type': 'magic',
+        'dmg_base': 'magic',
     },
 }
 basic_heal = {
@@ -33,7 +33,7 @@ basic_heal = {
     'primary': True,
     'primary_percent': 100,
     'rnd_target': True,
-    'dmg_type': 'magic',
+    'dmg_base': 'magic',
     'is_heal': True
 }
 
@@ -43,7 +43,7 @@ basic_vamp = {
     'primary': True,
     'primary_percent': 100,
     'rnd_target': True,
-    'dmg_type': 'magic',
+    'dmg_base': 'magic',
     'vamp': 100
 }
 basic_self_vamp =  {
@@ -52,22 +52,26 @@ basic_self_vamp =  {
     'primary': True,
     'primary_percent': 100,
     'rnd_target': True,
-    'dmg_type': 'magic',
+    'dmg_base': 'magic',
     'vamp': -100
 }
 
-single = {'target_num': 1,
-          'splash_dmg': 0,
-          'primary': True,
-          'primary_percent': 100,
-          'rnd_target': True,
-          'dmg_type': 'physical'
-          }
+single = {
+    'target_num': 1,
+    'splash_dmg': 0,
+    'primary': True,
+    'primary_percent': 100,
+    'rnd_target': True,
+    'dmg_base': 'magic',
+    'can_crit': True,
+    'vamp': 0,
+    'elemental': 'fire'
+}
 
 all_enemies = {'target_num': 'all',
                'splash_dmg': 50,
                'primary': False,
                'primary_percent': 100,
                'rnd_target': True,
-               'dmg_type': 'physical'
+               'dmg_base': 'physical'
                }
