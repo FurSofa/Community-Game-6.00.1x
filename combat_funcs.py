@@ -12,7 +12,7 @@ def battle_menu(attacker, enemy_party):
 
         setup_key = attacker.choose_attack(attack_options)
         setup = weapon_setups[setup_key]
-        dmg_done = execute_attack(attacker, enemy_party, **setup)
+        dmg_done = run_attack(attacker, enemy_party, **setup)
 
     elif action == 'show hero stats':
         attacker.party.display_single_member_item_card(attacker)
@@ -132,7 +132,7 @@ def generate_dmg(attacker, dmg_base='pysical', is_crit=False,):
     return dmg
 
 
-def reduce_dmg(dmg, target, elemental):
+def defense_calc(dmg, target, elemental):
     # TODO: generalise resistances
     # if not elemental == 'physical':
     #     dmg_multi = dmg / (dmg + target.__dict__[elemental + '_res'])
@@ -143,10 +143,15 @@ def reduce_dmg(dmg, target, elemental):
         defense = target.defense
     else:
         defense = target.__dict__[elemental + '_res']
+
     if defense > dmg:
         dmg_done = 0
     else:
         dmg_done = dmg - defense
+    if elemental == 'true':
+        dmg_done = dmg
+    if elemental == 'heal':   # * -1 if heal
+        dmg_done = -dmg_done
     return dmg_done
 
 
@@ -167,54 +172,56 @@ def get_target(attacker, primary, forced_primary_target,
     return target
 
 
-def run_attack(attacker, target_party, target_num=1, primary=True, rnd_target=True,
-               forced_primary_target=None, primary_percent=100, splash_dmg=0,
+def run_attack(attacker, target_party, target_num=1, primary=True, primary_percent=100,
+               rnd_target=True, forced_primary_target=None, splash_dmg=0,
                elemental='physical', vamp=0, can_crit=True, dmg_base='physical'):
+    """
 
-    if elemental == 'heal':
-        members_list = attacker.party.members
-    else:
-        members_list = target_party.members[:]
+    :param attacker: npc or subclass
+    :param target_party: party
+    :param target_num: int: number of targets including primary / 'all' for full target party
+    :param primary: bool: is there a primary target hit for primary percent
+    :param primary_percent: percent of full dmg the primary target is hit for
+    :param rnd_target: bool: chooses non primary targets randomly
+    :param forced_primary_target: npc or subclass: used as primary target
+    :param splash_dmg: dmg to non primary targets
+    :param elemental: dmg type used to calculate and apply dmg / special for 'heal'(inverts dmg) and 'true'(ignores defense)
+    :param vamp: int: percentage of dmg dealt affecting attacker hp. can be negative
+    :param can_crit: bool:
+    :param dmg_base: 'physical' or 'magic'. for dmg generation
+    :return: int: overall dmg done
+    """
+    members_list = attacker.party.members[:] if elemental == 'heal' else target_party.members[:]
 
-    if target_num == 'all' or target_num > len(target_party.members):
-        target_num = len(target_party.members)
-
+    if target_num == 'all' or target_num > len(members_list):
+        target_num = len(members_list)
 
     dmg_combined = 0
-
     while target_num > 0:
         dmg_mod = primary_percent if primary else splash_dmg
         target = get_target(attacker, primary, forced_primary_target, target_num,
                             members_list, rnd_target)
         primary = False
         is_crit = check_crit(attacker, can_crit)
-        dmg = generate_dmg(attacker, dmg_base, is_crit)
+        dmg = generate_dmg(attacker, dmg_base, is_crit)  # value for full dmg before and mod or reduction
 
-        dmg_dealt = dmg * dmg_mod // 100  # modify for splash or primary dmg factor
+        #  other modification, not really generation, not really defense reduction
+        dmg_dealt = dmg * dmg_mod // 100  # modify for splash or primary dmg factor /
 
-        if elemental in ('true', 'heal'):
-            dmg_received = dmg_dealt
-        else:
-            dmg_received = reduce_dmg(dmg_dealt, target, elemental)
-        if elemental == 'heal':
-            dmg_received = -dmg_received
+        dmg_received = defense_calc(dmg_dealt, target, elemental)
         target.set_hp(-dmg_received)
 
         if not vamp == 0:
-            vamp_is_heal = (vamp > 0)
-            print('vamp is heal', vamp_is_heal)
             run_attack(attacker, attacker.party, 1, forced_primary_target=attacker,
-                           primary_percent=abs(vamp),
-                           dmg_base=dmg_base, elemental='heal')
+                       primary_percent=vamp, dmg_base=dmg_base, elemental='heal')
 
         dmg_combined += dmg_received
         members_list.remove(target)
         target_num -= 1
 
-        # generate print
-        verb = 'healed' if elemental == 'heal' else 'hit'
+        verb = 'healed' if dmg_received < 0 else 'hit'
         crit_str = ' with a crit!' if is_crit else '.'
-        print(f'{attacker.name} {verb} {target.name} for {dmg_dealt} pts{crit_str} {dmg_received} stuck.')
+        print(f'{attacker.name} {verb} {target.name} for {abs(dmg_dealt)} pts{crit_str} {dmg_received} stuck.')
     return dmg_combined
 # def attack(attacker,)
 
