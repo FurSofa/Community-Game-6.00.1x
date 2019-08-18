@@ -136,7 +136,7 @@ def generate_dmg(attacker, target, dmg_base='str_based', is_crit=False,
     dmg = sum([c_hp_dmg, max_hp_dmg, wpn_dmg])
     if is_crit:
         dmg = (dmg * attacker.crit_multiplier) // 100
-    return dmg
+    return round(dmg)
 
 
 def defense_calc(dmg, target, elemental):
@@ -159,7 +159,7 @@ def defense_calc(dmg, target, elemental):
         dmg_done = dmg
     if elemental == 'heal':   # * -1 if heal
         dmg_done = -dmg_done
-    return dmg_done
+    return round(dmg_done)
 
 
 def get_target(attacker, primary, forced_primary_target,
