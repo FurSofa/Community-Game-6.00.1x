@@ -122,11 +122,18 @@ def check_crit(attacker, can_crit):
     return (random.randrange(100) < attacker.crit_chance) if can_crit else False
 
 
-def generate_dmg(attacker, dmg_base='pysical', is_crit=False,):
-    if dmg_base == 'magic':
-        dmg = attacker.int
-    else:  # if dmg_base == 'physical':
-        dmg = random.randint(attacker.att_dmg_min, attacker.att_dmg_max)
+def generate_dmg(attacker, target, dmg_base='str_based', is_crit=False,
+                 wpn_dmg_perc=100, c_hp_perc_dmg=0, max_hp_perc_dmg=0):
+
+    c_hp_dmg = target.hp / 100 * c_hp_perc_dmg
+    max_hp_dmg = target.max_hp / 100 * max_hp_perc_dmg
+    if dmg_base == 'int_based':
+        wpn_dmg = attacker.int
+    else:  # if dmg_base == 'str_based':
+        wpn_dmg = random.randint(attacker.att_dmg_min, attacker.att_dmg_max)
+    wpn_dmg = wpn_dmg / 100 * wpn_dmg_perc
+
+    dmg = sum([c_hp_dmg, max_hp_dmg, wpn_dmg])
     if is_crit:
         dmg = (dmg * attacker.crit_multiplier) // 100
     return dmg
@@ -172,9 +179,11 @@ def get_target(attacker, primary, forced_primary_target,
     return target
 
 
+# TODO: add a function to modify setup based on player stats and percs once we have that before running attack?
 def run_attack(attacker, target_party, target_num=1, primary=True, primary_percent=100,
                rnd_target=True, forced_primary_target=None, splash_dmg=0,
-               elemental='physical', vamp=0, can_crit=True, dmg_base='physical'):
+               elemental='physical', vamp=0, can_crit=True, dmg_base='str_based',
+               wpn_dmg_perc=100, c_hp_perc_dmg=0, max_hp_perc_dmg=0):
     """
 
     :param attacker: npc or subclass
@@ -188,7 +197,10 @@ def run_attack(attacker, target_party, target_num=1, primary=True, primary_perce
     :param elemental: dmg type used to calculate and apply dmg / special for 'heal'(inverts dmg) and 'true'(ignores defense)
     :param vamp: int: percentage of dmg dealt affecting attacker hp. can be negative
     :param can_crit: bool:
-    :param dmg_base: 'physical' or 'magic'. for dmg generation
+    :param dmg_base: 'str_based' or 'int_based'. for dmg generation
+    :param max_hp_perc_dmg: int: percent of target max hp as dmg
+    :param c_hp_perc_dmg: int: percent of target current hp as dmg
+    :param wpn_dmg_perc: int: percentage modifier for weapon dmg / set to 0 if you want only target hp pool based dmg
     :return: int: overall dmg done
     """
     members_list = attacker.party.members[:] if elemental == 'heal' else target_party.members[:]
@@ -203,10 +215,11 @@ def run_attack(attacker, target_party, target_num=1, primary=True, primary_perce
                             members_list, rnd_target)
         primary = False
         is_crit = check_crit(attacker, can_crit)
-        dmg = generate_dmg(attacker, dmg_base, is_crit)  # value for full dmg before and mod or reduction
+        raw_dmg = generate_dmg(attacker, target, dmg_base, is_crit, wpn_dmg_perc,
+                               c_hp_perc_dmg, max_hp_perc_dmg, )  # value for full dmg before and mod or reduction
 
         #  other modification, not really generation, not really defense reduction
-        dmg_dealt = dmg * dmg_mod // 100  # modify for splash or primary dmg factor /
+        dmg_dealt = raw_dmg * dmg_mod // 100  # modify for splash or primary dmg factor
 
         dmg_received = defense_calc(dmg_dealt, target, elemental)
         target.set_hp(-dmg_received)
