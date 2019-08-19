@@ -175,10 +175,7 @@ class NPC:
         return self.name + ', the ' + self.profession
 
     def __repr__(self):
-        max_left = max(len(k) for k in self.__dict__.keys()) + 10
-        return '\n'.join(
-            [f"{k.title()}: {str(v).rjust(max_left - len(k), ' ')}"
-             for k, v in self.__dict__.items() if v and k[0] != '_'])
+        return self.name
 
     def __str__(self):
         return f'{self.name}, the {self.profession}'
