@@ -1,6 +1,7 @@
 import random
 from itertools import zip_longest
 from attack_setups import weapon_setups
+from combat_funcs import *
 
 
 def battle_menu(attacker, enemy_party):
@@ -14,7 +15,7 @@ def battle_menu(attacker, enemy_party):
 
         setup_key = attacker.choose_attack(attack_options)
         setup = weapon_setups[setup_key]
-        dmg_done = execute_attack(attacker, enemy_party, **setup)
+        dmg_done = run_attack(attacker, enemy_party, **setup)
     elif action == 'show hero stats':
         attacker.party.display_single_member_item_card(attacker)
         battle_menu(attacker, enemy_party)

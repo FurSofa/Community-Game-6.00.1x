@@ -8,7 +8,12 @@ from attack_setups import *
 from battle import *
 
 
-dummy_game = {'difficulty': 'Hard'}
+class DGame:
+    def __init__(self, difficulty):
+        self.difficulty = difficulty
+
+dummy_game = DGame('Easy')
+
 
 p1 = Party.generate(dummy_game)
 p1.add_member(Hero.generate('Fur', 'Jr.Coder'))
@@ -40,6 +45,7 @@ for party in parties:
         for e in elemental_list:
             member.__dict__[e + '_res'] = random.randint(-10, 20)
 
+
 def clock_tick(parties):
     # all_members = [member for member in party.members for party in parties]
     all_members = p1.members + p2.members
@@ -48,8 +54,27 @@ def clock_tick(parties):
     all_members = sorted(all_members, key=lambda m: m.c, reverse=True)
 
     [print(f'c: {member.c} - name: {member.name}') for member in all_members]
+    return all_members
 
-    for member in all_members:
-        if member.c > member.ct:
-            print(f'its {member.name}\'s turn!')
-            member.c = 0
+
+def clock_tick_battle(party_1, party_2):
+    parties = [party_1, party_2]
+    print('A Battle has started!')
+    c_ticks = 0
+    while party_1.has_units_left and party_2.has_units_left:
+        all_members = clock_tick(parties)
+        c_ticks += 1
+        print(f'ticks: {c_ticks}')
+        for member in all_members:
+            if member.c > member.ct:
+                print(f'its {member.name}\'s turn!')
+                enemy_party = parties.copy()
+                enemy_party.remove(member.party)
+                single_unit_turn(member, enemy_party[0])
+                member.c = 0
+
+    if party_1.has_units_left:
+        print('Party 1 has won the battle!')
+    else:
+        print('Party 2 has won the battle!')
+    return party_1.has_units_left
