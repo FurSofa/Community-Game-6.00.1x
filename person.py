@@ -14,7 +14,8 @@ class NPC:
 
     def __init__(self, name='Mr. Lazy', profession='warrior', level=1, money=25):
         """
-        Create new person """
+        Create new person
+        """
 
         self.hero = False
         self.name = name
