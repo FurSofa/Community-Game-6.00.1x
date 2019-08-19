@@ -2,11 +2,11 @@ import random
 from itertools import zip_longest
 from attack_setups import weapon_setups
 from combat_funcs import *
+import random
 
 
 def battle_menu(attacker, enemy_party):
-
-    possible_actions = ['Attack', 'Heal', 'Show Hero Stats', ]
+    possible_actions = ['Attack', 'Heal', 'Show Hero Stats', 'Skip turn']
     action = attacker.choose_battle_action(possible_actions).lower()
     if action == 'attack':
         # TODO: make this independent of setup file! (get the setup from the weapon)
@@ -16,11 +16,17 @@ def battle_menu(attacker, enemy_party):
         setup_key = attacker.choose_attack(attack_options)
         setup = weapon_setups[setup_key]
         dmg_done = run_attack(attacker, enemy_party, **setup)
+
     elif action == 'show hero stats':
         attacker.party.display_single_member_item_card(attacker)
         battle_menu(attacker, enemy_party)
     elif action == 'heal':
-        attacker.heal(attacker.calculate_dmg())
+        # TODO: make heal a spell, fix this!
+        attacker.set_hp(attacker.int + random.randint(-2, 3))
+
+    elif action == 'skip turn':
+        pass
+    return action
 
 
 def execute_attack(attacker, target_party, target_num='all', splash_dmg=25,
@@ -130,9 +136,9 @@ def print_combat_status(party_1, party_2):
 
 
 def single_unit_turn(unit, enemy_party):
-    battle_menu(unit, enemy_party)
+    action = battle_menu(unit, enemy_party)
     enemy_party.remove_dead()
-    return not enemy_party.has_units_left
+    return action
 
 
 # TODO figure out how to justify each party output
@@ -147,12 +153,12 @@ def alternating_turn_battle(party_1, party_2):
         print_combat_status(party_1, party_2)
         for i in range(max(len(party_1.members), len(party_2.members))):
             if i < len(party_1.members):
-                no_enemies_left = single_unit_turn(party_1.members[i], party_2)
-                if no_enemies_left:
+                action_taken = single_unit_turn(party_1.members[i], party_2)
+                if not party_2.has_units_left:
                     break
             if i < len(party_2.members):
-                no_enemies_left = single_unit_turn(party_2.members[i], party_1)
-                if no_enemies_left:
+                action_taken = single_unit_turn(party_2.members[i], party_1)
+                if not party_1.has_units_left:
                     break
     if party_1.has_units_left:
         party_1.party_members_info()
