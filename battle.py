@@ -51,7 +51,7 @@ def execute_attack(attacker, target_party, target_num='all', splash_dmg=25,
         is_crit = False
         if dmg_type == 'magic':
             dmg = attacker.int
-        else:  # if dmg_type == 'physical':
+        else:  # if dmg_base == 'physical':
             dmg = random.randint(attacker.att_dmg_min, attacker.att_dmg_max)
         if can_crit:
             if random.randrange(100) < attacker.crit_chance:

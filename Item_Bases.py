@@ -41,7 +41,7 @@ class Equipment:
         self.att_dmg_max = round(att_dmg_max * self.quality_val)
         self.damage = round(damage * self.quality_val)
         self.crit_chance = round(crit_chance * self.quality_val)
-        self.crit_muliplier = round(crit_multiplier * self.quality_val)
+        self.crit_multiplier = round(crit_multiplier * self.quality_val)
 
     @classmethod
     def generate(cls, quality='Common', quality_val=1, etype='Weapon', equipable_slot='Main Hand', value=0,

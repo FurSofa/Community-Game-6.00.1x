@@ -261,6 +261,19 @@ class NPC:
             print(f'{self.name} healed for {amount} hp! HP: {self.hp}/{self.max_hp}')
         return healed_amount
 
+    def set_hp(self, amount):
+        """
+        set the hp safely
+        :param amount: int: to change / can be positive or negative
+        :return: amount
+        """
+        self.hp += amount
+        if self.hp > self.max_hp:
+            self.hp = self.max_hp
+        if self.hp < 0:
+            self.hp = 0
+        return amount
+
     # Gear and Stat Calculations
     def get_equipped_items(self):
         """
@@ -287,6 +300,7 @@ class NPC:
         gear = [value for value in self.equip_slots.values() if value]
         for key in stats.keys():
             self.__dict__[key] = stats[key] + sum([item.__dict__[key] for item in gear])
+        pass
 
     def show_gear(self):
         items = [self.equip_slot['Main Hand'],
@@ -344,15 +358,15 @@ class NPC:
         return action
 
     #
-    # def take_dmg(self, amount, dmg_type='physical') -> int:
+    # def take_dmg(self, amount, dmg_base='physical') -> int:
     #     """
     #     reduces person hp by dmg_amount
     #     :param: amount: int
     #     :return: actual_dmg: int
     #     """
-    #     if dmg_type == 'true':
+    #     if dmg_base == 'true':
     #         dmg_multi = 1
-    #     elif dmg_type == 'magic':
+    #     elif dmg_base == 'magic':
     #         # TODO: implement magic resi
     #         dmg_multi = amount / (amount + (self.int / 4))
     #     else:
@@ -361,7 +375,7 @@ class NPC:
     #     self.hp -= actual_dmg
     #     return actual_dmg
     #
-    # def calculate_dmg(self, dmg_type='physical', can_crit=True):
+    # def calculate_dmg(self, dmg_base='physical', can_crit=True):
     #     """
     #     generates dmg
     #     determines hit is critical
@@ -369,14 +383,14 @@ class NPC:
     #     """
     #     is_crit = False
     #     # TODO: how calc true dmg?
-    #     if dmg_type == 'magic':
+    #     if dmg_base == 'magic':
     #         dmg = self.int
-    #     else:  # if dmg_type == 'physical':
+    #     else:  # if dmg_base == 'physical':
     #         dmg = random.randint(self.att_dmg_min, self.att_dmg_max)
     #     if can_crit:
     #         if random.randrange(100) < self.crit_chance:
     #             is_crit = True
-    #             dmg = (dmg * self.crit_muliplier) // 100
+    #             dmg = (dmg * self.crit_multiplier) // 100
     #     return dmg, is_crit
 
     # def attack(self, target_party):
