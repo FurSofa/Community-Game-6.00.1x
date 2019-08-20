@@ -2,7 +2,7 @@ from helper_functions import select_from_list
 from Item_Bases import *
 from vfx import *
 from attack_setups import weapon_setups
-from combat_funcs import execute_attack
+from combat_funcs import *
 
 
 class NPC:
