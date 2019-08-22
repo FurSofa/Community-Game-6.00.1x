@@ -1,26 +1,26 @@
 import random
-from attack_setups import weapon_setups
+# from attack_setups import weapon_setups
 
-
-def battle_menu1(attacker, enemy_party):
-    action = attacker.choose_battle_action(enemy_party).lower()
-
-    if action == 'attack':
-        # TODO: make this independent of setup file! (get the setup from the weapon)
-        attack_options = [item.attack_name for item in
-                          [attacker.equip_slots['Main Hand'], attacker.equip_slots['Off Hand']] if item]
-
-        setup_key = attacker.choose_attack(attack_options)
-        setup = weapon_setups[setup_key]
-        dmg_done = run_attack(attacker, enemy_party, **setup)
-
-    elif action == 'show hero stats':
-        attacker.party.display_single_member_item_card(attacker)
-        battle_menu1(attacker, enemy_party)
-
-    elif action == 'heal':
-        attacker.heal(attacker.calculate_dmg())
-
+#
+# def battle_menu1(attacker, enemy_party):
+#     action = attacker.choose_battle_action(enemy_party).lower()
+#
+#     if action == 'attack':
+#         # TODO: make this independent of setup file! (get the setup from the weapon)
+#         attack_options = [item.attack_name for item in
+#                           [attacker.equip_slots['Main Hand'], attacker.equip_slots['Off Hand']] if item]
+#
+#         setup_key = attacker.choose_attack(attack_options)
+#         setup = weapon_setups[setup_key]
+#         dmg_done = run_attack(attacker, enemy_party, **setup)
+#
+#     elif action == 'show hero stats':
+#         attacker.party.display_single_member_item_card(attacker)
+#         battle_menu1(attacker, enemy_party)
+#
+#     elif action == 'heal':
+#         attacker.heal(attacker.calculate_dmg())
+#
 
 
 def check_crit(attacker, can_crit):
