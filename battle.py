@@ -12,18 +12,15 @@ def battle_menu(attacker, enemy_party):
         # TODO: make this independent of setup file! (get the setup from the weapon)
         attack_options = [item.attack_name for item in
                           [attacker.equip_slots['Main Hand'], attacker.equip_slots['Off Hand']] if item]
-
         setup_key = attacker.choose_attack(attack_options)
         setup = weapon_setups[setup_key]
         dmg_done = run_attack(attacker, enemy_party, **setup)
-
     elif action == 'show hero stats':
         attacker.party.display_single_member_item_card(attacker)
         battle_menu(attacker, enemy_party)
     elif action == 'heal':
         # TODO: make heal a spell, fix this!
         attacker.set_hp(attacker.int + random.randint(-2, 3))
-
     elif action == 'skip turn':
         pass
     return action
@@ -204,9 +201,72 @@ def whole_party_turn_battle(party_1, party_2):
     return party_1.has_units_left
 
 
-def battle(party_1, party_2):
-    pass
+def clock_tick(party_1, party_2):
+    all_members = party_1.members + party_2.members
+    for member in all_members:
+        member.c += member.speed
+    all_members = sorted(all_members, key=lambda m: m.c, reverse=True)
+
+    [print(f'c: {member.c} - name: {member.name}') for member in all_members]
+    return all_members
 
 
-empty = 'Empty'
-print(f'{empty:^30}')
+def clock_tick_battle(party_1, party_2):
+    parties = [party_1, party_2]
+    print('A Battle has started!')
+    c_ticks = 0
+    for member in party_1.members + party_2.members:
+        member.ct = 100
+        member.c = 0
+
+    while party_1.has_units_left and party_2.has_units_left:
+        all_members = clock_tick(party_1, party_2)
+        c_ticks += 1
+        print(f'ticks: {c_ticks}')
+        for member in all_members:
+            if member.c > member.ct:
+                print(f'its {member.name}\'s turn!')
+                both_parties = parties.copy()
+                both_parties.remove(member.party)
+                enemy_party = both_parties[0]
+                action_taken = single_unit_turn(member, enemy_party)
+                if action_taken == 'attack':
+                    member.c = 0
+                    member.ct = 100
+                elif action_taken == 'heal':
+                    member.c = 0
+                    member.ct = 80
+                elif action_taken == 'skip turn':
+                    pass
+                if not enemy_party.has_units_left:
+                    break
+    if party_1.has_units_left:
+        print('Party 1 has won the battle!')
+    else:
+        print('Party 2 has won the battle!')
+    return party_1.has_units_left
+
+
+def initiative_battle(party_1, party_2):
+    parties = [party_1, party_2]
+    print('A Battle has started!')
+    round = 0
+    while party_1.has_units_left and party_2.has_units_left:
+        print(f'Round: {round}')
+        all_members = party_1.members + party_2.members
+        c_round_members = sorted(all_members.copy(), key=lambda m: m.speed, reverse=True)
+        while c_round_members:
+            active_unit = c_round_members[0]
+            both_parties = parties.copy()
+            both_parties.remove(active_unit.party)
+            enemy_party = both_parties[0]
+            action_taken = single_unit_turn(active_unit, enemy_party)
+            c_round_members.remove(active_unit)
+            if not enemy_party.has_units_left:
+                break
+        round += 1
+    if party_1.has_units_left:
+        print('Party 1 has won the battle!')
+    else:
+        print('Party 2 has won the battle!')
+    return party_1.has_units_left
