@@ -423,13 +423,13 @@ def c_vit_to_hp(df, start, hp_per_vit, hp_per_lvl):
 
 def c_str_to_dmg(df, wpn_dmg, b_dmg_wpn_dmg_factor, start, dmg_per_level, dmg_per_str):
     df['p_dmg_wo_wpn'] = (df['str'] * dmg_per_str) + (df['lvl'] * dmg_per_level)
-    df['p_dmg'] = round((df['p_dmg_wo_wpn'] / 100) * b_dmg_wpn_dmg_factor * wpn_dmg, 2) + start
+    df['p_dmg'] = round((df['p_dmg_wo_wpn'] / 100) * b_dmg_wpn_dmg_factor * wpn_dmg, 2) + wpn_dmg + start
     return df
 
 
 def c_int_to_dmg(df, wpn_dmg, b_dmg_wpn_dmg_factor, start, dmg_per_level, dmg_per_int):
     df['m_dmg_wo_wpn'] = (df['int'] * dmg_per_int) + (df['lvl'] * dmg_per_level)
-    df['m_dmg'] = round((df['m_dmg_wo_wpn'] / 100) * b_dmg_wpn_dmg_factor * wpn_dmg, 2) + start
+    df['m_dmg'] = round((df['m_dmg_wo_wpn'] / 100) * b_dmg_wpn_dmg_factor * wpn_dmg, 2) + wpn_dmg + start
     return df
 
 
@@ -466,15 +466,10 @@ def c_avg_dmg(df):
     return df
 
 
-def c_speed_ttturn(df):
+def c_dex_to_speed(df, speed_per_dex, speed_per_lvl, speed_start):
     ct = 1000
-    speed_start = 10
-
-    growth_per_dex = 0.05
-    growth_per_lvl = 0.04
-
-    df['speed'] = (df['dex'] * growth_per_dex) + (df['lvl'] * growth_per_lvl) + speed_start
-    df['ticks_to_turn'] = ct / df['speed']
+    df['speed'] = (df['dex'] * speed_per_dex) + (df['lvl'] * speed_per_lvl) + speed_start
+    df['ticks_to_turn'] = round(ct / df['speed'], 2)
     return df
 
 
@@ -512,10 +507,10 @@ def c_ehp(df):
 
 
 def derive_stats(df_list, vit_to_hp, str_to_dmg, int_to_dmg, str_to_armor, dex_speed_to_dodge, dex_to_crit,
-                 wpn_dmg, b_dmg_wpn_dmg_factor, wpn_dmg_growth_per_lvl):
+                 wpn_dmg, b_dmg_wpn_dmg_factor, wpn_dmg_growth_per_lvl, dex_to_speed):
     for cl_df in df_list:
         wpn_dmg = wpn_dmg + (wpn_dmg * (wpn_dmg_growth_per_lvl / 100))
-        c_speed_ttturn(cl_df)
+        c_dex_to_speed(cl_df, **dex_to_speed)
         c_vit_to_hp(cl_df, **vit_to_hp)
         c_str_to_dmg(cl_df, wpn_dmg, b_dmg_wpn_dmg_factor, **str_to_dmg)
         c_dex_to_crit(cl_df, **dex_to_crit)
@@ -655,13 +650,13 @@ char_creation_setup = {
     },
     # ratios for derived stats
     'growth_ratios': {
-        'wpn_dmg': 3,                      # base weapon dmg
+        'wpn_dmg': 20,                      # base weapon dmg
         'b_dmg_wpn_dmg_factor': 50,         # percent of base dmg * weapon dmg
-        'wpn_dmg_growth_per_lvl': 15,       # percent the weapon dmg grows per level
+        'wpn_dmg_growth_per_lvl': 20,       # percent the weapon dmg grows per level
         'vit_to_hp': {
-            'start': 200,
-            'hp_per_vit': 15,
-            'hp_per_lvl': 10,
+            'start': 1200,
+            'hp_per_vit': 45,
+            'hp_per_lvl': 15,
         },
         'str_to_dmg': {
             'start': 5,
@@ -670,18 +665,18 @@ char_creation_setup = {
         },
         'int_to_dmg': {
             'start': 5,
-            'dmg_per_level': 0.7,
+            'dmg_per_level': 0.6,
             'dmg_per_int': 0.9,
         },
         'str_to_armor': {
             'start': 3,
             'armor_per_level': 1,
-            'armor_per_str': 2,
+            'armor_per_str': 5,
         },
         'dex_speed_to_dodge': {
             'start': 3,
-            'dodge_per_speed': 0.5,
-            'dodge_per_dex': 0.8,
+            'dodge_per_speed': 0.6,
+            'dodge_per_dex': 0.6,
         },
         'dex_to_crit': {
             'chance_start': 5,
@@ -690,7 +685,12 @@ char_creation_setup = {
 
             'dmg_start': 125,
             'crit_dmg_per_level': 1,
-            'crit_dmg_per_dex': 2.5,
+            'crit_dmg_per_dex': 3,
+        },
+        'dex_to_speed': {
+            'speed_per_dex': 0.3,
+            'speed_per_lvl': 0.2,
+            'speed_start': 9,
         },
     }
 }
