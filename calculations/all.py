@@ -601,7 +601,7 @@ def get_cl_suffixes(cl_df_list):
 
 
 # running the stuff
-char_creation_setup = {
+low_start = {
     # base stats and their growth per class
     'cl_base_stats': {
         'level': 30,                        # levels the calculations are run for
@@ -670,6 +670,101 @@ char_creation_setup = {
         },
         'str_to_armor': {
             'start': 3,
+            'armor_per_level': 1,
+            'armor_per_str': 5,
+        },
+        'dex_speed_to_dodge': {
+            'start': 3,
+            'dodge_per_speed': 0.6,
+            'dodge_per_dex': 0.6,
+        },
+        'dex_to_crit': {
+            'chance_start': 5,
+            'crit_chan_per_level': 0.2,
+            'crit_chan_per_dex': 0.7,
+
+            'dmg_start': 125,
+            'crit_dmg_per_level': 1,
+            'crit_dmg_per_dex': 3,
+        },
+        'dex_to_speed': {
+            'speed_per_dex': 0.3,
+            'speed_per_lvl': 0.2,
+            'speed_start': 9,
+        },
+    }
+}
+
+
+char_creation_setup = {
+    # base stats and their growth per class
+    'cl_base_stats': {
+        'level': 30,                        # levels the calculations are run for
+        'start': 4,                         # ignore this
+        'classes': {                        # set the stat growth of each class here
+            'dex_class': {
+                'vit_start': 10,
+                'vit_p_lvl': 2,
+
+                'dex_start': 18,
+                'dex_p_lvl': 3,
+
+                'str_start': 10,
+                'str_p_lvl': 1,
+
+                'int_start': 4,
+                'int_p_lvl': 1,
+            },
+            'str_class': {
+                'vit_start': 15,
+                'vit_p_lvl': 2,
+
+                'dex_start': 8,
+                'dex_p_lvl': 1,
+
+                'str_start': 15,
+                'str_p_lvl': 3,
+
+                'int_start': 4,
+                'int_p_lvl': 1,
+            },
+            'int_class': {
+                'vit_start': 8,
+                'vit_p_lvl': 1,
+
+                'dex_start': 8,
+                'dex_p_lvl': 2,
+
+                'str_start': 4,
+                'str_p_lvl': 1,
+
+                'int_start': 22,
+                'int_p_lvl': 3,
+            },
+        }
+    },
+    # ratios for derived stats
+    'growth_ratios': {
+        'wpn_dmg': 10,                      # base weapon dmg
+        'b_dmg_wpn_dmg_factor': 50,         # percent of base dmg * weapon dmg
+        'wpn_dmg_growth_per_lvl': 10,       # percent the weapon dmg grows per level
+        'vit_to_hp': {
+            'start': 1200,
+            'hp_per_vit': 45,
+            'hp_per_lvl': 15,
+        },
+        'str_to_dmg': {
+            'start': 5,
+            'dmg_per_level': 0.7,
+            'dmg_per_str': 0.7,
+        },
+        'int_to_dmg': {
+            'start': 5,
+            'dmg_per_level': 0.6,
+            'dmg_per_int': 0.9,
+        },
+        'str_to_armor': {
+            'start': 0,
             'armor_per_level': 1,
             'armor_per_str': 5,
         },

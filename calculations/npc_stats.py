@@ -7,6 +7,7 @@ new_npc_stats = {
     },
     'derived_stats': {
         'max_hp': 'from vit',  # vit*hp_per_vit + lvl*hp_per_lvl
+        'max_mana': 'from int?',
         'armor': 'from str',
         'speed': 'from dex',
         'dodge': 'from dex and speed',
@@ -14,7 +15,7 @@ new_npc_stats = {
         'crit_dmg': 'from dex',
     },
     'storage': {
-        'equipped items': 'armor weapons ...',
+        'equipped items': 'armor, weapons, ...',
         'spell book': 'spells / abilities',
         'potions': '',  # in party?
         'party': 'party instance'
@@ -25,5 +26,7 @@ new_npc_stats = {
         'status_effects': [],
         'elemental_resistance': 0,  # from items
         'magic_resistance': 0,  # from items? int class is already too strong
+        'hp': '',
+        'mana': '',
     }
 }
