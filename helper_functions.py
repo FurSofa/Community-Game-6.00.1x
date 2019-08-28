@@ -45,7 +45,7 @@ if __name__ == "__main__":
     x = select_from_list(["Acidic Slime", "Necrotic Ooze", "Decrepit Wurm"],
                          "Choose a target:")
     print('You selected: ', x)
-    x = select_from_list(["Acidic Slime"],index_pos=True)
+    x = select_from_list(["Acidic Slime"], index_pos=True)
     print('You selected: ', x)
     x = select_from_list(["Arrows", "Candles", "Lockpicks", "Not Interested"],
                          "What would you like to buy?", True, True)

@@ -1,7 +1,7 @@
 # Game Class
-from party import *
+from Class_Party import *
 from random import *
-from Hero import *
+from Class_Hero import *
 from helper_functions import *
 from battle import *
 

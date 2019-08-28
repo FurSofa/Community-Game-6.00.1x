@@ -3,9 +3,9 @@
 Use this space to test out features!
 """
 import Game
-from person import NPC
-from Hero import Hero
-from party import Party
+from Class_NPC import NPC
+from Class_Hero import Hero
+from Class_Party import Party
 from battle import *
 from Item_Bases import *
 
