@@ -166,17 +166,13 @@ class NPC:
 
 def mk_unit_d3(df):
     attack_setup = full_setup_d3
-    unit = NPC(df['u_name'], df['lvl'], df['vit'], df['dex'], df['str'], df['int'], df['speed'], df['hp'], df['p_dmg'],
-               df['crit_chan'], df['crit_dmg'], df['m_dmg'], df['b_dmg'], df['crit_hit'], df['avg_dmg'], df['armor'],
-               df['dodge'], attack_setup)
+    unit = NPC(df['u_name'], df['lvl'], df['vit'], df['dex'], df['str'], df['int'], df['speed'], df['hp'], df['p_dmg'], df['crit_chan'], df['crit_dmg'], df['m_dmg'], df['b_dmg'], df['crit_hit'], df['avg_dmg'], df['armor'], df['dodge'], attack_setup)
     return unit
 
 
 def mk_unit_lol(df):
     attack_setup = full_setup_lol
-    unit = NPC(df['u_name'], df['lvl'], df['vit'], df['dex'], df['str'], df['int'], df['speed'], df['hp'], df['p_dmg'],
-               df['crit_chan'], df['crit_dmg'], df['m_dmg'], df['b_dmg'], df['crit_hit'], df['avg_dmg'], df['armor'],
-               df['dodge'], attack_setup)
+    unit = NPC(df['u_name'], df['lvl'], df['vit'], df['dex'], df['str'], df['int'], df['speed'], df['hp'], df['p_dmg'], df['crit_chan'], df['crit_dmg'], df['m_dmg'], df['b_dmg'], df['crit_hit'], df['avg_dmg'], df['armor'], df['dodge'], attack_setup)
     return unit
 
 
@@ -291,7 +287,8 @@ def defense_calc(attacker, dmg, target, elemental, reduction_calc):
     return round(dmg_done)
 
 
-def get_target(attacker, primary, forced_primary_target, target_num, members_list, rnd_target):
+def get_target(attacker, primary, forced_primary_target,
+               target_num, members_list, rnd_target):
     if primary:
         if forced_primary_target:
             target = forced_primary_target
@@ -436,10 +433,23 @@ def c_int_to_dmg(df, wpn_dmg, b_dmg_wpn_dmg_factor, start, dmg_per_level, dmg_pe
     return df
 
 
+def c_dex_to_dmg(df, wpn_dmg, b_dmg_wpn_dmg_factor, start, dmg_per_level, dmg_per_dex):
+    df['d_dmg_wo_wpn'] = (df['dex'] * dmg_per_dex) + (df['lvl'] * dmg_per_level)
+    df['d_dmg'] = round((df['d_dmg_wo_wpn'] / 100) * b_dmg_wpn_dmg_factor * wpn_dmg, 2) + wpn_dmg + start
+    return df
+
+
 def c_set_dmg(df):
-    cond_list = [df['m_dmg'] > df['p_dmg'], df['m_dmg'] < df['p_dmg']]
-    choice_list = [df['m_dmg'], df['p_dmg']]
+
+    cond_list = [
+        (df['m_dmg'] > df['p_dmg']) & (df['m_dmg'] > df['d_dmg']),
+        (df['m_dmg'] < df['p_dmg']) & (df['d_dmg'] < df['p_dmg']),
+        (df['m_dmg'] < df['d_dmg']) & (df['p_dmg'] < df['d_dmg']),
+    ]
+    choice_list = [df['m_dmg'], df['p_dmg'], df['d_dmg']]
     df['b_dmg'] = np.select(cond_list, choice_list)
+
+    # df['b_dmg'] = max(df['m_dmg'], df['d_dmg'], df['p_dmg'])
     return df
 
 # def c_set_dmg_w_wpn(df, wpn_dmg, b_dmg_wpn_dmg_factor):
@@ -447,7 +457,12 @@ def c_set_dmg(df):
 
 
 def c_str_to_armor(df, start, armor_per_level, armor_per_str):
-    df['armor'] = (df['str'] * armor_per_str) + (df['lvl'] * armor_per_level) + start
+    df['str_armor'] = (df['str'] * armor_per_str) + (df['lvl'] * armor_per_level) + start
+    return df
+
+
+def c_toughness_to_armor(df, armor_per_toughness):
+    df['armor'] = (df['toughness'] * armor_per_toughness) + df['str_armor']
     return df
 
 
@@ -469,9 +484,9 @@ def c_avg_dmg(df):
     return df
 
 
-def c_dex_to_speed(df, speed_per_dex, speed_per_lvl, speed_start):
+def c_dex_to_speed(df, speed_per_dex,speed_per_b_speed, speed_factor, speed_start):
     ct = 1000
-    df['speed'] = (df['dex'] * speed_per_dex) + (df['lvl'] * speed_per_lvl) + speed_start
+    df['speed'] = (df['dex'] * speed_per_dex) + (df['b_speed'] * speed_per_b_speed) * speed_factor + speed_start
     df['ticks_to_turn'] = round(ct / df['speed'], 2)
     return df
 
@@ -509,19 +524,21 @@ def c_ehp(df):
     return df
 
 
-def derive_stats(df_list, vit_to_hp, str_to_dmg, int_to_dmg, str_to_armor, dex_speed_to_dodge, dex_to_crit,
+def derive_stats(df_list, vit_to_hp, str_to_dmg, toughness_to_armor, int_to_dmg, dex_to_dmg, str_to_armor, dex_speed_to_dodge, dex_to_crit,
                  wpn_dmg, b_dmg_wpn_dmg_factor, wpn_dmg_growth_per_lvl, dex_to_speed):
     for cl_df in df_list:
         wpn_dmg = wpn_dmg + (wpn_dmg * (wpn_dmg_growth_per_lvl / 100))
         c_dex_to_speed(cl_df, **dex_to_speed)
         c_vit_to_hp(cl_df, **vit_to_hp)
         c_str_to_dmg(cl_df, wpn_dmg, b_dmg_wpn_dmg_factor, **str_to_dmg)
+        c_dex_to_dmg(cl_df, wpn_dmg, b_dmg_wpn_dmg_factor, **dex_to_dmg)
         c_dex_to_crit(cl_df, **dex_to_crit)
         c_int_to_dmg(cl_df, wpn_dmg, b_dmg_wpn_dmg_factor, **int_to_dmg)
         c_set_dmg(cl_df)
         c_avg_dmg(cl_df)
         c_avg_dmg_p_ticks(cl_df)
         c_str_to_armor(cl_df, **str_to_armor)
+        c_toughness_to_armor(cl_df, **toughness_to_armor)
         c_dex_speed_to_dodge(cl_df, **dex_speed_to_dodge)
         c_d3_armor_reduction(cl_df)
         c_lol_res_reduction(cl_df)
@@ -534,7 +551,9 @@ def mk_single_class_df(levels, start,
                        vit_start, vit_p_lvl,
                        dex_start, dex_p_lvl,
                        str_start, str_p_lvl,
-                       int_start, int_p_lvl):
+                       int_start, int_p_lvl,
+                       b_speed_start, b_speed_p_lvl,
+                       toughness_start, toughness_p_lvl ):
 
     df = pd.DataFrame({
         'lvl': increase_after_steps(1, 1, 1, levels, 1),
@@ -542,6 +561,8 @@ def mk_single_class_df(levels, start,
         'dex': increase_after_steps(dex_start, 1, 1, levels, dex_p_lvl),
         'str': increase_after_steps(str_start, 1, 1, levels, str_p_lvl),
         'int': increase_after_steps(int_start, 1, 1, levels, int_p_lvl),
+        'b_speed': increase_after_steps(b_speed_start, 1, 1, levels, b_speed_p_lvl),
+        'toughness': increase_after_steps(toughness_start, 1, 1, levels, toughness_p_lvl),
     })
     return df
 
@@ -717,19 +738,31 @@ char_creation_setup = {
 
                 'int_start': 4,
                 'int_p_lvl': 1,
+
+                'b_speed_start': 8,
+                'b_speed_p_lvl': 2,
+
+                'toughness_start': 8,
+                'toughness_p_lvl': 2,
             },
             'str_class': {
-                'vit_start': 15,
-                'vit_p_lvl': 2,
+                'vit_start': 14,
+                'vit_p_lvl': 3,
 
                 'dex_start': 8,
                 'dex_p_lvl': 1,
 
                 'str_start': 15,
-                'str_p_lvl': 3,
+                'str_p_lvl': 4,
 
                 'int_start': 4,
                 'int_p_lvl': 1,
+
+                'b_speed_start': 8,
+                'b_speed_p_lvl': 1,
+
+                'toughness_start': 9,
+                'toughness_p_lvl': 2,
             },
             'int_class': {
                 'vit_start': 8,
@@ -742,56 +775,93 @@ char_creation_setup = {
                 'str_p_lvl': 1,
 
                 'int_start': 22,
-                'int_p_lvl': 3,
+                'int_p_lvl': 5,
+
+                'b_speed_start': 8,
+                'b_speed_p_lvl': 2,
+
+                'toughness_start': 8,
+                'toughness_p_lvl': 1,
             },
         }
     },
     # ratios for derived stats
     'growth_ratios': {
-        'wpn_dmg': 10,                      # base weapon dmg
+        'wpn_dmg': 3,                      # base weapon dmg
         'b_dmg_wpn_dmg_factor': 50,         # percent of base dmg * weapon dmg
         'wpn_dmg_growth_per_lvl': 10,       # percent the weapon dmg grows per level
         'vit_to_hp': {
-            'start': 1200,
-            'hp_per_vit': 45,
+            'start': 800,
+            'hp_per_vit': 40,
             'hp_per_lvl': 15,
         },
         'str_to_dmg': {
             'start': 5,
-            'dmg_per_level': 0.7,
+            'dmg_per_level': 0.6,
             'dmg_per_str': 0.7,
+        },
+        'toughness_to_armor': {
+            'armor_per_toughness': 4,
         },
         'int_to_dmg': {
             'start': 5,
             'dmg_per_level': 0.6,
             'dmg_per_int': 0.9,
         },
+        'dex_to_dmg': {
+            'start': 5,
+            'dmg_per_level': 0.6,
+            'dmg_per_dex': 0.7,
+        },
         'str_to_armor': {
             'start': 0,
-            'armor_per_level': 1,
-            'armor_per_str': 5,
+            'armor_per_level': 2,
+            'armor_per_str': 2,
         },
         'dex_speed_to_dodge': {
             'start': 3,
-            'dodge_per_speed': 0.6,
-            'dodge_per_dex': 0.6,
+            'dodge_per_speed': 0.3,
+            'dodge_per_dex': 0.2,
         },
         'dex_to_crit': {
             'chance_start': 5,
-            'crit_chan_per_level': 0.2,
-            'crit_chan_per_dex': 0.7,
+            'crit_chan_per_level': 0.25,
+            'crit_chan_per_dex': 0.25,
 
             'dmg_start': 125,
             'crit_dmg_per_level': 1,
             'crit_dmg_per_dex': 3,
         },
         'dex_to_speed': {
-            'speed_per_dex': 0.3,
-            'speed_per_lvl': 0.2,
+            'speed_per_dex': 0.03,
+            'speed_per_b_speed': 0.2,
+            'speed_factor': 0.1,
             'speed_start': 9,
         },
     }
 }
+
+
+def count_base_stats(setup):
+    cls_base_stat_count = {}
+    for cls_key in setup.get('cl_base_stats').get('classes').keys():
+        base_stats = setup.get('cl_base_stats').get('classes').get(cls_key)
+        starting_pts = sum([
+            base_stats['vit_start'], base_stats['dex_start'],
+            base_stats['str_start'], base_stats['int_start'],
+            base_stats['b_speed_start'], base_stats['toughness_start'],
+        ])
+        growth_pts = sum([
+            base_stats['vit_p_lvl'], base_stats['dex_p_lvl'],
+            base_stats['str_p_lvl'], base_stats['int_p_lvl'],
+            base_stats['b_speed_p_lvl'], base_stats['toughness_p_lvl'],
+        ])
+        cls_base_stat_count[cls_key] = {'starting_pts': starting_pts, 'growth_pts': growth_pts}
+
+    return cls_base_stat_count
+
+
+[print(kv) for kv in count_base_stats(char_creation_setup).items()]
 
 cl_df_list = create_cl_stats(**char_creation_setup)
 
