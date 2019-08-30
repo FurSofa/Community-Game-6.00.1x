@@ -25,12 +25,12 @@ class NPC:
                         }
 
         self.derived_stats = {
-            'vit': self.base_stats.get('vit'),
-            'dex': self.base_stats.get('dex'),
-            'str': self.base_stats.get('str'),
-            'int': self.base_stats.get('int'),
-            'agility': self.base_stats.get('agility'),
-            'toughness': self.base_stats.get('toughness'),
+            # 'vit': self.base_stats.get('vit'),
+            # 'dex': self.base_stats.get('dex'),
+            # 'str': self.base_stats.get('str'),
+            # 'int': self.base_stats.get('int'),
+            # 'agility': self.base_stats.get('agility'),
+            # 'toughness': self.base_stats.get('toughness'),
 
             'max_hp': 0,
             'max_mana': 0,
@@ -44,15 +44,6 @@ class NPC:
 
         self.current_stats = {}  # calculated stats with gear
 
-        self.tracked_values = {
-                                'ct': 1000,  # when c reaches this, unit gets a turn
-                                'c': 0,  # holds current charge value - +speed each clock tick in battle
-                                'status_effects': [],
-                                'elemental_resistance': 0,  # from items (and toughness?)
-                                'hp': '',
-                                'mana': '',
-                            }
-
         self.equip_slots = {'Main Hand': weapon,
                             'Off Hand': None,
                             'Head': None,
@@ -62,7 +53,17 @@ class NPC:
                             'Ring': None,
                             'Necklace': None,
                             }
-        self.derive_stats()
+        self.calculate_stats_with_equipment()
+
+        self.tracked_values = {
+                                'ct': 1000,  # when c reaches this, unit gets a turn
+                                'c': 0,  # holds current charge value - +speed each clock tick in battle
+                                'status_effects': [],
+                                'elemental_resistance': 0,  # from items (and toughness?)
+                                'hp': self.derived_stats.get('max_hp'),
+                                'mana': self.derived_stats.get('max_mana'),
+                            }
+
 
     def combine_base_stats_with_equipment(self):
         # base_stats = {
