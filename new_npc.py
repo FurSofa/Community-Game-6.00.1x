@@ -95,7 +95,7 @@ class NPC:
         #
         gear = [value for value in self.equip_slots.values() if value]
         for key in self.base_stats.keys():
-            self.derived_stats[key] = self.base_stats[key] + sum([item.get('base_stats')[key] for item in gear])
+            self.derived_stats[key] = self.base_stats[key] + sum([item['base_stats'].get(key, 0) for item in gear])
 
         pass
 
@@ -163,7 +163,7 @@ class NPC:
         keys_to_combine = ['max_hp', 'max_mana', 'armor', 'magic_resistance', 'speed', 'dodge', 'crit_chance', 'crit_dmg']
         gear = [value for value in self.equip_slots.values() if value]
         for key in keys_to_combine:
-            self.derived_stats[key] = self.derived_stats[key] + sum([item.get('derived_stats')[key] for item in gear])
+            self.derived_stats[key] = self.derived_stats[key] + sum([item['derived_stats'].get(key, 0) for item in gear])
 
     def calculate_stats_with_equipment(self):
         self.combine_base_stats_with_equipment()
