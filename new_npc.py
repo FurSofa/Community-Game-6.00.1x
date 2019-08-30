@@ -1,10 +1,5 @@
 
 class NPC:
-    """
-    access points:
-    pickup_gear() to give the player a new weapon
-    choose_battle_action() to start a battle turn (choosing actions and executing the appropriate methods)
-    """
 
     def __init__(self, weapon, name='Mr. Lazy', profession='warrior', level=1):
         """
@@ -28,7 +23,7 @@ class NPC:
                             'agility': 8,
                             'toughness': 9,
                         }
-        # Base Stats Section!
+
         self.derived_stats = {
             'vit': self.base_stats.get('vit'),
             'dex': self.base_stats.get('dex'),
@@ -46,16 +41,6 @@ class NPC:
             'crit_chance': 0,
             'crit_dmg': 0,
         }
-        # {
-        #     'max_hp': 'from vit',  # vit*hp_per_vit + lvl*hp_per_lvl
-        #     'max_mana': 'from int?',
-        #     'armor': 'from str and toughness',
-        #     'magic_resistance': 'from toughness',  # and int?
-        #     'speed': 'from dex and agility',
-        #     'dodge': 'from dex and speed',
-        #     'crit_chance': 'from dex',
-        #     'crit_dmg': 'from dex',
-        # },
 
         self.current_stats = {}  # calculated stats with gear
 
@@ -79,9 +64,7 @@ class NPC:
                             'Ring': None,
                             'Necklace': None,
                             }
-        # Calculate stats and gear
-        # self.stat_growth()
-        # self.calculate_stats()
+        self.derive_stats()
 
     def combine_base_stats_with_equipment(self):
         # base_stats = {
@@ -96,9 +79,6 @@ class NPC:
         gear = [value for value in self.equip_slots.values() if value]
         for key in self.base_stats.keys():
             self.derived_stats[key] = self.base_stats[key] + sum([item['base_stats'].get(key, 0) for item in gear])
-
-        pass
-
 
     def derive_stats(self):
         #  armor
@@ -157,7 +137,6 @@ class NPC:
 
         #  hp calculation
         self.derived_stats['max_hp'] = self.derived_stats['vit'] * hp_per_vit + self.level * hp_per_lvl + hp_start
-
 
     def combine_derived_stats_with_equipment(self):
         keys_to_combine = ['max_hp', 'max_mana', 'armor', 'magic_resistance', 'speed', 'dodge', 'crit_chance', 'crit_dmg']
