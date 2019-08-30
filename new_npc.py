@@ -1,11 +1,36 @@
 import random
 import json
+from x_Attack_Setups import *
 
 class NPC:
 
-    def __init__(self, weapon, armor_piece, name='Mr. Lazy', profession='warrior', level=1):
+    def __init__(self, name='Mr. Lazy', profession='warrior', level=1):
         """
         Create new person """
+        test_weapon = {
+            'base_stats': {
+                'vit': 5,
+                'dex': 2,
+                'str': 0,
+                'int': 0,
+                'agility': 1,
+                'toughness': 3,
+            },
+            'stats': {
+                'max_hp': 13,
+                'max_mana': 10,
+                'armor': 53,
+                'magic_resistance': 10,
+                'speed': 4,
+                'dodge': 4,
+                'crit_chance': 50,
+                'crit_dmg': 100,
+                'elemental_resistance': 10
+            },
+            'attack_name': 'single_attack_setup',
+            'attack_setup': weapon_setups['single_attack_setup'],
+        }
+
 
         self.hero = False
         self.name = name
@@ -45,10 +70,10 @@ class NPC:
             'elemental_resistance': 0,  # from items (and toughness?)
         }
 
-        self.equip_slots = {'Main Hand': weapon,
+        self.equip_slots = {'Main Hand': test_weapon,
                             'Off Hand': None,
                             'Head': None,
-                            'Chest': armor_piece,
+                            'Chest': None,
                             'Legs': None,
                             'Feet': None,
                             'Ring': None,
@@ -257,49 +282,87 @@ class NPC:
         action = random.choice(possible_actions)
         return action
 
+    def show_gear(self):
+        items = [self.equip_slot['Main Hand'],
+                 self.equip_slot['Off Hand'],
+                 self.equip_slot['Head'],
+                 self.equip_slot['Chest'],
+                 self.equip_slot['Legs'],
+                 self.equip_slot['Feet'],
+                 self.equip_slot['Ring'],
+                 self.equip_slot['Necklace']]
+        gear = [item for item in items if item]
+        for i in gear:
+            print(i.item)
 
-test_weapon = {
-    'base_stats': {
-                'vit': 5,
-                'dex': 2,
-                'str': 0,
-                'int': 0,
-                'agility': 1,
-                'toughness': 3,
-    },
-    'stats': {
-            'max_hp': 13,
-            'max_mana': 10,
-            'armor': 53,
-            'magic_resistance': 10,
-            'speed': 4,
-            'dodge': 4,
-            'crit_chance': 50,
-            'crit_dmg': 100,
-            'elemental_resistance': 10
-        },
-}
+    def get_equipped_items(self):
+        """
+        :return: list of currently equipped items
+        """
+        return [value for value in self.equip_slots.values() if value]
 
-test_armor = {
-    'base_stats': {
-                'vit': 2,
-                'dex': 1,
-                'str': 0,
-                'int': 0,
-                'agility': 1,
-                'toughness': 3,
-    },
-    'stats': {
-            'max_hp': 11,
-            'max_mana': 3,
-            'armor': 33,
-            'magic_resistance': 0,
-            'speed': 2,
-            'dodge': 1,
-            'crit_chance': 50,
-            'crit_dmg': 100,
-            'elemental_resistance': 5
-        },
-}
+    def add_xp(self, xp):
+        self.xp += xp
+        print(f'{self.name} gained {xp} xp!')
+        if self.xp > self.next_level:
+            self.level_up()
 
 
+    def info_card(self):
+
+        name = f'{self.name}'
+        prof = f'{self.profession}'
+
+        hp = f'HP: {self.tracked_values["hp"]:>3}/{self.stats["max_hp"]:<3}'  # 10
+        defense = f'Def: {self.stats["armor"]}'  # 8
+
+        lvl = f'Lvl: {self.level}'
+        xp = f'XP: {self.xp}/{self.next_level}'
+
+        stats_str = f'Str: {self.stats["str"]}'  # Trying 3 probly 2
+        stats_dex = f'Dex: {self.stats["dex"]}'
+        stats_int = f'Int: {self.stats["int"]}'
+
+        dmg_w = 'DMG: '
+        # dmg_stat = f'{self.att_dmg_min}/{self.att_dmg_max}'  # 11  # TODO: get calculated dmg?
+        crit_w = f'Crit %: '
+        crit_stat = f'{self.stats["crit_chance"]:>2}/{self.stats["crit_dmg"]:<3}'  # 15
+
+        # Combine L an R lines
+        name = f'{name:<1}{prof:>{21 - len(name)}}'
+        level_xp = f'{lvl}{xp:>{21 - len(lvl)}}'
+        hp_def = f'{hp}{defense:>{21 - len(hp)}}'
+        stats = f'{stats_str:<7}{stats_dex:<7}{stats_int:<7}'
+        dmg = '' #  f'{dmg_w}{dmg_stat:>{21 - len(dmg_w)}}'
+        crit = f'{crit_w}{crit_stat:>{21 - len(crit_w)}}'
+        return [name, level_xp, hp_def, stats, dmg, crit]
+
+
+
+    def show_stats(self):
+        print(f'\n{self.name},the {self.profession}\n'
+              f'Level:\t{self.level:>4}  XP: {self.xp:>6}/{self.next_level}\n'
+              f'HP:\t   {self.tracked_values["hp"]}/{self.stats["max_hp"]:<4}\n'
+              f'Str:\t   {self.stats["str"]:<3}Damage: ' # {self.att_dmg_min:>3}/{self.att_dmg_max:<3}\n' # TODO: get calculated stats?
+              f'Dex:\t   {self.stats["dex"]:<3}Crit:  {self.stats["crit_chance"]}%/{self.stats["crit_dmg"]}%\n'
+              f'Int:\t   {self.stats["int"]:<3}Defence: {self.stats["armor"]:>5}\n')
+
+    def show_combat_stats(self):
+        name = f'{self.name}, the {self.profession}'
+        hp = f'Hp: {self.tracked_values["hp"]:>2}/{self.stats["max_hp"]:<2}'
+        # dmg = f'Dmg: {self.att_dmg_min:>2}/{self.att_dmg_max:<2}'  # TODO: get calculated stats?
+        return f'{name:^23} ' \
+               f'{hp:<8} ' \
+               # f'{dmg:<13}'
+
+
+
+
+    def __repr__(self):
+        return self.name
+
+    def __str__(self):
+        return f'{self.name}, the {self.profession}'
+
+
+dummy_game = {'difficulty': 'Hard'}

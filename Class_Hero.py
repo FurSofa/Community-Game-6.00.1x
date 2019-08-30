@@ -1,4 +1,4 @@
-from Class_NPC import *
+from new_npc import *
 from helper_functions import *
 
 
