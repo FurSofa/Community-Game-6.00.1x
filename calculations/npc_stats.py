@@ -7,7 +7,7 @@ new_npc_stats = {
         'agility': 8,
         'toughness': 9,
     },
-    'derived_stats': {
+    'stats': {
         'max_hp': 'from vit',  # vit*hp_per_vit + lvl*hp_per_lvl
         'max_mana': 'from int?',
         'armor': 'from str and toughness',
