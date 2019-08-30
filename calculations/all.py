@@ -166,13 +166,17 @@ class NPC:
 
 def mk_unit_d3(df):
     attack_setup = full_setup_d3
-    unit = NPC(df['u_name'], df['lvl'], df['vit'], df['dex'], df['str'], df['int'], df['speed'], df['hp'], df['p_dmg'], df['crit_chan'], df['crit_dmg'], df['m_dmg'], df['b_dmg'], df['crit_hit'], df['avg_dmg'], df['armor'], df['dodge'], attack_setup)
+    unit = NPC(df['u_name'], df['lvl'], df['vit'], df['dex'], df['str'], df['int'], df['speed'], df['hp'], df['p_dmg'],
+               df['crit_chan'], df['crit_dmg'], df['m_dmg'], df['b_dmg'], df['crit_hit'], df['avg_dmg'], df['armor'],
+               df['dodge'], attack_setup)
     return unit
 
 
 def mk_unit_lol(df):
     attack_setup = full_setup_lol
-    unit = NPC(df['u_name'], df['lvl'], df['vit'], df['dex'], df['str'], df['int'], df['speed'], df['hp'], df['p_dmg'], df['crit_chan'], df['crit_dmg'], df['m_dmg'], df['b_dmg'], df['crit_hit'], df['avg_dmg'], df['armor'], df['dodge'], attack_setup)
+    unit = NPC(df['u_name'], df['lvl'], df['vit'], df['dex'], df['str'], df['int'], df['speed'], df['hp'], df['p_dmg'],
+               df['crit_chan'], df['crit_dmg'], df['m_dmg'], df['b_dmg'], df['crit_hit'], df['avg_dmg'], df['armor'],
+               df['dodge'], attack_setup)
     return unit
 
 
@@ -287,8 +291,7 @@ def defense_calc(attacker, dmg, target, elemental, reduction_calc):
     return round(dmg_done)
 
 
-def get_target(attacker, primary, forced_primary_target,
-               target_num, members_list, rnd_target):
+def get_target(attacker, primary, forced_primary_target, target_num, members_list, rnd_target):
     if primary:
         if forced_primary_target:
             target = forced_primary_target

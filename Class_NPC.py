@@ -1,7 +1,7 @@
 from helper_functions import select_from_list
 from Item_Bases import *
 from vfx import *
-from attack_setups import weapon_setups
+from x_Attack_Setups import weapon_setups
 from combat_funcs import *
 
 
@@ -14,7 +14,8 @@ class NPC:
 
     def __init__(self, name='Mr. Lazy', profession='warrior', level=1, money=25):
         """
-        Create new person """
+        Create new person
+        """
 
         self.hero = False
         self.name = name
@@ -25,6 +26,43 @@ class NPC:
         self.xp = 0
         self.next_level = 20
         self.worth_xp = 5
+
+        self.base_stats = {
+            'vit': 4,
+            'dex': 4,
+            'str': 4,
+            'int': 4,
+            'agility': 8,
+            'toughness': 9,
+
+            'max_hp': 10,  # vit*hp_per_vit + lvl*hp_per_lvl
+            'max_mana': 0,
+            'armor': 0,  #
+            'magic_resistance': 0,  # and int?
+            'speed': 0,
+            'dodge': 5,
+            'crit_chance': 5,
+            'crit_dmg': 130,
+                          }
+
+        self.stats = {
+            'vit': 0,
+            'dex': 0,
+            'str': 0,
+            'int': 0,
+            'agility': 0,
+            'toughness': 0,
+            'dmg_type': 'physical',
+            'max_hp': 'from vit',  # vit*hp_per_vit + lvl*hp_per_lvl
+            'current_hp': 0,
+            'max_mana': 0,
+            'armor': 0,  #
+            'magic_resistance': 0,  #
+            'speed': 0,
+            'dodge': 5,
+            'crit_chance': 5,
+            'crit_dmg': 130,
+        }
 
         # Base Stats Section!
         self.base_str = 4
@@ -42,14 +80,11 @@ class NPC:
         self.dex = self.base_dex
         self.int = self.base_int
         self.max_hp = self.base_max_hp + (self.str * 5 // 2) + (self.level * 5)
-
         self.defense = self.base_defense
         self.att_dmg_min = self.base_att_dmg_min
         self.att_dmg_max = self.base_att_dmg_max
         self.crit_chance = self.base_crit_chance + round(self.dex * 0.8)
         self.crit_multiplier = self.base_crit_multiplier + self.dex
-
-        self.damage = random.randint(self.att_dmg_min, self.att_dmg_max)
 
         self.hp = self.max_hp
 
@@ -134,28 +169,59 @@ class NPC:
                      m_color=m_color, f_char=f_char, m_char=m_char)
         return bar.bar_str(no_color=no_color, border=border)
 
-    def stat_growth(self):
-        self.base_str += 1
-        self.base_dex += 1
-        self.base_int += 1
-        if self.profession.lower() == 'warrior':
-            self.base_str += 2
-            self.base_int -= 1
-        elif self.profession.lower() == 'archer':
-            self.base_dex += 2
-        elif self.profession.lower() == 'mage':
-            self.base_int += 2
-            self.base_str -= 1
+    # def stat_growth(self):
+    #     self.base_str += 1
+    #     self.base_dex += 1
+    #     self.base_int += 1
+    #     if self.profession.lower() == 'warrior':
+    #         self.base_str += 2
+    #         self.base_int -= 1
+    #     elif self.profession.lower() == 'archer':
+    #         self.base_dex += 2
+    #     elif self.profession.lower() == 'mage':
+    #         self.base_int += 2
+    #         self.base_str -= 1
+    #
+    #     elif self.profession.lower() == 'thief':
+    #         self.base_int += 1
+    #         self.base_dex += 1
+    #     elif self.profession.lower() == 'blacksmith':
+    #         self.base_str += 1
+    #         self.base_dex += 1
+    #     elif self.profession.lower() == 'bard':
+    #         self.base_str += 1
+    #         self.base_int += 1
+    #     self.calculate_stats()
 
-        elif self.profession.lower() == 'thief':
-            self.base_int += 1
-            self.base_dex += 1
-        elif self.profession.lower() == 'blacksmith':
-            self.base_str += 1
-            self.base_dex += 1
-        elif self.profession.lower() == 'bard':
-            self.base_str += 1
-            self.base_int += 1
+    def stat_growth_test(self):
+
+        self.base_stats['str'] += 1
+        self.base_stats['vit'] += 1
+        self.base_stats['dex'] += 1
+        self.base_stats['int'] += 1
+        self.base_stats['agility'] += 1
+        self.base_stats['toughness'] += 1
+
+        self.base_stats['max_hp'] += 1  # str + vit
+        self.base_stats['max_mana'] += 1  # int
+
+        self.base_stats['armor'] += 1
+        self.base_stats['speed'] += 1
+        self.base_stats['dodge'] += 1
+        self.base_stats['crit_chance'] += 1
+        self.base_stats['crit_dmg'] += 1
+
+        if self.profession.lower() == 'warrior':
+
+            pass
+        elif self.profession.lower() == 'paladin':
+            pass
+        elif self.profession.lower() == 'theif':
+            pass
+        elif self.profession.lower() == 'mage':
+            pass
+
+
         self.calculate_stats()
 
     def calculate_stats(self):
@@ -222,8 +288,8 @@ class NPC:
         hp = f'Hp: {self.hp:>2}/{self.max_hp:<2}'
         dmg = f'Dmg: {self.att_dmg_min:>2}/{self.att_dmg_max:<2}'
         return f'{name:^23} ' \
-            f'{hp:<8} ' \
-            f'{dmg:<13}'
+               f'{hp:<8} ' \
+               f'{dmg:<13}'
 
     def add_xp(self, xp):
         self.xp += xp
@@ -238,7 +304,6 @@ class NPC:
         self.next_level = round(4 * (self.level ** 3) / 5) + 20
         print(f'{self.name} is now {self.level}!')
         self.stat_growth()
-
 
     def heal(self, amount) -> int:
         """

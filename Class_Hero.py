@@ -1,4 +1,4 @@
-from person import *
+from Class_NPC import *
 from helper_functions import *
 
 

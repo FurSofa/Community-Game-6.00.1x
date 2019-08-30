@@ -1,6 +1,6 @@
 import random
 from itertools import zip_longest
-from attack_setups import weapon_setups
+from x_Attack_Setups import weapon_setups
 from combat_funcs import *
 import random
 

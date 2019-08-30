@@ -1,6 +1,6 @@
 from helper_functions import *
-from Hero import *
-from person import *
+from Class_Hero import *
+from Class_NPC import *
 from Item_Bases import *
 
 

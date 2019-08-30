@@ -1,8 +1,8 @@
 from helper_functions import select_from_list
-from person import NPC, Hero
-from party import Party
+from Class_NPC import NPC, Hero
+from Class_Party import Party
 from battle import Battle
-from weapons import Sword
+from Class_Weapons import Sword
 
 # TODO: Move this to Game.py and add if name == __Main__:
 

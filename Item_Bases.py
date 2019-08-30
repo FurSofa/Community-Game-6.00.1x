@@ -2,7 +2,7 @@
 import random
 from vfx import *
 import string
-from attack_setups import weapon_setups
+from x_Attack_Setups import weapon_setups
 
 sWeights = (6, 44, 28, 18, 4)
 sList = ['Rusty', 'Common',

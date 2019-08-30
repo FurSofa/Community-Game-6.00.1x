@@ -1,12 +1,12 @@
-from person import NPC
-from Hero import Hero
-from party import Party
+from Class_NPC import NPC
+from Class_Hero import Hero
+from Class_Party import Party
 from battle import *
 # from battle import Battle
 from itertools import zip_longest
 from Item_Bases import *
 from combat_funcs import *
-from attack_setups import *
+from x_Attack_Setups import *
 
 # party1 = Party()
 # party1.add_member(Hero.generate('Norb', 'Codesmith'))

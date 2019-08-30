@@ -1,10 +1,10 @@
-from person import NPC
-from Hero import Hero
-from party import Party
+from Class_NPC import NPC
+from Class_Hero import Hero
+from Class_Party import Party
 from Item_Bases import *
 import random
 from combat_funcs import *
-from attack_setups import *
+from x_Attack_Setups import *
 from battle import *
 
 
