@@ -53,9 +53,7 @@ class NPC:
                                 'mana': '',
                             }
 
-        self.equip_slots = {'Main Hand': weapon,  # Weapon.generate(quality='Common', quality_val=1, etype='Weapon',
-        #                                                  equipable_slot='Main Hand',
-        #                                                  att_dmg_min=1, att_dmg_max=3),
+        self.equip_slots = {'Main Hand': weapon,
                             'Off Hand': None,
                             'Head': None,
                             'Chest': None,
