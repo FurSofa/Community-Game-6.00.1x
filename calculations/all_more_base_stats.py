@@ -923,4 +923,4 @@ def compare(all_cl_df, index_list, cl_suffixes=cl_suffixes):
 
 def dump_setup(setup):
     with open('char_creation_setup.json', 'w') as f:
-        json.dump(setup, f)
+        json.dump(setup, f, indent=4)
