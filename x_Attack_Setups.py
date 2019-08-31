@@ -49,8 +49,9 @@ weapon_setups = {
         'primary': True,
         'primary_percent': 100,
         'rnd_target': True,
-        'dmg_base': 'int_based',
+        'dmg_base': 'dex_based',
         'can_crit': True,
+        'can_dodge': True,
         'vamp': 0,
         'elemental': 'physical'
     },

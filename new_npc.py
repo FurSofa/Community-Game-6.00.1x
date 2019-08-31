@@ -9,22 +9,22 @@ class NPC:
         Create new person """
         test_weapon = {
             'base_stats': {
-                'vit': 5,
+                'vit': 1,
                 'dex': 2,
                 'str': 0,
                 'int': 0,
                 'agility': 1,
-                'toughness': 3,
+                'toughness': 1,
             },
             'stats': {
                 'max_hp': 13,
                 'max_mana': 10,
-                'armor': 53,
-                'magic_resistance': 10,
-                'speed': 4,
-                'dodge': 4,
-                'crit_chance': 50,
-                'crit_dmg': 100,
+                'armor': 0,
+                'magic_resistance': 0,
+                'speed': 0,
+                'dodge': 0,
+                'crit_chance': 2,
+                'crit_dmg': 20,
                 'elemental_resistance': 10,
                 'wpn_dmg': 5,
             },
@@ -44,13 +44,25 @@ class NPC:
         self.worth_xp = 5
 
         self.base_stats = {
-                            'vit': 4,
-                            'dex': 4,
-                            'str': 4,
-                            'int': 4,
-                            'agility': 8,
-                            'toughness': 9,
+                            'vit': 1,
+                            'dex': 1,
+                            'str': 1,
+                            'int': 1,
+                            'agility': 1,
+                            'toughness': 1,
                         }
+        # rewrite base stats for class_type from setup file
+        with open('char_creation_setup.json', 'r') as f:
+            class_stats = json.load(f)['cl_base_stats']['classes']
+            if self.profession.lower() == 'warrior':
+                class_key = 'str_class'
+            elif self.profession.lower() == 'mage':
+                class_key = 'int_class'
+            else:
+                class_key = 'dex_class'
+            for stat in class_stats[class_key].keys():
+                if stat[-6:] == '_start':
+                    self.base_stats[stat[:-6]] = class_stats[class_key][stat]
 
         self.stats = {
             # 'vit': self.base_stats.get('vit'),
@@ -81,6 +93,12 @@ class NPC:
                             'Ring': None,
                             'Necklace': None,
                             }
+
+        level_up_counter = 1
+        while level_up_counter < level:
+            self.level_up()
+            level_up_counter += 1
+
         self.calculate_stats_with_equipment()
 
         self.tracked_values = {

@@ -738,7 +738,7 @@ char_creation_setup = {
                 'str_p_lvl': 1,
 
                 'int_start': 4,
-                'int_p_lvl': 1,
+                'int_p_lvl': 2,
 
                 'agility_start': 8,
                 'agility_p_lvl': 2,
@@ -788,13 +788,13 @@ char_creation_setup = {
     },
     # ratios for derived stats
     'growth_ratios': {
-        'wpn_dmg': 3,                      # base weapon dmg
+        'wpn_dmg': 5,                      # base weapon dmg
         'b_dmg_wpn_dmg_factor': 50,         # percent of base dmg * weapon dmg
         'wpn_dmg_growth_per_lvl': 10,       # percent the weapon dmg grows per level
         'vit_to_hp': {
-            'start': 800,
-            'hp_per_vit': 40,
-            'hp_per_lvl': 15,
+            'start': 250,
+            'hp_per_vit': 15,
+            'hp_per_lvl': 10,
         },
         'str_to_dmg': {
             'start': 5,
@@ -802,7 +802,7 @@ char_creation_setup = {
             'dmg_per_str': 0.7,
         },
         'toughness_to_armor': {
-            'armor_per_toughness': 4,
+            'armor_per_toughness': 2,
         },
         'int_to_dmg': {
             'start': 5,
@@ -816,8 +816,8 @@ char_creation_setup = {
         },
         'str_to_armor': {
             'start': 0,
-            'armor_per_level': 2,
-            'armor_per_str': 2,
+            'armor_per_level': 0.5,
+            'armor_per_str': 0.5,
         },
         'dex_speed_to_dodge': {
             'start': 3,
