@@ -2,6 +2,7 @@ import random
 import pandas as pd
 import numpy as np
 import copy
+import json
 
 
 def increase_after_steps(start=0, step=10, increment=1, length=100, factor=1):
@@ -484,9 +485,9 @@ def c_avg_dmg(df):
     return df
 
 
-def c_dex_to_speed(df, speed_per_dex,speed_per_b_speed, speed_factor, speed_start):
+def c_dex_to_speed(df, speed_per_dex,speed_per_agility, speed_factor, speed_start):
     ct = 1000
-    df['speed'] = (df['dex'] * speed_per_dex) + (df['b_speed'] * speed_per_b_speed) * speed_factor + speed_start
+    df['speed'] = (df['dex'] * speed_per_dex) + (df['agility'] * speed_per_agility) * speed_factor + speed_start
     df['ticks_to_turn'] = round(ct / df['speed'], 2)
     return df
 
@@ -552,7 +553,7 @@ def mk_single_class_df(levels, start,
                        dex_start, dex_p_lvl,
                        str_start, str_p_lvl,
                        int_start, int_p_lvl,
-                       b_speed_start, b_speed_p_lvl,
+                       agility_start, agility_p_lvl,
                        toughness_start, toughness_p_lvl ):
 
     df = pd.DataFrame({
@@ -561,7 +562,7 @@ def mk_single_class_df(levels, start,
         'dex': increase_after_steps(dex_start, 1, 1, levels, dex_p_lvl),
         'str': increase_after_steps(str_start, 1, 1, levels, str_p_lvl),
         'int': increase_after_steps(int_start, 1, 1, levels, int_p_lvl),
-        'b_speed': increase_after_steps(b_speed_start, 1, 1, levels, b_speed_p_lvl),
+        'agility': increase_after_steps(agility_start, 1, 1, levels, agility_p_lvl),
         'toughness': increase_after_steps(toughness_start, 1, 1, levels, toughness_p_lvl),
     })
     return df
@@ -737,10 +738,10 @@ char_creation_setup = {
                 'str_p_lvl': 1,
 
                 'int_start': 4,
-                'int_p_lvl': 1,
+                'int_p_lvl': 2,
 
-                'b_speed_start': 8,
-                'b_speed_p_lvl': 2,
+                'agility_start': 8,
+                'agility_p_lvl': 2,
 
                 'toughness_start': 8,
                 'toughness_p_lvl': 2,
@@ -758,8 +759,8 @@ char_creation_setup = {
                 'int_start': 4,
                 'int_p_lvl': 1,
 
-                'b_speed_start': 8,
-                'b_speed_p_lvl': 1,
+                'agility_start': 8,
+                'agility_p_lvl': 1,
 
                 'toughness_start': 9,
                 'toughness_p_lvl': 2,
@@ -777,8 +778,8 @@ char_creation_setup = {
                 'int_start': 22,
                 'int_p_lvl': 5,
 
-                'b_speed_start': 8,
-                'b_speed_p_lvl': 2,
+                'agility_start': 8,
+                'agility_p_lvl': 2,
 
                 'toughness_start': 8,
                 'toughness_p_lvl': 1,
@@ -787,13 +788,13 @@ char_creation_setup = {
     },
     # ratios for derived stats
     'growth_ratios': {
-        'wpn_dmg': 3,                      # base weapon dmg
+        'wpn_dmg': 5,                      # base weapon dmg
         'b_dmg_wpn_dmg_factor': 50,         # percent of base dmg * weapon dmg
         'wpn_dmg_growth_per_lvl': 10,       # percent the weapon dmg grows per level
         'vit_to_hp': {
-            'start': 800,
-            'hp_per_vit': 40,
-            'hp_per_lvl': 15,
+            'start': 250,
+            'hp_per_vit': 15,
+            'hp_per_lvl': 10,
         },
         'str_to_dmg': {
             'start': 5,
@@ -801,7 +802,7 @@ char_creation_setup = {
             'dmg_per_str': 0.7,
         },
         'toughness_to_armor': {
-            'armor_per_toughness': 4,
+            'armor_per_toughness': 2,
         },
         'int_to_dmg': {
             'start': 5,
@@ -815,8 +816,8 @@ char_creation_setup = {
         },
         'str_to_armor': {
             'start': 0,
-            'armor_per_level': 2,
-            'armor_per_str': 2,
+            'armor_per_level': 0.5,
+            'armor_per_str': 0.5,
         },
         'dex_speed_to_dodge': {
             'start': 3,
@@ -834,7 +835,7 @@ char_creation_setup = {
         },
         'dex_to_speed': {
             'speed_per_dex': 0.03,
-            'speed_per_b_speed': 0.2,
+            'speed_per_agility': 0.2,
             'speed_factor': 0.1,
             'speed_start': 9,
         },
@@ -849,12 +850,12 @@ def count_base_stats(setup):
         starting_pts = sum([
             base_stats['vit_start'], base_stats['dex_start'],
             base_stats['str_start'], base_stats['int_start'],
-            base_stats['b_speed_start'], base_stats['toughness_start'],
+            base_stats['agility_start'], base_stats['toughness_start'],
         ])
         growth_pts = sum([
             base_stats['vit_p_lvl'], base_stats['dex_p_lvl'],
             base_stats['str_p_lvl'], base_stats['int_p_lvl'],
-            base_stats['b_speed_p_lvl'], base_stats['toughness_p_lvl'],
+            base_stats['agility_p_lvl'], base_stats['toughness_p_lvl'],
         ])
         cls_base_stat_count[cls_key] = {'starting_pts': starting_pts, 'growth_pts': growth_pts}
 
@@ -919,3 +920,7 @@ def compare(all_cl_df, index_list, cl_suffixes=cl_suffixes):
             ind.append(i + s)
     return all_cl_df[ind]
 
+
+def dump_setup(setup):
+    with open('char_creation_setup.json', 'w') as f:
+        json.dump(setup, f, indent=4)

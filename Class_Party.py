@@ -1,6 +1,6 @@
 from helper_functions import *
 from Class_Hero import *
-from Class_NPC import *
+from new_npc import *
 from Item_Bases import *
 
 
@@ -47,7 +47,7 @@ class Party:
     def party_members_info(self):
         print('\n', '=' * 6, 'Party Members Info', '=' * 6)
         for member in self.members:
-            print(f'- {member.name}, {member.profession} Lv: {member.level} {member.hp}/{member.max_hp}')
+            print(f'- {member.name}, {member.profession} Lv: {member.level} {member.tracked_values["hp"]}/{member.stats["max_hp"]}')
 
     def print_members_info_cards(self):
         empty_card = [" " * 21] * 6
