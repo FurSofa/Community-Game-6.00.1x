@@ -25,7 +25,8 @@ class NPC:
                 'dodge': 4,
                 'crit_chance': 50,
                 'crit_dmg': 100,
-                'elemental_resistance': 10
+                'elemental_resistance': 10,
+                'wpn_dmg': 5,
             },
             'attack_name': 'single_attack_setup',
             'attack_setup': weapon_setups['single_attack_setup'],
@@ -68,6 +69,7 @@ class NPC:
             'crit_chance': 0,
             'crit_dmg': 0,
             'elemental_resistance': 0,  # from items (and toughness?)
+            'wpn_dmg': 0
         }
 
         self.equip_slots = {'Main Hand': test_weapon,
@@ -192,7 +194,7 @@ class NPC:
 
     def combine_derived_stats_with_equipment(self):
         keys_to_combine = ['max_hp', 'max_mana', 'armor', 'magic_resistance', 'speed', 'dodge',
-                           'crit_chance', 'crit_dmg', 'elemental_resistance']
+                           'crit_chance', 'crit_dmg', 'elemental_resistance', 'wpn_dmg']
         gear = [value for value in self.equip_slots.values() if value]
         for key in keys_to_combine:
             self.stats[key] = self.stats[key] + sum([item['stats'].get(key, 0) for item in gear])
@@ -262,6 +264,9 @@ class NPC:
             target = target_party[0]
         return target
 
+    def choose_attack(self, attack_options):
+        choice = random.choice(attack_options)
+        return choice
 
     def choose_battle_action(self, enemy_party):
         """

@@ -49,7 +49,7 @@ weapon_setups = {
         'primary': True,
         'primary_percent': 100,
         'rnd_target': True,
-        'dmg_base': 'magic',
+        'dmg_base': 'int_based',
         'can_crit': True,
         'vamp': 0,
         'elemental': 'physical'
@@ -61,7 +61,7 @@ weapon_setups = {
         'primary': False,
         'primary_percent': 100,
         'rnd_target': True,
-        'dmg_base': 'physical',
+        'dmg_base': 'str_based',
         'can_crit': True,
         'vamp': 0,
         'elemental': 'physical'
@@ -73,7 +73,7 @@ weapon_setups = {
         'primary': True,
         'primary_percent': 100,
         'rnd_target': True,
-        'dmg_base': 'true',
+        'dmg_base': 'dex_based',
         'vamp': 0,
         'can_crit': True,
         'elemental': 'true'
@@ -85,7 +85,7 @@ weapon_setups = {
         'primary': True,
         'primary_percent': 100,
         'rnd_target': True,
-        'dmg_base': 'magic',
+        'dmg_base': 'int_based',
         'can_crit': True,
         'vamp': 25,
         'elemental': 'physical'
