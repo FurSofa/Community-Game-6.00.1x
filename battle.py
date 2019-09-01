@@ -9,11 +9,11 @@ def battle_menu(attacker, enemy_party):
     possible_actions = ['Attack', 'Spell', 'Show Hero Stats', 'Skip turn']
     action = attacker.choose_battle_action(possible_actions).lower()
     if action == 'attack':
-        attack_options = [(item.attack_name, item.attack_setup) for item in
+        attack_options = [{'name': item.attack_name, 'attack_setup':item.attack_setup} for item in
                           [attacker.equip_slots['Main Hand'], attacker.equip_slots['Off Hand']] if item]
 
         setup_key = attacker.choose_attack(attack_options)
-        setup = attack_options[setup_key][1]
+        setup = attack_options[setup_key]['attack_setup']
         dmg_done = run_attack(attacker, enemy_party, **setup)
 
     elif action == 'spell':
