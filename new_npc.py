@@ -1,6 +1,7 @@
 import random
 import json
 from x_Attack_Setups import *
+import x_Spell_Setups
 from Item_Bases import *
 
 
@@ -86,6 +87,8 @@ class NPC:
             'elemental_resistance': 0,  # from items (and toughness?)
             'wpn_dmg': 0
         }
+
+        self.spell_book = [x_Spell_Setups.heal, x_Spell_Setups.base_spell]
 
         self.equip_slots = {'Main Hand': Weapon.generate(quality='Common', quality_val=1, etype='Weapon',
                                                          equipable_slot='Main Hand',
@@ -288,7 +291,7 @@ class NPC:
         return target
 
     def choose_attack(self, attack_options):
-        choice = random.choice(attack_options)
+        choice = random.choice([i for i in range(len(attack_options))])
         return choice
 
     def choose_battle_action(self, enemy_party):

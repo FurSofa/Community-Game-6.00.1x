@@ -6,18 +6,27 @@ import random
 
 
 def battle_menu(attacker, enemy_party):
-    possible_actions = ['Attack', 'Heal', 'Show Hero Stats', 'Skip turn']
+    possible_actions = ['Attack', 'Spell', 'Show Hero Stats', 'Skip turn']
     action = attacker.choose_battle_action(possible_actions).lower()
     if action == 'attack':
-        # TODO: make this independent of setup file! (get the setup from the weapon)
-        attack_options = [item['attack_name'] for item in
+        attack_options = [(item.attack_name, item.attack_setup) for item in
                           [attacker.equip_slots['Main Hand'], attacker.equip_slots['Off Hand']] if item]
+
         setup_key = attacker.choose_attack(attack_options)
-        setup = weapon_setups[setup_key]
+        setup = attack_options[setup_key][1]
+        dmg_done = run_attack(attacker, enemy_party, **setup)
+
+    elif action == 'spell':
+        # TODO: check cool downs and mana when making the list
+        attack_options = [(spell['name'], spell['attack_setup']) for spell in attacker.spell_book]
+
+        setup_key = attacker.choose_attack(attack_options)
+        setup = attack_options[setup_key][1]
         dmg_done = run_attack(attacker, enemy_party, **setup)
     elif action == 'show hero stats':
         attacker.party.display_single_member_item_card(attacker)
         battle_menu(attacker, enemy_party)
+
     elif action == 'heal':
         # TODO: make heal a spell, fix this!
         attacker.set_hp(attacker.stats['int'] + random.randint(-2, 3))
@@ -113,9 +122,10 @@ def get_target(attacker, primary, forced_primary_target,
 def run_attack(attacker, target_party, target_num=1, primary=True, primary_percent=100,
                rnd_target=True, forced_primary_target=None, splash_dmg=0,
                elemental='physical', vamp=0, can_crit=True, dmg_base='str_based',
-               wpn_dmg_perc=100, c_hp_perc_dmg=0, max_hp_perc_dmg=0, can_dodge=True, reduction_calc='d3'):
+               wpn_dmg_perc=100, c_hp_perc_dmg=0, max_hp_perc_dmg=0, can_dodge=True):
     """
 
+    :param can_dodge:  bool:
     :param attacker: npc or subclass
     :param target_party: party
     :param target_num: int: number of targets including primary / 'all' for full target party
@@ -161,7 +171,7 @@ def run_attack(attacker, target_party, target_num=1, primary=True, primary_perce
             if not vamp == 0:
                 run_attack(attacker, attacker.party, 1, forced_primary_target=attacker,
                            primary_percent=vamp, dmg_base=dmg_base, elemental='heal',
-                           reduction_calc=reduction_calc, can_dodge=False)
+                           can_dodge=False)
 
             dmg_combined += dmg_received
 
@@ -321,9 +331,9 @@ def clock_tick_battle(party_1, party_2):
                 if action_taken == 'attack':
                     member.tracked_values['c'] = 0
                     member.tracked_values['ct'] = 1000
-                elif action_taken == 'heal':
+                elif action_taken == 'spell':
                     member.tracked_values['c'] = 0
-                    member.tracked_values['ct'] = 800
+                    member.tracked_values['ct'] = 1000
                 elif action_taken == 'skip turn':
                     pass
                 if not enemy_party.has_units_left:

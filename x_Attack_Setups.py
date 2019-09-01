@@ -159,10 +159,11 @@ full_setup = {
     'elemental': 'physical',
     'vamp': 0,
     'can_crit': True,
-    'dmg_base': 'magic',
+    'dmg_base': 'int_based',
     'wpn_dmg_perc': 100,
     'max_hp_perc_dmg': 0,
     'c_hp_perc_dmg': 0,
+    'can_dodge': True,
 }
 
 chp_vamp = {
