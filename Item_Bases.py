@@ -43,6 +43,28 @@ class Equipment:
         self.crit_chance = round(crit_chance * self.quality_val)
         self.crit_multiplier = round(crit_multiplier * self.quality_val)
 
+        self.base_stats = {
+            'vit': 0,
+            'dex': round(dexterity * self.quality_val),
+            'str': round(strength * self.quality_val),
+            'int': round(intelligence * self.quality_val),
+            'agility': 1,
+            'toughness': 1,
+        }
+        self.stats = {
+            'max_hp': round(max_hp * self.quality_val),
+            'max_mana': 10,
+            'armor': round(defense * self.quality_val),
+            'magic_resistance': 0,
+            'speed': 0,
+            'dodge': 0,
+            'crit_chance': round(crit_chance * self.quality_val),
+            'crit_dmg': round(crit_multiplier * self.quality_val),
+            'elemental_resistance': 5,
+            'wpn_dmg': round(damage * self.quality_val),
+        }
+
+
     @classmethod
     def generate(cls, quality='Common', quality_val=1, etype='Weapon', equipable_slot='Main Hand', value=0,
                  max_durability=10, strength=0, dexterity=0, intelligence=0,

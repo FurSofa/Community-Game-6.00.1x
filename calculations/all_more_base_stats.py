@@ -580,9 +580,9 @@ def mk_class_dfs(level, start, classes):
     return class_list
 
 
-def create_cl_stats(cl_base_stats, growth_ratios):
+def create_cl_stats(cl_base_stats, conversion_ratios):
     class_list = mk_class_dfs(**cl_base_stats)
-    cls_dfs_list = derive_stats(class_list, **growth_ratios)
+    cls_dfs_list = derive_stats(class_list, **conversion_ratios)
     return cls_dfs_list
 
 
@@ -674,7 +674,7 @@ low_start = {
         }
     },
     # ratios for derived stats
-    'growth_ratios': {
+    'conversion_ratios': {
         'wpn_dmg': 20,                      # base weapon dmg
         'b_dmg_wpn_dmg_factor': 50,         # percent of base dmg * weapon dmg
         'wpn_dmg_growth_per_lvl': 20,       # percent the weapon dmg grows per level
@@ -787,7 +787,7 @@ char_creation_setup = {
         }
     },
     # ratios for derived stats
-    'growth_ratios': {
+    'conversion_ratios': {
         'wpn_dmg': 5,                      # base weapon dmg
         'b_dmg_wpn_dmg_factor': 50,         # percent of base dmg * weapon dmg
         'wpn_dmg_growth_per_lvl': 10,       # percent the weapon dmg grows per level

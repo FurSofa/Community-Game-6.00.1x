@@ -47,7 +47,7 @@
             }
         }
     },
-    "growth_ratios": {
+    "conversion_ratios": {
         "wpn_dmg": 5,
         "b_dmg_wpn_dmg_factor": 50,
         "wpn_dmg_growth_per_lvl": 10,

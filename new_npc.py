@@ -1,13 +1,10 @@
 import random
 import json
 from x_Attack_Setups import *
+from Item_Bases import *
 
-class NPC:
 
-    def __init__(self, name='Mr. Lazy', profession='warrior', level=1):
-        """
-        Create new person """
-        test_weapon = {
+test_weapon = {
             'base_stats': {
                 'vit': 1,
                 'dex': 2,
@@ -32,6 +29,12 @@ class NPC:
             'attack_setup': weapon_setups['single_attack_setup'],
         }
 
+
+class NPC:
+
+    def __init__(self, name='Mr. Lazy', profession='warrior', level=1, weapon=test_weapon):
+        """
+        Create new person """
 
         self.hero = False
         self.name = name
@@ -84,7 +87,9 @@ class NPC:
             'wpn_dmg': 0
         }
 
-        self.equip_slots = {'Main Hand': test_weapon,
+        self.equip_slots = {'Main Hand': Weapon.generate(quality='Common', quality_val=1, etype='Weapon',
+                                                         equipable_slot='Main Hand',
+                                                         att_dmg_min=1, att_dmg_max=3),
                             'Off Hand': None,
                             'Head': None,
                             'Chest': None,
@@ -122,20 +127,20 @@ class NPC:
         #
         gear = [value for value in self.equip_slots.values() if value]
         for key in self.base_stats.keys():
-            self.stats[key] = self.base_stats[key] + sum([item['base_stats'].get(key, 0) for item in gear])
+            self.stats[key] = self.base_stats[key] + sum([item.base_stats.get(key, 0) for item in gear])
 
     def derive_stats(self):
         with open('char_creation_setup.json', 'r') as f:
-            growth_ratios = json.load(f)['growth_ratios']
+            conversion_ratios = json.load(f)['conversion_ratios']
 
         #  armor
         # armor_per_str = 2
         # armor_per_lvl = 2
         # armor_per_toughness = 4
 
-        armor_per_str = growth_ratios['str_to_armor']['armor_per_str']
-        armor_per_lvl = growth_ratios['str_to_armor']['armor_per_level']
-        armor_per_toughness = growth_ratios['toughness_to_armor']['armor_per_toughness']
+        armor_per_str = conversion_ratios['str_to_armor']['armor_per_str']
+        armor_per_lvl = conversion_ratios['str_to_armor']['armor_per_level']
+        armor_per_toughness = conversion_ratios['toughness_to_armor']['armor_per_toughness']
 
         #  speed
         # speed_per_dex = 0.03
@@ -143,19 +148,19 @@ class NPC:
         # speed_factor = 0.1
         # speed_start = 9
 
-        speed_per_dex = growth_ratios['dex_to_speed']['speed_per_dex']
-        speed_per_agility = growth_ratios['dex_to_speed']['speed_per_agility']
-        speed_factor = growth_ratios['dex_to_speed']['speed_factor']
-        speed_start = growth_ratios['dex_to_speed']['speed_start']
+        speed_per_dex = conversion_ratios['dex_to_speed']['speed_per_dex']
+        speed_per_agility = conversion_ratios['dex_to_speed']['speed_per_agility']
+        speed_factor = conversion_ratios['dex_to_speed']['speed_factor']
+        speed_start = conversion_ratios['dex_to_speed']['speed_start']
 
         #  dodge
         dodge_start = 3
         dodge_per_speed = 0.3
         dodge_per_dex = 0.2
 
-        dodge_start = growth_ratios['dex_speed_to_dodge']['start']
-        dodge_per_speed = growth_ratios['dex_speed_to_dodge']['dodge_per_speed']
-        dodge_per_dex = growth_ratios['dex_speed_to_dodge']['dodge_per_dex']
+        dodge_start = conversion_ratios['dex_speed_to_dodge']['start']
+        dodge_per_speed = conversion_ratios['dex_speed_to_dodge']['dodge_per_speed']
+        dodge_per_dex = conversion_ratios['dex_speed_to_dodge']['dodge_per_dex']
 
         #  crit
         # crit_chance_start = 5
@@ -166,22 +171,22 @@ class NPC:
         # crit_dmg_per_level = 1
         # crit_dmg_per_dex = 3
 
-        crit_chance_start = growth_ratios['dex_to_crit']['chance_start']
-        crit_chan_per_level = growth_ratios['dex_to_crit']['crit_chan_per_level']
-        crit_chan_per_dex =growth_ratios['dex_to_crit']['crit_chan_per_dex']
+        crit_chance_start = conversion_ratios['dex_to_crit']['chance_start']
+        crit_chan_per_level = conversion_ratios['dex_to_crit']['crit_chan_per_level']
+        crit_chan_per_dex =conversion_ratios['dex_to_crit']['crit_chan_per_dex']
 
-        crit_dmg_start = growth_ratios['dex_to_crit']['dmg_start']
-        crit_dmg_per_level = growth_ratios['dex_to_crit']['crit_dmg_per_level']
-        crit_dmg_per_dex = growth_ratios['dex_to_crit']['crit_dmg_per_dex']
+        crit_dmg_start = conversion_ratios['dex_to_crit']['dmg_start']
+        crit_dmg_per_level = conversion_ratios['dex_to_crit']['crit_dmg_per_level']
+        crit_dmg_per_dex = conversion_ratios['dex_to_crit']['crit_dmg_per_dex']
 
         #  hp
         # hp_start = 800
         # hp_per_vit = 40
         # hp_per_lvl = 15
 
-        hp_start = growth_ratios['vit_to_hp']['start']
-        hp_per_vit = growth_ratios['vit_to_hp']['hp_per_vit']
-        hp_per_lvl = growth_ratios['vit_to_hp']['hp_per_lvl']
+        hp_start = conversion_ratios['vit_to_hp']['start']
+        hp_per_vit = conversion_ratios['vit_to_hp']['hp_per_vit']
+        hp_per_lvl = conversion_ratios['vit_to_hp']['hp_per_lvl']
 
         # speed calculation
         speed_from_dex = self.stats['dex'] * speed_per_dex
@@ -215,7 +220,7 @@ class NPC:
                            'crit_chance', 'crit_dmg', 'elemental_resistance', 'wpn_dmg']
         gear = [value for value in self.equip_slots.values() if value]
         for key in keys_to_combine:
-            self.stats[key] = self.stats[key] + sum([item['stats'].get(key, 0) for item in gear])
+            self.stats[key] = self.stats[key] + sum([item.stats.get(key, 0) for item in gear])
 
     def calculate_stats_with_equipment(self):
         self.combine_base_stats_with_equipment()
@@ -387,5 +392,25 @@ class NPC:
     def __str__(self):
         return f'{self.name}, the {self.profession}'
 
+    @classmethod
+    def generate(cls, name='Jeb', profession='Warrior', level=1):
+        """
+        Create new character at level 1
+        """
+        return cls(name, profession, level)
 
-dummy_game = {'difficulty': 'Hard'}
+    @classmethod
+    def generate_random(cls, level=1):
+        """
+        Create new random character at level 1
+        """
+        level = level
+        name = random.choice(['Lamar', 'Colin', 'Ali', 'Jackson', 'Minky',
+                              'Leo', 'Phylis', 'Lindsay', 'Tongo', 'Paku', ])
+        profession = random.choice(['Warrior', 'Archer', 'Mage', 'Blacksmith', 'Thief', 'Bard'])
+        if name == 'Minky':
+            profession = 'Miffy Muffin'
+        if name == 'Colin':
+            profession = 'Bard of Bass'
+        return cls(name, profession, level)
+

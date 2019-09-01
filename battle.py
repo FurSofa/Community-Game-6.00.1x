@@ -43,11 +43,11 @@ def generate_dmg(attacker, target, dmg_base='str_based', is_crit=False,
     dmg_key = dmg_base[:3]
 
     with open('char_creation_setup.json') as f:
-        growths_ratios = json.load(f)['growth_ratios']
-    dmg_calc = growths_ratios[dmg_key+'_to_dmg']
+        conversion_ratios = json.load(f)['conversion_ratios']
+    dmg_calc = conversion_ratios[dmg_key+'_to_dmg']
 
     dmg_wo_wpn = (attacker.stats[dmg_key] * dmg_calc['dmg_per_'+dmg_key]) + (attacker.level * dmg_calc['dmg_per_level'])
-    wpn_dmg = round((dmg_wo_wpn / 100) * growths_ratios['b_dmg_wpn_dmg_factor'] * attacker.stats['wpn_dmg']) + attacker.stats['wpn_dmg'] + dmg_calc['start']
+    wpn_dmg = round((dmg_wo_wpn / 100) * conversion_ratios['b_dmg_wpn_dmg_factor'] * attacker.stats['wpn_dmg']) + attacker.stats['wpn_dmg'] + dmg_calc['start']
 
     wpn_dmg = wpn_dmg / 100 * wpn_dmg_perc
 
@@ -179,10 +179,10 @@ def print_combat_status(party_1, party_2):
             stat_list = []
             stat_list.append(member.name)
             stat_list.append(member.profession)
-            stat_list.append(member.hp)
-            stat_list.append(member.max_hp)
-            stat_list.append(member.att_dmg_min)
-            stat_list.append(member.att_dmg_max)
+            stat_list.append(member.tracked_values['hp'])
+            stat_list.append(member.stats['max_hp'])
+            # stat_list.append(member.att_dmg_min)
+            # stat_list.append(member.att_dmg_max)
         else:
             return None
         return stat_list
