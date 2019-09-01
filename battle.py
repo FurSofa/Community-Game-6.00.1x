@@ -18,14 +18,30 @@ def battle_menu(attacker, enemy_party):
 
     elif action == 'spell':
         # TODO: check cool downs and mana when making the list
-        attack_options = [(spell['name'], spell['attack_setup']) for spell in attacker.spell_book]
+        # attack_options = [spell for spell in attacker.spell_book]
+        attack_options = []
+        on_cd = []
+        low_mana = []
+        for spell in attacker.spell_book:
+            if spell['cd_timer'] > 0:
+                on_cd.append(spell)
+            elif spell['mana_cost'] > attacker.tracked_values['mana']:
+                low_mana.append(spell)
+            else:
+                attack_options.append(spell)
+        if len(attack_options) < 1:
+            print(f'You have no spells to use this turn!')
+            action = battle_menu(attacker, enemy_party)
+        else:
+            setup_key = attacker.choose_attack(attack_options)
+            setup = attack_options[setup_key]['attack_setup']
+            dmg_done = run_attack(attacker, enemy_party, **setup)
+            attacker.set_mana(-attack_options[setup_key]['mana_cost'])
+            attack_options[setup_key]['cd_timer'] = attack_options[setup_key]['cool_down']
 
-        setup_key = attacker.choose_attack(attack_options)
-        setup = attack_options[setup_key][1]
-        dmg_done = run_attack(attacker, enemy_party, **setup)
     elif action == 'show hero stats':
         attacker.party.display_single_member_item_card(attacker)
-        battle_menu(attacker, enemy_party)
+        action = battle_menu(attacker, enemy_party)
 
     elif action == 'heal':
         # TODO: make heal a spell, fix this!
@@ -309,6 +325,12 @@ def clock_tick(party_1, party_2):
     return all_members
 
 
+def tick_cool_downs(unit):
+    for spell in unit.spell_book:
+        if spell['cd_timer'] > 0:
+            spell['cd_timer'] -= 1
+
+
 def clock_tick_battle(party_1, party_2):
     parties = [party_1, party_2]
     print('A Battle has started!')
@@ -338,6 +360,8 @@ def clock_tick_battle(party_1, party_2):
                     pass
                 if not enemy_party.has_units_left:
                     break
+                tick_cool_downs(member)
+
     if party_1.has_units_left:
         print('Party 1 has won the battle!')
     else:

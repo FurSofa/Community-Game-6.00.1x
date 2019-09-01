@@ -24,7 +24,7 @@ class Hero(NPC):
         return select_from_list(target_party, index_pos=False, q='Choose a target:')
 
     def choose_attack(self, attack_options):
-        return select_from_list([attack_options[i][0] for i in range(len(attack_options))], index_pos=True)
+        return select_from_list([attack_options[i]['name'] for i in range(len(attack_options))], index_pos=True)
 
     def choose_battle_action(self, possible_actions):
         """

@@ -88,7 +88,7 @@ class NPC:
             'wpn_dmg': 0
         }
 
-        self.spell_book = [x_Spell_Setups.heal, x_Spell_Setups.base_spell]
+        self.spell_book = [x_Spell_Setups.heal.copy(), x_Spell_Setups.base_spell.copy()]
 
         self.equip_slots = {'Main Hand': Weapon.generate(quality='Common', quality_val=1, etype='Weapon',
                                                          equipable_slot='Main Hand',
@@ -269,6 +269,19 @@ class NPC:
             self.tracked_values['hp'] = self.stats['max_hp']
         if self.tracked_values['hp'] < 0:
             self.tracked_values['hp'] = 0
+        return amount
+
+    def set_mana(self, amount):
+        """
+        set the mana safely
+        :param amount: int: to change / can be positive or negative
+        :return: amount
+        """
+        self.tracked_values['mana'] += amount
+        if self.tracked_values['mana'] > self.stats['max_mana']:
+            self.tracked_values['mana'] = self.stats['max_mana']
+        if self.tracked_values['mana'] < 0:
+            self.tracked_values['mana'] = 0
         return amount
 
     def choose_target(self, target_party):
