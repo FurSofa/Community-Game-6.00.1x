@@ -728,60 +728,60 @@ char_creation_setup = {
         'start': 4,                         # ignore this
         'classes': {                        # set the stat growth of each class here
             'dex_class': {
-                'vit_start': 10,
+                'vit_start': 4,
                 'vit_p_lvl': 2,
 
-                'dex_start': 18,
+                'dex_start': 9,
                 'dex_p_lvl': 3,
-
-                'str_start': 10,
-                'str_p_lvl': 1,
-
-                'int_start': 4,
-                'int_p_lvl': 2,
-
-                'agility_start': 8,
-                'agility_p_lvl': 2,
-
-                'toughness_start': 8,
-                'toughness_p_lvl': 2,
-            },
-            'str_class': {
-                'vit_start': 14,
-                'vit_p_lvl': 3,
-
-                'dex_start': 8,
-                'dex_p_lvl': 1,
-
-                'str_start': 15,
-                'str_p_lvl': 4,
-
-                'int_start': 4,
-                'int_p_lvl': 1,
-
-                'agility_start': 8,
-                'agility_p_lvl': 1,
-
-                'toughness_start': 9,
-                'toughness_p_lvl': 2,
-            },
-            'int_class': {
-                'vit_start': 8,
-                'vit_p_lvl': 1,
-
-                'dex_start': 8,
-                'dex_p_lvl': 2,
 
                 'str_start': 4,
                 'str_p_lvl': 1,
 
-                'int_start': 22,
-                'int_p_lvl': 5,
+                'int_start': 2,
+                'int_p_lvl': 2,
 
-                'agility_start': 8,
+                'agility_start': 6,
                 'agility_p_lvl': 2,
 
-                'toughness_start': 8,
+                'toughness_start': 1,
+                'toughness_p_lvl': 2,
+            },
+            'str_class': {
+                'vit_start': 6,
+                'vit_p_lvl': 3,
+
+                'dex_start': 4,
+                'dex_p_lvl': 1,
+
+                'str_start': 8,
+                'str_p_lvl': 4,
+
+                'int_start': 1,
+                'int_p_lvl': 1,
+
+                'agility_start': 5,
+                'agility_p_lvl': 1,
+
+                'toughness_start': 2,
+                'toughness_p_lvl': 2,
+            },
+            'int_class': {
+                'vit_start': 4,
+                'vit_p_lvl': 1,
+
+                'dex_start': 4,
+                'dex_p_lvl': 2,
+
+                'str_start': 2,
+                'str_p_lvl': 1,
+
+                'int_start': 10,
+                'int_p_lvl': 5,
+
+                'agility_start': 5,
+                'agility_p_lvl': 2,
+
+                'toughness_start': 1,
                 'toughness_p_lvl': 1,
             },
         }
@@ -792,9 +792,9 @@ char_creation_setup = {
         'b_dmg_wpn_dmg_factor': 50,         # percent of base dmg * weapon dmg
         'wpn_dmg_growth_per_lvl': 10,       # percent the weapon dmg grows per level
         'vit_to_hp': {
-            'start': 250,
+            'start': 100,
             'hp_per_vit': 15,
-            'hp_per_lvl': 10,
+            'hp_per_lvl': 20,
         },
         'str_to_dmg': {
             'start': 5,

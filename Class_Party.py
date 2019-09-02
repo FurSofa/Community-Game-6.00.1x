@@ -42,7 +42,7 @@ class Party:
 
     def heal_everyone(self):
         for member in self.members:
-            member.heal(member.max_hp)
+            member.set_hp(+member.stats['max_hp'])
 
     def party_members_info(self):
         print('\n', '=' * 6, 'Party Members Info', '=' * 6)
@@ -252,7 +252,7 @@ class Party:
         char.equip_slots[slot] = item
         if item in self.inventory:
             self.inventory.remove(item)
-        char.calculate_stats()
+        char.calculate_stats_with_equipment()
 
     def change_gold(self, gold_amount):
         #  check if person has enough gold might be better in merchant class

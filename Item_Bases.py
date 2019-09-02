@@ -27,7 +27,11 @@ class Equipment:
         self.value = value + int(10 * quality_value + 10)
         self.max_durability = max_durability
         self.durability = self.max_durability
-        self.enchants = []
+
+        # TODO: Fix enchants!
+        self.enchants = [None, None]
+        self.enchant_1 = None
+        self.enchant_2 = None
 
         self.type = etype
         self.equipable_slot = equipable_slot

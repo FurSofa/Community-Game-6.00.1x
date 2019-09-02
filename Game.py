@@ -83,7 +83,7 @@ class Game:
                 enemy_party.add_member(
                     NPC.generate_random(randint(self.party.hero.level - 1, self.party.hero.level)))
                 x += 1
-            alternating_turn_battle(self.party, enemy_party)
+            clock_tick_battle(self.party, enemy_party)
         elif event == 2:
             # Battle
             enemy_party = Party.generate(self)

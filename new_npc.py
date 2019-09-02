@@ -307,11 +307,11 @@ class NPC:
         choice = random.choice([i for i in range(len(attack_options))])
         return choice
 
-    def choose_battle_action(self, enemy_party):
+    def choose_battle_action(self, possible_actions):
         """
         ENDPOINT for battle
         npc will always choose basic attack
-        :param enemy_party:
+        :param possible_actions:
         :return: -
         """
         possible_actions = ['attack', ]

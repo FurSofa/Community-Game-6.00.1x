@@ -29,7 +29,7 @@ class Hero(NPC):
     def choose_battle_action(self, possible_actions):
         """
         lets player choose what to do in their turn and calls appropriate methods
-        :param enemy_party: party instance
+        :param possible_actions:
         :return: -
         """
         #  TODO: find a place to store possible actions

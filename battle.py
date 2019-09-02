@@ -6,38 +6,41 @@ import random
 
 
 def battle_menu(attacker, enemy_party):
-    possible_actions = ['Attack', 'Spell', 'Show Hero Stats', 'Skip turn']
+    # generate option lists
+    attack_options = [{'name': item.attack_name, 'attack_setup': item.attack_setup} for item in
+                      [attacker.equip_slots['Main Hand'], attacker.equip_slots['Off Hand']] if item]
+
+    spell_options = []
+    on_cd = []
+    low_mana = []
+    for spell in attacker.spell_book:
+        if spell['cd_timer'] > 0:
+            on_cd.append(spell)
+        elif spell['mana_cost'] > attacker.tracked_values['mana']:
+            low_mana.append(spell)
+        else:
+            spell_options.append(spell)
+
+    possible_actions = ['Attack',]
+    possible_actions += ['Spell']
+    possible_actions += ['Show Hero Stats', 'Skip turn']
+
     action = attacker.choose_battle_action(possible_actions).lower()
     if action == 'attack':
-        attack_options = [{'name': item.attack_name, 'attack_setup':item.attack_setup} for item in
-                          [attacker.equip_slots['Main Hand'], attacker.equip_slots['Off Hand']] if item]
-
         setup_key = attacker.choose_attack(attack_options)
         setup = attack_options[setup_key]['attack_setup']
         dmg_done = run_attack(attacker, enemy_party, **setup)
 
     elif action == 'spell':
-        # TODO: check cool downs and mana when making the list
-        # attack_options = [spell for spell in attacker.spell_book]
-        attack_options = []
-        on_cd = []
-        low_mana = []
-        for spell in attacker.spell_book:
-            if spell['cd_timer'] > 0:
-                on_cd.append(spell)
-            elif spell['mana_cost'] > attacker.tracked_values['mana']:
-                low_mana.append(spell)
-            else:
-                attack_options.append(spell)
-        if len(attack_options) < 1:
+        if len(spell_options) < 1:
             print(f'You have no spells to use this turn!')
             action = battle_menu(attacker, enemy_party)
         else:
-            setup_key = attacker.choose_attack(attack_options)
-            setup = attack_options[setup_key]['attack_setup']
+            setup_key = attacker.choose_attack(spell_options)
+            setup = spell_options[setup_key]['attack_setup']
             dmg_done = run_attack(attacker, enemy_party, **setup)
-            attacker.set_mana(-attack_options[setup_key]['mana_cost'])
-            attack_options[setup_key]['cd_timer'] = attack_options[setup_key]['cool_down']
+            attacker.set_mana(-spell_options[setup_key]['mana_cost'])
+            spell_options[setup_key]['cd_timer'] = spell_options[setup_key]['cool_down']
 
     elif action == 'show hero stats':
         attacker.party.display_single_member_item_card(attacker)
@@ -153,7 +156,7 @@ def run_attack(attacker, target_party, target_num=1, primary=True, primary_perce
     :param elemental: dmg type used to calculate and apply dmg / special for 'heal'(inverts dmg) and 'true'(ignores defense)
     :param vamp: int: percentage of dmg dealt affecting attacker hp. can be negative
     :param can_crit: bool:
-    :param dmg_base: 'str_based' or 'int_based'. for dmg generation
+    :param dmg_base: 'str_based' or 'int_based' or 'dex_bases'. for dmg generation
     :param max_hp_perc_dmg: int: percent of target max hp as dmg
     :param c_hp_perc_dmg: int: percent of target current hp as dmg
     :param wpn_dmg_perc: int: percentage modifier for weapon dmg / set to 0 if you want only target hp pool based dmg
