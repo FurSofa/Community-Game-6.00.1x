@@ -65,7 +65,7 @@ class Equipment:
             'crit_chance': round(crit_chance * self.quality_val),
             'crit_dmg': round(crit_multiplier * self.quality_val),
             'elemental_resistance': 5,
-            'wpn_dmg': round(damage * self.quality_val),
+            'wpn_dmg': round(att_dmg_max * self.quality_val),
         }
 
 

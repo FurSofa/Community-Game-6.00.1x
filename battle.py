@@ -16,12 +16,12 @@ def battle_menu(attacker, enemy_party):
     for spell in attacker.spell_book:
         if spell['cd_timer'] > 0:
             on_cd.append(spell)
-        elif spell['mana_cost'] > attacker.tracked_values['mana']:
+        elif spell['mana_cost'] > attacker.mana:
             low_mana.append(spell)
         else:
             spell_options.append(spell)
 
-    possible_actions = ['Attack',]
+    possible_actions = ['Attack']
     possible_actions += ['Spell']
     possible_actions += ['Show Hero Stats', 'Skip turn']
 
@@ -55,18 +55,18 @@ def battle_menu(attacker, enemy_party):
 
 
 def check_dodge(target, can_dodge):
-    return (random.randrange(100) < target.stats['dodge']) if can_dodge else False
+    return (random.randrange(100) < target.dodge) if can_dodge else False
 
 
 def check_crit(attacker, can_crit):
-    return (random.randrange(100) < attacker.stats['crit_chance']) if can_crit else False
+    return (random.randrange(100) < attacker.crit_chance) if can_crit else False
 
 
 def generate_dmg(attacker, target, dmg_base='str_based', is_crit=False,
                  wpn_dmg_perc=100, c_hp_perc_dmg=0, max_hp_perc_dmg=0):
 
-    c_hp_dmg = target.tracked_values['hp'] / 100 * c_hp_perc_dmg
-    max_hp_dmg = target.stats['max_hp'] / 100 * max_hp_perc_dmg
+    c_hp_dmg = target.hp / 100 * c_hp_perc_dmg
+    max_hp_dmg = target.max_hp / 100 * max_hp_perc_dmg
 
     dmg_key = dmg_base[:3]
 
@@ -74,14 +74,14 @@ def generate_dmg(attacker, target, dmg_base='str_based', is_crit=False,
         conversion_ratios = json.load(f)['conversion_ratios']
     dmg_calc = conversion_ratios[dmg_key+'_to_dmg']
 
-    dmg_wo_wpn = (attacker.stats[dmg_key] * dmg_calc['dmg_per_'+dmg_key]) + (attacker.level * dmg_calc['dmg_per_level'])
-    wpn_dmg = round((dmg_wo_wpn / 100) * conversion_ratios['b_dmg_wpn_dmg_factor'] * attacker.stats['wpn_dmg']) + attacker.stats['wpn_dmg'] + dmg_calc['start']
+    dmg_wo_wpn = (attacker.__getattribute__(dmg_key) * dmg_calc['dmg_per_'+dmg_key]) + (attacker.level * dmg_calc['dmg_per_level'])
+    wpn_dmg = round((dmg_wo_wpn / 100) * conversion_ratios['b_dmg_wpn_dmg_factor'] * attacker.__getattribute__('wpn_dmg')) + attacker.__getattribute__('wpn_dmg') + dmg_calc['start']
 
     wpn_dmg = wpn_dmg / 100 * wpn_dmg_perc
 
     dmg = sum([c_hp_dmg, max_hp_dmg, wpn_dmg])
     if is_crit:
-        dmg = (dmg * attacker.stats["crit_dmg"]) // 100
+        dmg = (dmg * attacker.crit_dmg) // 100
     return round(dmg)
 
 
@@ -93,11 +93,11 @@ def defense_calc(dmg, target, elemental):
     #     dmg_multi = dmg / (dmg + target.defense)
     # dmg_done = round(dmg * dmg_multi)
     if elemental == 'physical':  # untill we have the new npc
-        defense = target.stats['armor']
+        defense = target.armor
     elif elemental == 'magic':
-        defense = target.stats['magic_resistance']
+        defense = target.magic_resistance
     elif elemental == 'elemental':
-        defense = target.stats['elemental_resistance']
+        defense = target.elemental_resistance
     else:
         defense = 0  # TODO: heal reduction/multi?
     # TODO: armor piercing calc here
@@ -321,7 +321,7 @@ def whole_party_turn_battle(party_1, party_2):
 def clock_tick(party_1, party_2):
     all_members = party_1.members + party_2.members
     for member in all_members:
-        member.tracked_values['c'] += member.stats['speed']
+        member.tracked_values['c'] += member.speed
     all_members = sorted(all_members, key=lambda m: m.tracked_values['c'], reverse=True)
 
     # [print(f'c: {member.tracked_values["c"]} - name: {member.name}') for member in all_members]

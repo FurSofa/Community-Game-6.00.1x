@@ -3,7 +3,8 @@ import json
 from x_Attack_Setups import *
 import x_Spell_Setups
 from Item_Bases import *
-
+import battle
+from types import SimpleNamespace
 
 test_weapon = {
             'base_stats': {
@@ -55,6 +56,7 @@ class NPC:
                             'agility': 1,
                             'toughness': 1,
                         }
+
         # rewrite base stats for class_type from setup file
         with open('char_creation_setup.json', 'r') as f:
             class_stats = json.load(f)['cl_base_stats']['classes']
@@ -68,25 +70,25 @@ class NPC:
                 if stat[-6:] == '_start':
                     self.base_stats[stat[:-6]] = class_stats[class_key][stat]
 
-        self.stats = {
-            # 'vit': self.base_stats.get('vit'),
-            # 'dex': self.base_stats.get('dex'),
-            # 'str': self.base_stats.get('str'),
-            # 'int': self.base_stats.get('int'),
-            # 'agility': self.base_stats.get('agility'),
-            # 'toughness': self.base_stats.get('toughness'),
-
-            'max_hp': 0,
-            'max_mana': 0,
-            'armor': 0,
-            'magic_resistance': 0,
-            'speed': 0,
-            'dodge': 0,
-            'crit_chance': 0,
-            'crit_dmg': 0,
-            'elemental_resistance': 0,  # from items (and toughness?)
-            'wpn_dmg': 0
-        }
+        # self.stats = {
+        #     # 'vit': self.base_stats.get('vit'),
+        #     # 'dex': self.base_stats.get('dex'),
+        #     # 'str': self.base_stats.get('str'),
+        #     # 'int': self.base_stats.get('int'),
+        #     # 'agility': self.base_stats.get('agility'),
+        #     # 'toughness': self.base_stats.get('toughness'),
+        #
+        #     'max_hp': 0,
+        #     'max_mana': 0,
+        #     'armor': 0,
+        #     'magic_resistance': 0,
+        #     'speed': 0,
+        #     'dodge': 0,
+        #     'crit_chance': 0,
+        #     'crit_dmg': 0,
+        #     'elemental_resistance': 0,  # from items (and toughness?)
+        #     'wpn_dmg': 0
+        # }
 
         self.spell_book = [x_Spell_Setups.heal.copy(), x_Spell_Setups.base_spell.copy()]
 
@@ -107,30 +109,30 @@ class NPC:
             self.level_up()
             level_up_counter += 1
 
-        self.calculate_stats_with_equipment()
+        # self.calculate_stats_with_equipment()
 
         self.tracked_values = {
                                 'ct': 1000,  # when c reaches this, unit gets a turn
                                 'c': 0,  # holds current charge value - +speed each clock tick in battle
                                 'status_effects': [],
 
-                                'hp': self.stats.get('max_hp'),
-                                'mana': self.stats.get('max_mana'),
+                                'hp': self.max_hp,
+                                'mana': self.max_mana,
                             }
 
-    def combine_base_stats_with_equipment(self):
-        # base_stats = {
-        #     'str': self.base_stats['str'],
-        #     'dex': self.base_stats['dex'],
-        #     'int': self.base_stats['int'],
-        #     'vit': self.base_stats['vit'],
-        #     'agility': self.base_stats['agility'],
-        #     'toughness': self.base_stats['toughness'],
-        # }
-        #
-        gear = [value for value in self.equip_slots.values() if value]
-        for key in self.base_stats.keys():
-            self.stats[key] = self.base_stats[key] + sum([item.base_stats.get(key, 0) for item in gear])
+    # def combine_base_stats_with_equipment(self):
+    #     # base_stats = {
+    #     #     'str': self.base_stats['str'],
+    #     #     'dex': self.base_stats['dex'],
+    #     #     'int': self.base_stats['int'],
+    #     #     'vit': self.base_stats['vit'],
+    #     #     'agility': self.base_stats['agility'],
+    #     #     'toughness': self.base_stats['toughness'],
+    #     # }
+    #     #
+    #     gear = [value for value in self.equip_slots.values() if value]
+    #     for key in self.base_stats.keys():
+    #         self.stats[key] = self.base_stats[key] + sum([item.base_stats.get(key, 0) for item in gear])
 
     def get_conversion_ratios(self):
         with open('char_creation_setup.json', 'r') as f:
@@ -138,9 +140,13 @@ class NPC:
         return conversion_ratios
 
 # combining base stats with equipment
-    def get_stat_from_equipment(self, stat):
-        gear = [value for value in self.equip_slots.values() if value]
-        return sum([item.base_stats.get(stat, 0) for item in gear])
+    def get_stat_from_equipment(self, stat, base_stat=True ):
+        gear = self.get_equipped_items()
+        # gear = [value for value in self.equip_slots.values() if value]
+        if base_stat:
+            return sum([item.base_stats.get(stat, 0) for item in gear])
+        else:
+            return sum([item.stats.get(stat, 0) for item in gear])
 
     @property
     def vit(self):
@@ -186,7 +192,7 @@ class NPC:
         speed_from_dex = self.dex * speed_per_dex
         speed_from_agility = self.agility * speed_per_agility
         speed = (speed_from_dex + speed_from_agility) * speed_factor + speed_start
-        return speed + self.get_stat_from_equipment(stat)
+        return speed + self.get_stat_from_equipment(stat, base_stat=False)
 
 
     @property
@@ -197,7 +203,7 @@ class NPC:
         hp_per_vit = conversion_ratios['vit_to_hp']['hp_per_vit']
         hp_per_lvl = conversion_ratios['vit_to_hp']['hp_per_lvl']
         max_hp = self.vit * hp_per_vit + self.level * hp_per_lvl + hp_start
-        return max_hp + self.get_stat_from_equipment(stat)
+        return max_hp + self.get_stat_from_equipment(stat, base_stat=False)
 
     @property
     def full_crit_chance(self):
@@ -210,7 +216,7 @@ class NPC:
         crit_chance_from_dex = self.dex * crit_chan_per_dex
         crit_chance_from_lvl = self.level * crit_chan_per_level
         crit_chance = crit_chance_from_dex + crit_chance_from_lvl + crit_chance_start
-        return crit_chance + self.get_stat_from_equipment(stat)
+        return crit_chance + self.get_stat_from_equipment(stat, base_stat=False)
 
     @property
     def full_crit_dmg(self):
@@ -223,7 +229,7 @@ class NPC:
         crit_dmg_from_dex = self.dex * crit_dmg_per_dex
         crit_dmg_from_level = self.level * crit_dmg_per_level
         crit_dmg = crit_dmg_from_dex + crit_dmg_from_level + crit_dmg_start
-        return crit_dmg + self.get_stat_from_equipment(stat)
+        return crit_dmg + self.get_stat_from_equipment(stat, base_stat=False)
 
     @property
     def full_dodge(self):
@@ -236,7 +242,7 @@ class NPC:
         dodge_from_dex = self.dex * dodge_per_dex
         dodge_from_speed = self.speed * dodge_per_speed
         dodge = dodge_from_dex + dodge_from_speed + dodge_start
-        return dodge + self.get_stat_from_equipment(stat)
+        return dodge + self.get_stat_from_equipment(stat, base_stat=False)
 
     @property
     def full_armor(self):
@@ -249,31 +255,34 @@ class NPC:
         armor_from_str = (self.str * armor_per_str) + (self.level * armor_per_lvl)
         armor_from_toughness = self.toughness * armor_per_toughness
         armor = armor_from_str + armor_from_toughness
-        return armor + self.get_stat_from_equipment(stat)
+        return armor + self.get_stat_from_equipment(stat, base_stat=False)
 
     # TODO: find a formula for max mana
     @property
     def full_max_mana(self):
-        return 20 + 5 * self.level
+        stat = 'max_mana'
+        return (20 + 5 * self.level) + self.get_stat_from_equipment(stat, base_stat=False)
 
     # TODO: find a formula for mana regen
     @property
     def full_mana_regen(self):
-        return 2
+        stat = 'mana_regen'
+        return 2 + self.get_stat_from_equipment(stat, base_stat=False)
 
     @property
     def full_elemental_resistance(self):
         stat = 'elemental_resistance'
-        return self.get_stat_from_equipment(stat)
+        return self.get_stat_from_equipment(stat, base_stat=False)
 
     @property
     def full_magic_resistance(self):
         stat = 'magic_resistance'
-        return self.get_stat_from_equipment(stat)
+        return self.get_stat_from_equipment(stat, base_stat=False)
 
     @property
     def full_wpn_dmg(self):
-        return self.get_stat_from_equipment('wpn_dmg')
+        stat = 'wpn_dmg'
+        return self.get_stat_from_equipment(stat, base_stat=False)
 
     # derived stats to use
     #  TODO: add modifiers for status effects here
@@ -306,6 +315,10 @@ class NPC:
         return self.full_mana_regen
 
     @property
+    def armor(self):
+        return self.full_armor
+
+    @property
     def wpn_dmg(self):
         return self.full_wpn_dmg
 
@@ -317,104 +330,118 @@ class NPC:
     def magic_resistance(self):
         return self.full_magic_resistance
 
+    @property
+    def hp(self):
+        return self.tracked_values['hp']
 
-    def derive_stats(self):
-        with open('char_creation_setup.json', 'r') as f:
-            conversion_ratios = json.load(f)['conversion_ratios']
+    @property
+    def mana(self):
+        return self.tracked_values['mana']
 
-        #  armor
-        # armor_per_str = 2
-        # armor_per_lvl = 2
-        # armor_per_toughness = 4
+    @property
+    def attack_dmg(self):
+        dmg_base = self.equip_slots['Main Hand'].attack_setup['dmg_base']
+        dummy_target = SimpleNamespace(hp=1, max_hp=1)
+        # TODO: get dot notation for the dummy going
+        return battle.generate_dmg(self, dummy_target, dmg_base=dmg_base)
 
-        armor_per_str = conversion_ratios['str_to_armor']['armor_per_str']
-        armor_per_lvl = conversion_ratios['str_to_armor']['armor_per_level']
-        armor_per_toughness = conversion_ratios['toughness_to_armor']['armor_per_toughness']
-
-        #  speed
-        # speed_per_dex = 0.03
-        # speed_per_agility = 0.2
-        # speed_factor = 0.1
-        # speed_start = 9
-
-        speed_per_dex = conversion_ratios['dex_to_speed']['speed_per_dex']
-        speed_per_agility = conversion_ratios['dex_to_speed']['speed_per_agility']
-        speed_factor = conversion_ratios['dex_to_speed']['speed_factor']
-        speed_start = conversion_ratios['dex_to_speed']['speed_start']
-
-        #  dodge
-        dodge_start = 3
-        dodge_per_speed = 0.3
-        dodge_per_dex = 0.2
-
-        dodge_start = conversion_ratios['dex_speed_to_dodge']['start']
-        dodge_per_speed = conversion_ratios['dex_speed_to_dodge']['dodge_per_speed']
-        dodge_per_dex = conversion_ratios['dex_speed_to_dodge']['dodge_per_dex']
-
-        #  crit
-        # crit_chance_start = 5
-        # crit_chan_per_level = 0.25
-        # crit_chan_per_dex = 0.25
-        #
-        # crit_dmg_start = 125
-        # crit_dmg_per_level = 1
-        # crit_dmg_per_dex = 3
-
-        crit_chance_start = conversion_ratios['dex_to_crit']['chance_start']
-        crit_chan_per_level = conversion_ratios['dex_to_crit']['crit_chan_per_level']
-        crit_chan_per_dex =conversion_ratios['dex_to_crit']['crit_chan_per_dex']
-
-        crit_dmg_start = conversion_ratios['dex_to_crit']['dmg_start']
-        crit_dmg_per_level = conversion_ratios['dex_to_crit']['crit_dmg_per_level']
-        crit_dmg_per_dex = conversion_ratios['dex_to_crit']['crit_dmg_per_dex']
-
-        #  hp
-        # hp_start = 800
-        # hp_per_vit = 40
-        # hp_per_lvl = 15
-
-        hp_start = conversion_ratios['vit_to_hp']['start']
-        hp_per_vit = conversion_ratios['vit_to_hp']['hp_per_vit']
-        hp_per_lvl = conversion_ratios['vit_to_hp']['hp_per_lvl']
-
-        # speed calculation
-        speed_from_dex = self.stats['dex'] * speed_per_dex
-        speed_from_agility = self.stats['agility'] * speed_per_agility
-        self.stats['speed'] = (speed_from_dex + speed_from_agility) * speed_factor + speed_start
-
-        #  dodge calculation
-        dodge_from_dex = self.stats['dex'] * dodge_per_dex
-        dodge_from_speed = self.stats['speed'] * dodge_per_speed
-        self.stats['dodge'] = dodge_from_dex + dodge_from_speed + dodge_start
-
-        #  armor calculation
-        armor_from_str = (self.stats['str'] * armor_per_str) + (self.level * armor_per_lvl)
-        armor_from_toughness = self.stats['toughness'] * armor_per_toughness
-        self.stats['armor'] = armor_from_str + armor_from_toughness
-
-        #  crit calculation
-        crit_chance_from_dex = self.stats['dex'] * crit_chan_per_dex
-        crit_chance_from_lvl = self.level * crit_chan_per_level
-        self.stats['crit_chance'] = crit_chance_from_dex + crit_chance_from_lvl + crit_chance_start
-
-        crit_dmg_from_dex = self.stats['dex'] * crit_dmg_per_dex
-        crit_dmg_from_level = self.level * crit_dmg_per_level
-        self.stats['crit_dmg'] = crit_dmg_from_dex + crit_dmg_from_level + crit_dmg_start
-
-        #  hp calculation
-        self.stats['max_hp'] = self.stats['vit'] * hp_per_vit + self.level * hp_per_lvl + hp_start
-
-    def combine_derived_stats_with_equipment(self):
-        keys_to_combine = ['max_hp', 'max_mana', 'armor', 'magic_resistance', 'speed', 'dodge',
-                           'crit_chance', 'crit_dmg', 'elemental_resistance', 'wpn_dmg']
-        gear = [value for value in self.equip_slots.values() if value]
-        for key in keys_to_combine:
-            self.stats[key] = self.stats[key] + sum([item.stats.get(key, 0) for item in gear])
-
-    def calculate_stats_with_equipment(self):
-        self.combine_base_stats_with_equipment()
-        self.derive_stats()
-        self.combine_derived_stats_with_equipment()
+    # def derive_stats(self):
+    #     with open('char_creation_setup.json', 'r') as f:
+    #         conversion_ratios = json.load(f)['conversion_ratios']
+    #
+    #     #  armor
+    #     # armor_per_str = 2
+    #     # armor_per_lvl = 2
+    #     # armor_per_toughness = 4
+    #
+    #     armor_per_str = conversion_ratios['str_to_armor']['armor_per_str']
+    #     armor_per_lvl = conversion_ratios['str_to_armor']['armor_per_level']
+    #     armor_per_toughness = conversion_ratios['toughness_to_armor']['armor_per_toughness']
+    #
+    #     #  speed
+    #     # speed_per_dex = 0.03
+    #     # speed_per_agility = 0.2
+    #     # speed_factor = 0.1
+    #     # speed_start = 9
+    #
+    #     speed_per_dex = conversion_ratios['dex_to_speed']['speed_per_dex']
+    #     speed_per_agility = conversion_ratios['dex_to_speed']['speed_per_agility']
+    #     speed_factor = conversion_ratios['dex_to_speed']['speed_factor']
+    #     speed_start = conversion_ratios['dex_to_speed']['speed_start']
+    #
+    #     #  dodge
+    #     dodge_start = 3
+    #     dodge_per_speed = 0.3
+    #     dodge_per_dex = 0.2
+    #
+    #     dodge_start = conversion_ratios['dex_speed_to_dodge']['start']
+    #     dodge_per_speed = conversion_ratios['dex_speed_to_dodge']['dodge_per_speed']
+    #     dodge_per_dex = conversion_ratios['dex_speed_to_dodge']['dodge_per_dex']
+    #
+    #     #  crit
+    #     # crit_chance_start = 5
+    #     # crit_chan_per_level = 0.25
+    #     # crit_chan_per_dex = 0.25
+    #     #
+    #     # crit_dmg_start = 125
+    #     # crit_dmg_per_level = 1
+    #     # crit_dmg_per_dex = 3
+    #
+    #     crit_chance_start = conversion_ratios['dex_to_crit']['chance_start']
+    #     crit_chan_per_level = conversion_ratios['dex_to_crit']['crit_chan_per_level']
+    #     crit_chan_per_dex =conversion_ratios['dex_to_crit']['crit_chan_per_dex']
+    #
+    #     crit_dmg_start = conversion_ratios['dex_to_crit']['dmg_start']
+    #     crit_dmg_per_level = conversion_ratios['dex_to_crit']['crit_dmg_per_level']
+    #     crit_dmg_per_dex = conversion_ratios['dex_to_crit']['crit_dmg_per_dex']
+    #
+    #     #  hp
+    #     # hp_start = 800
+    #     # hp_per_vit = 40
+    #     # hp_per_lvl = 15
+    #
+    #     hp_start = conversion_ratios['vit_to_hp']['start']
+    #     hp_per_vit = conversion_ratios['vit_to_hp']['hp_per_vit']
+    #     hp_per_lvl = conversion_ratios['vit_to_hp']['hp_per_lvl']
+    #
+    #     # speed calculation
+    #     speed_from_dex = self.stats['dex'] * speed_per_dex
+    #     speed_from_agility = self.stats['agility'] * speed_per_agility
+    #     self.stats['speed'] = (speed_from_dex + speed_from_agility) * speed_factor + speed_start
+    #
+    #     #  dodge calculation
+    #     dodge_from_dex = self.stats['dex'] * dodge_per_dex
+    #     dodge_from_speed = self.stats['speed'] * dodge_per_speed
+    #     self.stats['dodge'] = dodge_from_dex + dodge_from_speed + dodge_start
+    #
+    #     #  armor calculation
+    #     armor_from_str = (self.stats['str'] * armor_per_str) + (self.level * armor_per_lvl)
+    #     armor_from_toughness = self.stats['toughness'] * armor_per_toughness
+    #     self.stats['armor'] = armor_from_str + armor_from_toughness
+    #
+    #     #  crit calculation
+    #     crit_chance_from_dex = self.stats['dex'] * crit_chan_per_dex
+    #     crit_chance_from_lvl = self.level * crit_chan_per_level
+    #     self.stats['crit_chance'] = crit_chance_from_dex + crit_chance_from_lvl + crit_chance_start
+    #
+    #     crit_dmg_from_dex = self.stats['dex'] * crit_dmg_per_dex
+    #     crit_dmg_from_level = self.level * crit_dmg_per_level
+    #     self.stats['crit_dmg'] = crit_dmg_from_dex + crit_dmg_from_level + crit_dmg_start
+    #
+    #     #  hp calculation
+    #     self.stats['max_hp'] = self.stats['vit'] * hp_per_vit + self.level * hp_per_lvl + hp_start
+    #
+    # def combine_derived_stats_with_equipment(self):
+    #     keys_to_combine = ['max_hp', 'max_mana', 'armor', 'magic_resistance', 'speed', 'dodge',
+    #                        'crit_chance', 'crit_dmg', 'elemental_resistance', 'wpn_dmg']
+    #     gear = [value for value in self.equip_slots.values() if value]
+    #     for key in keys_to_combine:
+    #         self.stats[key] = self.stats[key] + sum([item.stats.get(key, 0) for item in gear])
+    #
+    # def calculate_stats_with_equipment(self):
+    #     self.combine_base_stats_with_equipment()
+    #     self.derive_stats()
+    #     self.combine_derived_stats_with_equipment()
 
     def stat_growth(self):
         with open('char_creation_setup.json', 'r') as f:
@@ -436,7 +463,7 @@ class NPC:
         self.next_level = round(4 * (self.level ** 3) / 5) + 20
         print(f'{self.name} is now {self.level}!')
         self.stat_growth()
-        self.calculate_stats_with_equipment()
+        # self.calculate_stats_with_equipment()
         self.tracked_values['hp'] = self.stats['max_hp']
         self.tracked_values['mana'] = self.stats['max_mana']
 
@@ -450,7 +477,7 @@ class NPC:
         :param amount: int: to change / can be positive or negative
         :return: amount
         """
-        self.tracked_values['hp'] = min(self.tracked_values['hp'] + amount, self.stats['max_hp'])
+        self.tracked_values['hp'] = min(self.tracked_values['hp'] + amount, self.max_hp)
         if self.tracked_values['hp'] < 0:
             self.tracked_values['hp'] = 0
 
@@ -460,7 +487,7 @@ class NPC:
         :param amount: int: to change / can be positive or negative
         :return: amount
         """
-        self.tracked_values['mana'] = min(self.tracked_values['mana'] + amount, self.stats['max_mana'])
+        self.tracked_values['mana'] = min(self.tracked_values['mana'] + amount, self.max_mana)
         if self.tracked_values['mana'] < 0:
             self.tracked_values['mana'] = 0
 
@@ -494,6 +521,7 @@ class NPC:
         :param possible_actions:
         :return: -
         """
+        # TODO: add logic to choose spells
         possible_actions = ['attack', ]
         if self.party.game.difficulty == 'Medium':
             heal_under = 0.2
@@ -501,8 +529,9 @@ class NPC:
             heal_under = 0.3
         else:
             heal_under = 0.05
-        if self.tracked_values['hp'] / self.stats['max_hp'] < heal_under:
-            possible_actions.append('heal')
+
+        # if self.hp / self.max_hp < heal_under:
+        #     possible_actions.append('heal')
         action = random.choice(possible_actions)
         return action
 
@@ -537,27 +566,27 @@ class NPC:
         name = f'{self.name}'
         prof = f'{self.profession}'
 
-        hp = f'HP: {self.tracked_values["hp"]:>3}/{self.stats["max_hp"]:<3}'  # 10
-        defense = f'Def: {self.stats["armor"]}'  # 8
+        hp = f'HP: {self.hp:>3}/{self.max_hp:<3}'  # 10
+        defense = f'Def: {self.armor}'  # 8
 
         lvl = f'Lvl: {self.level}'
         xp = f'XP: {self.xp}/{self.next_level}'
 
-        stats_str = f'Str: {self.stats["str"]}'  # Trying 3 probly 2
-        stats_dex = f'Dex: {self.stats["dex"]}'
-        stats_int = f'Int: {self.stats["int"]}'
+        stats_str = f'Str: {self.str}'  # Trying 3 probly 2
+        stats_dex = f'Dex: {self.dex}'
+        stats_int = f'Int: {self.int}'
 
         dmg_w = 'DMG: '
-        # dmg_stat = f'{self.att_dmg_min}/{self.att_dmg_max}'  # 11  # TODO: get calculated dmg?
+        dmg_stat = f'{self.wpn_dmg}/{self.attack_dmg}'  # 11  # TODO: get calculated dmg?
         crit_w = f'Crit %: '
-        crit_stat = f'{self.stats["crit_chance"]:>2}/{self.stats["crit_dmg"]:<3}'  # 15
+        crit_stat = f'{self.crit_chance:>2}/{self.crit_dmg:<3}'  # 15
 
         # Combine L an R lines
         name = f'{name:<1}{prof:>{21 - len(name)}}'
         level_xp = f'{lvl}{xp:>{21 - len(lvl)}}'
         hp_def = f'{hp}{defense:>{21 - len(hp)}}'
         stats = f'{stats_str:<7}{stats_dex:<7}{stats_int:<7}'
-        dmg = '' #  f'{dmg_w}{dmg_stat:>{21 - len(dmg_w)}}'
+        dmg = f'{dmg_w}{dmg_stat:>{21 - len(dmg_w)}}'
         crit = f'{crit_w}{crit_stat:>{21 - len(crit_w)}}'
         return [name, level_xp, hp_def, stats, dmg, crit]
 
@@ -566,10 +595,10 @@ class NPC:
     def show_stats(self):
         print(f'\n{self.name},the {self.profession}\n'
               f'Level:\t{self.level:>4}  XP: {self.xp:>6}/{self.next_level}\n'
-              f'HP:\t   {self.tracked_values["hp"]}/{self.stats["max_hp"]:<4}\n'
-              f'Str:\t   {self.stats["str"]:<3}Damage: ' # {self.att_dmg_min:>3}/{self.att_dmg_max:<3}\n' # TODO: get calculated stats?
-              f'Dex:\t   {self.stats["dex"]:<3}Crit:  {self.stats["crit_chance"]}%/{self.stats["crit_dmg"]}%\n'
-              f'Int:\t   {self.stats["int"]:<3}Defence: {self.stats["armor"]:>5}\n')
+              f'HP:\t   {self.tracked_values["hp"]}/{self.max_hp:<4}\n'
+              f'Str:\t   {self.str:<3}Damage: {self.wpn_dmg:>3}/{self.attack_dmg:<3}\n' # TODO: get calculated stats?
+              f'Dex:\t   {self.dex:<3}Crit:  {self.crit_chance}%/{self.crit_dmg}%\n'
+              f'Int:\t   {self.int:<3}Defence: {self.armor:>5}\n')
 
     def show_combat_stats(self):
         name = f'{self.name}, the {self.profession}'

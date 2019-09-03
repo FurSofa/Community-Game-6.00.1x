@@ -251,8 +251,10 @@ class Party:
             self.inventory.append(old_item)
         char.equip_slots[slot] = item
         if item in self.inventory:
+
             self.inventory.remove(item)
-        char.calculate_stats_with_equipment()
+
+        # char.calculate_stats_with_equipment()
 
     def change_gold(self, gold_amount):
         #  check if person has enough gold might be better in merchant class
@@ -270,7 +272,7 @@ class Party:
         question = f'Confirm selling \'{item_to_sell}\' for {item_to_sell.value} gold'
         you_sure = select_from_list(['Yes', 'No'], question, True, True)
         if you_sure == 0:
-            self.gold += item_to_sell.value
+            self.change_gold(item_to_sell.value)
             self.inventory.remove(item_to_sell)
         else:
             # TODO: Split all menus into callable functions
