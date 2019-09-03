@@ -139,7 +139,6 @@ class NPC:
             conversion_ratios = json.load(f)['conversion_ratios']
         return conversion_ratios
 
-# combining base stats with equipment
     def get_stat_from_equipment(self, stat, base_stat=True ):
         gear = self.get_equipped_items()
         # gear = [value for value in self.equip_slots.values() if value]
@@ -148,38 +147,66 @@ class NPC:
         else:
             return sum([item.stats.get(stat, 0) for item in gear])
 
+    # full_ values are for display only
     @property
-    def vit(self):
+    def full_vit(self):
         stat = 'vit'
         return self.base_stats[stat] + self.get_stat_from_equipment(stat)
 
     @property
-    def dex(self):
+    def full_dex(self):
         stat = 'dex'
         return self.base_stats[stat] + self.get_stat_from_equipment(stat)
 
     @property
-    def str(self):
+    def full_str(self):
         stat = 'str'
         return self.base_stats[stat] + self.get_stat_from_equipment(stat)
 
     @property
-    def int(self):
+    def full_int(self):
         stat = 'int'
         return self.base_stats[stat] + self.get_stat_from_equipment(stat)
 
     @property
-    def agility(self):
+    def full_agility(self):
         stat = 'agility'
         return self.base_stats[stat] + self.get_stat_from_equipment(stat)
 
     @property
-    def toughness(self):
+    def full_toughness(self):
         stat = 'toughness'
         return self.base_stats[stat] + self.get_stat_from_equipment(stat)
 
+    @property
+    def vit(self):
+        return self.full_vit
+
+    @property
+    def dex(self):
+        return self.full_dex
+
+    @property
+    def str(self):
+        return self.full_str
+
+    @property
+    def int(self):
+        return self.full_int
+
+    @property
+    def agility(self):
+        return self.full_agility
+
+    @property
+    def toughness(self):
+        return self.full_toughness
+
+
 # deriving stats
     #  full values are for display only
+
+
     @property
     def full_speed(self):
         stat = 'speed'
@@ -193,7 +220,6 @@ class NPC:
         speed_from_agility = self.agility * speed_per_agility
         speed = (speed_from_dex + speed_from_agility) * speed_factor + speed_start
         return speed + self.get_stat_from_equipment(stat, base_stat=False)
-
 
     @property
     def full_max_hp(self):
@@ -590,23 +616,21 @@ class NPC:
         crit = f'{crit_w}{crit_stat:>{21 - len(crit_w)}}'
         return [name, level_xp, hp_def, stats, dmg, crit]
 
-
-
     def show_stats(self):
         print(f'\n{self.name},the {self.profession}\n'
               f'Level:\t{self.level:>4}  XP: {self.xp:>6}/{self.next_level}\n'
               f'HP:\t   {self.tracked_values["hp"]}/{self.max_hp:<4}\n'
-              f'Str:\t   {self.str:<3}Damage: {self.wpn_dmg:>3}/{self.attack_dmg:<3}\n' # TODO: get calculated stats?
+              f'Str:\t   {self.str:<3}Damage: {self.wpn_dmg:>3}/{self.attack_dmg:<3}\n' 
               f'Dex:\t   {self.dex:<3}Crit:  {self.crit_chance}%/{self.crit_dmg}%\n'
               f'Int:\t   {self.int:<3}Defence: {self.armor:>5}\n')
 
     def show_combat_stats(self):
         name = f'{self.name}, the {self.profession}'
-        hp = f'Hp: {self.tracked_values["hp"]:>2}/{self.stats["max_hp"]:<2}'
-        # dmg = f'Dmg: {self.att_dmg_min:>2}/{self.att_dmg_max:<2}'  # TODO: get calculated stats?
+        hp = f'Hp: {self.hp:>2}/{self.max_hp:<2}'
+        dmg = f'Dmg: {self.wpn_dmg:>2}/{self.attack_dmg:<2}'  # TODO: get calculated stats?
         return f'{name:^23} ' \
                f'{hp:<8} ' \
-               # f'{dmg:<13}'
+               f'{dmg:<13}'
 
 
 
