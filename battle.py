@@ -87,11 +87,7 @@ def generate_dmg(attacker, target, dmg_base='str_based', is_crit=False,
 
 def defense_calc(dmg, target, elemental):
     # TODO: generalise resistances
-    # if not elemental == 'physical':
-    #     dmg_multi = dmg / (dmg + target.__dict__[elemental + '_res'])
-    # else:
-    #     dmg_multi = dmg / (dmg + target.defense)
-    # dmg_done = round(dmg * dmg_multi)
+
     if elemental == 'physical':  # untill we have the new npc
         defense = target.armor
     elif elemental == 'magic':
@@ -101,9 +97,7 @@ def defense_calc(dmg, target, elemental):
     else:
         defense = 0  # TODO: heal reduction/multi?
     # TODO: armor piercing calc here
-    # if defense > dmg:
-    #     dmg_done = 0
-    # else:
+
     if defense < 0:
         lol_dmg_multi = 2 - (100 / (100 - defense))
     else:

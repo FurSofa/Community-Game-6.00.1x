@@ -143,14 +143,16 @@ class Party:
         :param member: NPC or Hero class object
         :return:
         """
-        print(f'{member.name}, the {member.profession} joins the party!')
         member.party = self
         self.members.append(member)
         if member.hero:
             self.hero = member
 
-    #  inventory and trading
+    def add_member_with_print(self, member):
+        print(f'{member.name}, the {member.profession} joins the party!')
+        self.add_member(member)
 
+    #  inventory and trading
     def inventory_menu(self):
         self.display_inventory()
         x = select_from_list(['Inventory', 'Character Inventory', 'Exit'], '', True, False)
@@ -251,12 +253,11 @@ class Party:
             self.inventory.append(old_item)
         char.equip_slots[slot] = item
         if item in self.inventory:
-
             self.inventory.remove(item)
 
         # char.calculate_stats_with_equipment()
 
-    def change_gold(self, gold_amount):
+    def set_gold(self, gold_amount):
         #  check if person has enough gold might be better in merchant class
         if self.gold + gold_amount < 0:
             print('Not enough gold!')
@@ -272,7 +273,7 @@ class Party:
         question = f'Confirm selling \'{item_to_sell}\' for {item_to_sell.value} gold'
         you_sure = select_from_list(['Yes', 'No'], question, True, True)
         if you_sure == 0:
-            self.change_gold(item_to_sell.value)
+            self.set_gold(item_to_sell.value)
             self.inventory.remove(item_to_sell)
         else:
             # TODO: Split all menus into callable functions

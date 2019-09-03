@@ -72,14 +72,14 @@ class Game:
             choice = select_from_list(['Yes', 'No'],
                                       'The traveler offers to join your party, what do you say?', False, True)
             if choice == 'Yes':
-                self.party.add_member(self.create_random_character)
+                self.party.add_member_with_print(self.create_random_character)
             elif choice == 'No':
                 print('You bid the traveler farewell and continue on your way.\n')
         elif event == 1:
             # Battle
             enemy_party = Party.generate(self)
             x = 0
-            for x in range(randrange(len(self.party.members) - 1, len(self.party.members) + 1)):
+            for x in range(randrange(max(1, len(self.party.members) - 1), len(self.party.members) + 1)):
                 enemy_party.add_member(
                     NPC.generate_random(randint(self.party.hero.level - 1, self.party.hero.level)))
                 x += 1
@@ -88,7 +88,7 @@ class Game:
             # Battle
             enemy_party = Party.generate(self)
             x = 0
-            for x in range(randrange(len(self.party.members) - 1, len(self.party.members) + 1)):
+            for x in range(randrange(max(1, len(self.party.members) - 1), len(self.party.members) + 1)):
                 enemy_party.add_member(
                     NPC.generate_random(randint(self.party.hero.level - 1, self.party.hero.level)))
                 x += 1
@@ -107,7 +107,7 @@ class Game:
         else:
             print('\nA tree falls on the party!')
             for member in self.party.members:
-                member.take_dmg(20)
+                member.set_hp(-20)
 
     def inventory(self):
         self.party.inventory_menu()
@@ -117,8 +117,10 @@ class Game:
                                       f'What would you like to do:\n', False, True)
         if camp_input == 'Rest':
             for member in self.party.members:
-                member.set_hp(member.max_hp)
-                member.set_mana(member.max_mana)
+                while member.hp < member.max_hp:
+                    member.set_hp(member.max_hp)
+                while member.mana < member.max_mana:
+                    member.set_mana(member.max_mana)
         elif camp_input == 'Inventory':
             self.party.inventory_menu()
         elif camp_input == 'Craft':
