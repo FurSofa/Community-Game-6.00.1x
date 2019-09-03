@@ -196,7 +196,7 @@ def run_attack(attacker, target_party, target_num=1, primary=True, primary_perce
 
             verb = 'healed' if dmg_received < 0 else 'hit'
             crit_str = ' with a crit!' if is_crit else '.'
-            print(f'{attacker.name} {verb} {target.name} for {abs(dmg_dealt)} pts{crit_str} {dmg_received} stuck.')
+            print(f'{attacker.name} {verb} {target.name} for {abs(dmg_dealt)} pts{crit_str} {abs(dmg_received)} stuck.')
         members_list.remove(target)
         target_num -= 1
     return dmg_combined
@@ -353,6 +353,9 @@ def clock_tick_battle(party_1, party_2):
                 both_parties.remove(member.party)
                 enemy_party = both_parties[0]
                 action_taken = single_unit_turn(member, enemy_party)
+
+                member.set_mana(+member.mana_regen)
+
                 if action_taken == 'attack':
                     member.tracked_values['c'] = 0
                     member.tracked_values['ct'] = 1000

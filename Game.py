@@ -92,7 +92,7 @@ class Game:
                 enemy_party.add_member(
                     NPC.generate_random(randint(self.party.hero.level - 1, self.party.hero.level)))
                 x += 1
-            alternating_turn_battle(self.party, enemy_party)
+            clock_tick_battle(self.party, enemy_party)
         elif event == 3:
             p1 = create_random_item(2)
             self.party.display_single_item_card(p1)
@@ -117,7 +117,8 @@ class Game:
                                       f'What would you like to do:\n', False, True)
         if camp_input == 'Rest':
             for member in self.party.members:
-                member.heal(member.max_hp)
+                member.set_hp(member.max_hp)
+                member.set_mana(member.max_mana)
         elif camp_input == 'Inventory':
             self.party.inventory_menu()
         elif camp_input == 'Craft':
