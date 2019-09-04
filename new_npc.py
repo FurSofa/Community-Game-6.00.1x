@@ -104,21 +104,23 @@ class NPC:
                             'Necklace': None,
                             }
 
+        # self.tracked_values = 'test'
+        self.tracked_values = {
+            'ct': 1000,
+            'c': 0, 'status_effects': [],
+            'hp': 1,
+            'mana': 1
+        }
+
         level_up_counter = 1
         while level_up_counter < level:
             self.level_up()
             level_up_counter += 1
-
         # self.calculate_stats_with_equipment()
 
-        self.tracked_values = {
-                                'ct': 1000,  # when c reaches this, unit gets a turn
-                                'c': 0,  # holds current charge value - +speed each clock tick in battle
-                                'status_effects': [],
-
-                                'hp': self.max_hp,
-                                'mana': self.max_mana,
-                            }
+        # TODO: why is this? fix mana and hp init
+        self.tracked_values['hp'] = self.max_hp
+        self.tracked_values['mana'] = self.max_mana
 
     # def combine_base_stats_with_equipment(self):
     #     # base_stats = {
@@ -139,13 +141,28 @@ class NPC:
             conversion_ratios = json.load(f)['conversion_ratios']
         return conversion_ratios
 
-    def get_stat_from_equipment(self, stat, base_stat=True ):
+    def get_stat_from_equipment(self, stat, base_stat=True):
         gear = self.get_equipped_items()
         # gear = [value for value in self.equip_slots.values() if value]
         if base_stat:
-            return sum([item.base_stats.get(stat, 0) for item in gear])
+            stat_key = 'base_stats'
         else:
-            return sum([item.stats.get(stat, 0) for item in gear])
+            stat_key = 'stats'
+        return sum([item.__getattribute__(stat_key).get(stat, 0) for item in gear])
+
+    # base_stat_list = ['vit', 'dex', 'str', 'int', 'agility', 'toughness']
+    def get_status_effects(self):
+        return self.tracked_values['status_effects']
+
+    def get_stat_from_status_effect(self, stat, base_stat=True):
+        items = self.get_status_effects()
+        flat_stats = sum([item.get('flat_'+stat, 0) for item in items])
+        print('flat', flat_stats)
+        pct_stats = sum([item.get('pct_'+stat, 0) for item in items])
+        print('pct', pct_stats)
+        all_flat = sum([self.__getattribute__('full_' + stat), flat_stats])
+        print('all', all_flat)
+        return all_flat + (all_flat * (pct_stats / 100))
 
     # full_ values are for display only
     @property
@@ -180,27 +197,27 @@ class NPC:
 
     @property
     def vit(self):
-        return self.full_vit
+        return self.get_stat_from_status_effect('vit', base_stat=True)
 
     @property
     def dex(self):
-        return self.full_dex
+        return self.get_stat_from_status_effect('dex', base_stat=True)
 
     @property
     def str(self):
-        return self.full_str
+        return self.get_stat_from_status_effect('str', base_stat=True)
 
     @property
     def int(self):
-        return self.full_int
+        return self.get_stat_from_status_effect('int', base_stat=True)
 
     @property
     def agility(self):
-        return self.full_agility
+        return self.get_stat_from_status_effect('agility', base_stat=True)
 
     @property
     def toughness(self):
-        return self.full_toughness
+        return self.get_stat_from_status_effect('toughness', base_stat=True)
 
 
 # deriving stats
@@ -314,47 +331,47 @@ class NPC:
     #  TODO: add modifiers for status effects here
     @property
     def speed(self):
-        return self.full_speed
+        return self.get_stat_from_status_effect('speed', base_stat=False)
 
     @property
     def dodge(self):
-        return self.full_dodge
+        return self.get_stat_from_status_effect('dodge', base_stat=False)
 
     @property
     def max_hp(self):
-        return self.full_max_hp
+        return self.get_stat_from_status_effect('max_hp', base_stat=False)
 
     @property
     def crit_chance(self):
-        return self.full_crit_chance
+        return self.get_stat_from_status_effect('crit_chance', base_stat=False)
 
     @property
     def crit_dmg(self):
-        return self.full_crit_dmg
+        return self.get_stat_from_status_effect('crit_dmg', base_stat=False)
 
     @property
     def max_mana(self):
-        return self.full_max_mana
+        return self.get_stat_from_status_effect('max_mana', base_stat=False)
 
     @property
     def mana_regen(self):
-        return self.full_mana_regen
+        return self.get_stat_from_status_effect('mana_regen', base_stat=False)
 
     @property
     def armor(self):
-        return self.full_armor
+        return self.get_stat_from_status_effect('armor', base_stat=False)
 
     @property
     def wpn_dmg(self):
-        return self.full_wpn_dmg
+        return self.get_stat_from_status_effect('wpn_dmg', base_stat=False)
 
     @property
     def elemental_resistance(self):
-        return self.full_elemental_resistance
+        return self.get_stat_from_status_effect('elemental_resistance', base_stat=False)
 
     @property
     def magic_resistance(self):
-        return self.full_magic_resistance
+        return self.get_stat_from_status_effect('magic_resistance', base_stat=False)
 
     @property
     def hp(self):
