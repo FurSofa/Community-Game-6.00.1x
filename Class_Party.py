@@ -27,6 +27,26 @@ class Party:
     def __del__(cls):
         del cls
 
+    def serialize(self):
+        dummy = self.__dict__.copy()
+        dummy['members'] = [m.serialize() for m in dummy['members']]
+        dummy['dead_members'] = [m.serialize() for m in dummy['dead_members']]
+        dummy['equipment'] = [i.serialize() for i in dummy['equipment']]
+        dummy['inventory'] = [i.serialize() for i in dummy['inventory']]
+        dummy['hero'] = self.hero.serialize()
+        dummy['game'] = None
+        return dummy
+
+    @classmethod
+    def deserialize(cls, save_data):
+        dummy = cls.generate(None)
+        dummy.__dict__ = save_data.copy()
+        dummy.members = [NPC.deserialize(m) for m in dummy.members]
+        dummy.dead_members = [NPC.deserialize(m) for m in dummy.dead_members]
+        for m in dummy.members + dummy.dead_members:
+            m.party = dummy
+        return dummy
+
     def alive(self):
         """ Checks if anyone is alive
         :returns True if any party member is alive

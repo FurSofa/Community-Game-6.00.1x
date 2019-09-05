@@ -135,9 +135,10 @@ def get_target(attacker, primary, forced_primary_target,
 def run_attack(attacker, target_party, target_num=1, primary=True, primary_percent=100,
                rnd_target=True, forced_primary_target=None, splash_dmg=0,
                elemental='physical', vamp=0, can_crit=True, dmg_base='str_based',
-               wpn_dmg_perc=100, c_hp_perc_dmg=0, max_hp_perc_dmg=0, can_dodge=True):
+               wpn_dmg_perc=100, c_hp_perc_dmg=0, max_hp_perc_dmg=0, can_dodge=True, status_effect=None, p=True):
     """
 
+    :param status_effect: status effects applied to the target on hit
     :param can_dodge:  bool:
     :param attacker: npc or subclass
     :param target_party: party
@@ -180,6 +181,9 @@ def run_attack(attacker, target_party, target_num=1, primary=True, primary_perce
         else:
             dmg_received = defense_calc(dmg_dealt, target, elemental,)
             target.set_hp(-dmg_received)
+            if target.is_alive and status_effect:
+                status_effect['caster'] = attacker  # TODO: this seems a bit dirty
+                target.add_status_effect(status_effect)
 
             if not vamp == 0:
                 run_attack(attacker, attacker.party, 1, forced_primary_target=attacker,
@@ -187,10 +191,10 @@ def run_attack(attacker, target_party, target_num=1, primary=True, primary_perce
                            can_dodge=False)
 
             dmg_combined += dmg_received
-
-            verb = 'healed' if dmg_received < 0 else 'hit'
-            crit_str = ' with a crit!' if is_crit else '.'
-            print(f'{attacker.name} {verb} {target.name} for {abs(dmg_dealt)} pts{crit_str} {abs(dmg_received)} stuck.')
+            if p:
+                verb = 'healed' if dmg_received < 0 else 'hit'
+                crit_str = ' with a crit!' if is_crit else '.'
+                print(f'{attacker.name} {verb} {target.name} for {abs(dmg_dealt)} pts{crit_str} {abs(dmg_received)} stuck.')
         members_list.remove(target)
         target_num -= 1
     return dmg_combined
@@ -328,6 +332,16 @@ def tick_cool_downs(unit):
             spell['cd_timer'] -= 1
 
 
+def tick_status_effects(unit):
+    for se in unit.get_status_effects():
+        attack = se.get('attack_setup', None)
+        if attack:
+            run_attack(attacker=se['caster'], target_party=unit.party, forced_primary_target=unit, **attack)
+        se['ticks'] -= 1
+        if se['ticks'] < 1:
+            unit.remove_status_effect(se)
+
+
 def clock_tick_battle(party_1, party_2):
     parties = [party_1, party_2]
     print('A Battle has started!')
@@ -361,6 +375,7 @@ def clock_tick_battle(party_1, party_2):
                 if not enemy_party.has_units_left:
                     break
                 tick_cool_downs(member)
+                tick_status_effects(member)
 
     if party_1.has_units_left:
         print('Party 1 has won the battle!')

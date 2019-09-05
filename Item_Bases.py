@@ -81,11 +81,22 @@ class Equipment:
                    max_hp, defense, att_dmg_min, att_dmg_max, damage,
                    crit_chance, crit_multiplier)
 
+    def serialize(self):
+        return self.__dict__.copy()
+
+    @classmethod
+    def deserialize(cls, save_data):
+        dummy = cls.generate()
+        dummy.__dict__ = save_data.copy()
+        return dummy
+
+
     def __repr__(self):
-        _max_left = max(len(k) for k in self.__dict__.keys()) + 10
-        return '\n'.join(
-            [f"{k.title()}: {str(v).rjust(_max_left - len(k), ' ')}"
-             for k, v in self.__dict__.items()])
+        return f'{self.quality} {self.type}: {self.equipable_slot}'
+        # _max_left = max(len(k) for k in self.__dict__.keys()) + 10
+        # return '\n'.join(
+        #     [f"{k.title()}: {str(v).rjust(_max_left - len(k), ' ')}"
+        #      for k, v in self.__dict__.items()])
 
     def show_stats(self):
         name = f'{self.quality} {self.type}'

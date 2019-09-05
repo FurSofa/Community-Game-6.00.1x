@@ -1,19 +1,23 @@
 # Game Class
+import json
+import os
+
 from Class_Party import *
 from random import *
 from Class_Hero import *
 from helper_functions import *
 from battle import *
 
+project_path = os.getcwd()
+save_file_extention = '.json'
+save_folder = 'saves'
+
 
 class Game:
     def __init__(self):
         self.party = Party.generate(self)
-        self.Mode = select_from_list(['Normal', 'AutoCombat'],
-                                     'What mode would you like? ** Recommended: Normal **', False, True)
-        self.difficulty = select_from_list(['Easy', 'Medium', 'Hard'], 'Choose your difficulty:')
-        print(f'You selected: {self.difficulty}!')
-        # attacker.party.game = attacker
+        self.Mode = ''
+        self.difficulty = ''
 
     @staticmethod
     def create_character(name='Jeb', profession='Astronaut', level=1):
@@ -113,7 +117,7 @@ class Game:
         self.party.inventory_menu()
 
     def camp(self):
-        camp_input = select_from_list(['Exit', 'Rest', 'Inventory', 'Craft', 'Continue Adventuring'],
+        camp_input = select_from_list(['Inventory', 'Rest', 'Craft', 'Continue Adventuring', 'Save', 'Title Screen', 'Exit'],
                                       f'What would you like to do:\n', False, True)
         if camp_input == 'Rest':
             for member in self.party.members:
@@ -128,6 +132,14 @@ class Game:
             self.camp()
         elif camp_input == 'Exit':
             print('You Head back out into the wilds..')
+        elif camp_input == 'Save':
+            self.save()
+        elif camp_input == 'Title Screen':
+            restart = select_from_list(['Yes', 'No'], q='All unsaved progress will be lost. Are you sure?', horizontal=True)
+            if restart == 'Yes':
+                self.start()
+            else:
+                self.camp()
 
     def main_options(self):
         """
@@ -157,14 +169,75 @@ class Game:
         quit()
 
     def gameloop(self):
-        self.party.add_member(self.create_hero())
-        print(f'You are all set! Danger is that way, Good Luck, {self.party.member().name}!\n')
         while self.party.has_units_left:
             self.main_options()
 
         self.game_over()
 
+    def serialize(self):
+        dummy = self.__dict__.copy()
+        dummy['party'] = dummy['party'].serialize()
+        return dummy
+
+    @classmethod
+    def deserialize(cls, save_data):
+        dummy = cls()
+        dummy.__dict__ = save_data['game'].copy()
+        dummy.party = Party.deserialize(dummy.party.copy())
+        dummy.party.game = dummy
+        return dummy
+
+    def save(self):
+        file_name = self.choose_save_name()
+        file = os.path.join(project_path, 'saves', file_name)
+        with open(file, 'w') as f:
+            json.dump({'game': self.serialize()}, f, indent=4)
+
+    def choose_save_name(self):
+        file_name = input(f'Choose a name for the save file:') + save_file_extention
+        if file_name in os.listdir(save_folder):
+            overwrite = select_from_list(['Yes', 'No'], q='File already exists. Overwrite?')
+            if overwrite == 'No':
+                file_name = self.choose_save_name()
+        return file_name
+
+    @classmethod
+    def load(cls):
+        fn = os.path.join(project_path, save_folder, cls.choose_load_game())
+        with open(fn, 'r') as f:
+            load_data = json.load(f)
+        load_game = cls.deserialize(load_data)
+        return load_game
+
+    @classmethod
+    def choose_load_game(cls):
+        save_games = [f[:-len(save_file_extention)] for f in os.listdir(save_folder) if f[-len(save_file_extention):] == save_file_extention]
+        return select_from_list(save_games, q='Which game do you want to load?') + save_file_extention
+
+    @classmethod
+    def new_game(cls):
+        game = cls()
+        game.party = Party.generate(game)
+        game.Mode = select_from_list(['Normal', 'AutoCombat'],
+                                     'What mode would you like? ** Recommended: Normal **', False, True)
+        game.difficulty = select_from_list(['Easy', 'Medium', 'Hard'], 'Choose your difficulty:')
+        print(f'You selected: {game.difficulty}!')
+        game.party.add_member(game.create_hero())
+        print(f'You are all set! Danger is that way, Good Luck, {game.party.member().name}!\n')
+        return game
+
+    @classmethod
+    def start(cls):
+        options = ['New Game']
+        if len(os.listdir(save_folder)) > 0:
+            options.append('Load Game')
+        game_choice = select_from_list(options, horizontal=True)
+        if game_choice == 'New Game':
+            game = cls.new_game()
+        else:
+            game = cls.load()
+        game.gameloop()
+
 
 if __name__ == '__main__':
-    game = Game()
-    game.gameloop()
+    Game.start()

@@ -1,5 +1,6 @@
-import random
 import json
+import copy
+
 from x_Attack_Setups import *
 import x_Spell_Setups
 from Item_Bases import *
@@ -157,11 +158,11 @@ class NPC:
     def get_stat_from_status_effect(self, stat, base_stat=True):
         items = self.get_status_effects()
         flat_stats = sum([item.get('flat_'+stat, 0) for item in items])
-        print('flat', flat_stats)
+        # print('flat', flat_stats)
         pct_stats = sum([item.get('pct_'+stat, 0) for item in items])
-        print('pct', pct_stats)
+        # print('pct', pct_stats)
         all_flat = sum([self.__getattribute__('full_' + stat), flat_stats])
-        print('all', all_flat)
+        # print('all', all_flat)
         return all_flat + (all_flat * (pct_stats / 100))
 
     # full_ values are for display only
@@ -534,6 +535,16 @@ class NPC:
         if self.tracked_values['mana'] < 0:
             self.tracked_values['mana'] = 0
 
+    def add_status_effect(self, status_effect, p=True):
+        self.tracked_values['status_effects'].append(status_effect.copy())
+        if p:
+            print(f'{self.name} {status_effect["msg"]}')
+
+    def remove_status_effect(self, status_effect, p=True):
+        self.tracked_values['status_effects'].remove(status_effect)
+        if p:
+            print(f'{self.name} no longer {status_effect["msg"]}')
+
     def choose_target(self, target_party):
         """
         picks random target from target_party.members
@@ -680,3 +691,19 @@ class NPC:
             profession = 'Bard of Bass'
         return cls(name, profession, level)
 
+    def serialize(self):
+        dummy = copy.deepcopy(self.__dict__)
+        for key, item in dummy['equip_slots'].items():
+            if item:
+                dummy['equip_slots'][key] = item.serialize()
+        dummy['party'] = None
+        return dummy
+
+    @classmethod
+    def deserialize(cls, save_data):
+        dummy = cls.generate()
+        dummy.__dict__ = save_data.copy()
+        for key, item in dummy.equip_slots.items():
+            if item:
+                dummy.equip_slots[key] = Equipment.deserialize(item)
+        return dummy
