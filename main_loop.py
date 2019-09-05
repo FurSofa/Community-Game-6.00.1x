@@ -1,5 +1,5 @@
 from helper_functions import select_from_list
-from Class_NPC import NPC, Hero
+from old_Class_NPC import NPC, Hero
 from Class_Party import Party
 from battle import Battle
 from Class_Weapons import Sword

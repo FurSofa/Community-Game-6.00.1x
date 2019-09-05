@@ -206,10 +206,12 @@ def print_combat_status(party_1, party_2):
             stat_list = []
             stat_list.append(member.name)
             stat_list.append(member.profession)
-            stat_list.append(member.tracked_values['hp'])
-            stat_list.append(member.stats['max_hp'])
-            # stat_list.append(member.att_dmg_min)
-            # stat_list.append(member.att_dmg_max)
+            stat_list.append(member.hp)
+            stat_list.append(member.max_hp)
+            stat_list.append(member.wpn_dmg)
+            stat_list.append(member.attack_dmg)
+            stat_list.append(member.hp_bar(length=20))
+            stat_list.append(member.mana_bar(length=10))
         else:
             return None
         return stat_list
@@ -220,20 +222,40 @@ def print_combat_status(party_1, party_2):
             hero_name = f'{h[0]}, the {h[1]}'
             hero_hp = f'Hp: {h[2]:>2}/{h[3]:<2}'
             hero_dmg = f'Dmg: {h[4]:>2}/{h[5]:<2}'
-            print(f'+ {hero_name:^23} '
+
+            print(f'+ {hero_name:^20} '
                   f'{hero_hp:<8} '
-                  f'{hero_dmg:<13} ', end='\t')
+                  f'{hero_dmg:<12} ', end='\t')
         else:
             print(f"{' ':<50}", end="   ")
         if e:
             enemy_name = f'{e[0]}, the {e[1]}'
             enemy_hp = f'Hp: {e[2]:>2}/{e[3]:<2}'
             enemy_dmg = f'Dmg: {e[4]:>2}/{e[5]:<2}'
-            print(f'- {enemy_name:^23} '
+            print(f'- {enemy_name:^20} '
                   f'{enemy_hp:<8} '
-                  f'{enemy_dmg:<13} ', end='    \n')
+                  f'{enemy_dmg:<12} ', end='    \n')
         else:
             print()
+
+        if h:
+            hero_hp_bar = f'HP {h[6]}'
+            hero_mana_bar = f'Mana: {h[7]}'
+
+            print(f' {hero_hp_bar:^40}'
+                  f' {hero_mana_bar:<15}', end='\t')
+        else:
+            print(f"{' ':<50}", end="   ")
+
+        if e:
+            enemy_hp_bar = f'HP {e[6]}'
+            enemy_mana_bar = f'Mana: {e[7]}'
+
+            print(f' {enemy_hp_bar:^40}'
+                  f' {enemy_mana_bar:<15}', end='    \n')
+        else:
+            print()
+
 
     print('=' * 17, end=' ')
     print('Hero Party', end=' ')
@@ -356,6 +378,9 @@ def clock_tick_battle(party_1, party_2):
         # print(f'ticks: {c_ticks}')
         for member in all_members:
             if member.tracked_values['c'] > member.tracked_values['ct']:
+                if member.type == 'Hero':
+                    print(f'Clock Ticks: {c_ticks}')
+                    print_combat_status(party_1, party_2)
                 print(f'its {member.name}\'s turn!')
                 both_parties = parties.copy()
                 both_parties.remove(member.party)
@@ -378,9 +403,17 @@ def clock_tick_battle(party_1, party_2):
                 tick_status_effects(member)
 
     if party_1.has_units_left:
+        party_1.party_members_info()
         print('Party 1 has won the battle!')
+        input('Congrats! Press Enter!')
+        for member in party_1.members:
+            member.add_xp(party_2.party_worth_xp())
+        party_2.__del__()
     else:
         print('Party 2 has won the battle!')
+        input('Congrats! Press Enter!')
+        for member in party_2.members:
+            member.add_xp(party_1.party_worth_xp())
     return party_1.has_units_left
 
 

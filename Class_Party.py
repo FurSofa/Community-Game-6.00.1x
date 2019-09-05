@@ -1,6 +1,6 @@
 from helper_functions import *
 from Class_Hero import *
-from new_npc import *
+from Class_NPC import *
 from Item_Bases import *
 
 
@@ -67,7 +67,7 @@ class Party:
     def party_members_info(self):
         print('\n', '=' * 6, 'Party Members Info', '=' * 6)
         for member in self.members:
-            print(f'- {member.name}, {member.profession} Lv: {member.level} {member.tracked_values["hp"]}/{member.stats["max_hp"]}')
+            print(f'- {member.name}, {member.profession} Lv: {member.level} {member.hp}/{member.max_hp}')
 
     def print_members_info_cards(self):
         empty_card = [" " * 21] * 6
@@ -157,7 +157,7 @@ class Party:
     def party_worth_xp(self):
         return len(self.dead_members) * 5
 
-    def add_member(self, member):
+    def add_member(self, member, p=True):
         """
         adds a member to the party
         :param member: NPC or Hero class object
@@ -167,10 +167,8 @@ class Party:
         self.members.append(member)
         if member.hero:
             self.hero = member
-
-    def add_member_with_print(self, member):
-        print(f'{member.name}, the {member.profession} joins the party!')
-        self.add_member(member)
+        if p:
+            print(f'{member.name}, the {member.profession} joins the party!')
 
     #  inventory and trading
     def inventory_menu(self):

@@ -94,7 +94,7 @@ class Game:
             x = 0
             for x in range(randrange(max(1, len(self.party.members) - 1), len(self.party.members) + 1)):
                 enemy_party.add_member(
-                    NPC.generate_random(randint(self.party.hero.level - 1, self.party.hero.level)))
+                    NPC.generate_random(randint(max([1, self.party.hero.level - 1]), self.party.hero.level)))
                 x += 1
             clock_tick_battle(self.party, enemy_party)
         elif event == 3:
