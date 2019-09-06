@@ -45,7 +45,7 @@ class NPC:
         self.party = None  # Only one party at a time
         self.type = 'NPC'
 
-        self.level = level
+        self.level = 1
         self.xp = 0
         self.next_level = 20
         self.worth_xp = 5
@@ -116,7 +116,7 @@ class NPC:
 
         level_up_counter = 1
         while level_up_counter < level:
-            self.level_up()
+            self.level_up(p=False)
             level_up_counter += 1
         # self.calculate_stats_with_equipment()
 
@@ -501,11 +501,12 @@ class NPC:
             if stat[-6:] == '_p_lvl':
                 self.base_stats[stat[:-6]] += class_stats[class_key][stat]
 
-    def level_up(self):
+    def level_up(self, p=True):
         self.level += 1
         self.xp -= self.next_level
         self.next_level = round(4 * (self.level ** 3) / 5) + 20
-        print(f'{self.name} is now {self.level}!')
+        if p:
+            print(f'{self.name} is now {self.level}!')
         self.stat_growth()
         # self.calculate_stats_with_equipment()
         self.tracked_values['hp'] = self.max_hp

@@ -27,12 +27,11 @@ class Game:
          """
         return Hero.generate(name, profession, level)
 
-    @property
-    def create_random_character(self):
+    def create_random_character(self, cls=NPC):
         """
          Create new random character the same level as the party leader
          """
-        return NPC.generate_random(randint(1, self.party.hero.level))
+        return cls.generate_random(randint(1, self.party.hero.level))
 
     def create_hero(self):
 
@@ -56,14 +55,10 @@ class Game:
 
         while True:
             our_hero = roll_hero()
-            keep_hero = input('Do you want to keep this Hero? \n[Y]es or [R]eroll Hero\n').lower()
-            if keep_hero == '':
-                our_hero.hero = True
+            keep_hero = select_from_list(['Yes', 'No'], q='Do you want to keep this Hero?').lower()
 
-                return our_hero
-            elif keep_hero == 'y':
+            if keep_hero == 'yes':
                 our_hero.hero = True
-
                 return our_hero
             else:
                 continue
@@ -75,8 +70,9 @@ class Game:
             print(f'You found another traveler You talk for a while and have a great time!')
             choice = select_from_list(['Yes', 'No'],
                                       'The traveler offers to join your party, what do you say?', False, True)
+            traveler = self.create_random_character(cls=Hero)
             if choice == 'Yes':
-                self.party.add_member_with_print(self.create_random_character)
+                self.party.add_member(traveler)
             elif choice == 'No':
                 print('You bid the traveler farewell and continue on your way.\n')
         elif event == 1:
@@ -85,7 +81,7 @@ class Game:
             x = 0
             for x in range(randrange(max(1, len(self.party.members) - 1), len(self.party.members) + 1)):
                 enemy_party.add_member(
-                    NPC.generate_random(randint(self.party.hero.level - 1, self.party.hero.level)))
+                    NPC.generate_random(randint(self.party.hero.level - 1, self.party.hero.level)), p=False)
                 x += 1
             clock_tick_battle(self.party, enemy_party)
         elif event == 2:
@@ -94,7 +90,7 @@ class Game:
             x = 0
             for x in range(randrange(max(1, len(self.party.members) - 1), len(self.party.members) + 1)):
                 enemy_party.add_member(
-                    NPC.generate_random(randint(max([1, self.party.hero.level - 1]), self.party.hero.level)))
+                    NPC.generate_random(randint(max([1, self.party.hero.level - 1]), self.party.hero.level)), p=False)
                 x += 1
             clock_tick_battle(self.party, enemy_party)
         elif event == 3:

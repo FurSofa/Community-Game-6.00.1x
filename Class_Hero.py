@@ -43,7 +43,6 @@ if __name__ == '__main__':
     p.stat_growth()
     p.show_stats()
     w = Hero.generate('norbnorb', 'Warrior')
-    w.calculate_stats()
     print(w.att_dmg_min, end='-')
     print(w.att_dmg_max)
     print(w.calculate_dmg(), end=' ')

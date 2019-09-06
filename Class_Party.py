@@ -6,7 +6,6 @@ from Item_Bases import *
 
 class Party:
     def __init__(self, game):
-        self.hero = None
         self.members = []
         self.dead_members = []
         # inventory
@@ -33,7 +32,6 @@ class Party:
         dummy['dead_members'] = [m.serialize() for m in dummy['dead_members']]
         dummy['equipment'] = [i.serialize() for i in dummy['equipment']]
         dummy['inventory'] = [i.serialize() for i in dummy['inventory']]
-        dummy['hero'] = self.hero.serialize()
         dummy['game'] = None
         return dummy
 
@@ -41,7 +39,7 @@ class Party:
     def deserialize(cls, save_data):
         dummy = cls.generate(None)
         dummy.__dict__ = save_data.copy()
-        dummy.members = [NPC.deserialize(m) for m in dummy.members]
+        dummy.members = [NPC.deserialize(m) if m['type'] == 'NPC' else Hero.deserialize(m) for m in dummy.members]
         dummy.dead_members = [NPC.deserialize(m) for m in dummy.dead_members]
         for m in dummy.members + dummy.dead_members:
             m.party = dummy
@@ -62,7 +60,8 @@ class Party:
 
     def heal_everyone(self):
         for member in self.members:
-            member.set_hp(+member.stats['max_hp'])
+            while member.hp < member.max_hp:
+                member.set_hp(+member.max_hp)
 
     def party_members_info(self):
         print('\n', '=' * 6, 'Party Members Info', '=' * 6)
@@ -124,11 +123,12 @@ class Party:
         """
         return self.members[position]
 
+    @property
     def hero(self):
         """
         :return: returns the hero or None
         """
-        heroes = [member.name for member in self.members if member.is_alive and isinstance(member, Hero)]
+        heroes = [member for member in self.members if member.is_alive and isinstance(member, Hero)]
         if heroes:
             return heroes[0]
         else:
@@ -165,8 +165,6 @@ class Party:
         """
         member.party = self
         self.members.append(member)
-        if member.hero:
-            self.hero = member
         if p:
             print(f'{member.name}, the {member.profession} joins the party!')
 
