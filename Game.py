@@ -7,6 +7,7 @@ from random import *
 from Class_Hero import *
 from helper_functions import *
 from battle import *
+from data_src import get_save_games, data
 
 project_path = os.getcwd()
 save_file_extention = '.json'
@@ -46,7 +47,7 @@ class Game:
                 print('Ah, the quiet type huh? I\'ll just call you Steve.')
                 hero_name = 'Steve'
 
-            hero_profession = select_from_list(['Warrior', 'Archer', 'Mage', 'Blacksmith', 'Thief', 'Bard'],
+            hero_profession = select_from_list([k for k in data.hero_classes.keys()],
                                                q=f'Now, {hero_name}, What is your profession?:\n')
             print(f'You look like a great {hero_profession}, {hero_name}. I should have guessed.')
             our_hero = self.create_character(hero_name, hero_profession)
@@ -117,10 +118,8 @@ class Game:
                                       f'What would you like to do:\n', False, True)
         if camp_input == 'Rest':
             for member in self.party.members:
-                while member.hp < member.max_hp:
-                    member.set_hp(member.max_hp)
-                while member.mana < member.max_mana:
-                    member.set_mana(member.max_mana)
+                member.set_hp(full=True)
+                member.set_mana(full=True)
         elif camp_input == 'Inventory':
             self.party.inventory_menu()
         elif camp_input == 'Craft':
@@ -207,8 +206,7 @@ class Game:
 
     @classmethod
     def choose_load_game(cls):
-        save_games = [f[:-len(save_file_extention)] for f in os.listdir(save_folder) if f[-len(save_file_extention):] == save_file_extention]
-        return select_from_list(save_games, q='Which game do you want to load?') + save_file_extention
+        return select_from_list(get_save_games(), q='Which game do you want to load?') + save_file_extention
 
     @classmethod
     def new_game(cls):
@@ -224,8 +222,9 @@ class Game:
 
     @classmethod
     def start(cls):
+        saves_files = get_save_games()
         options = ['New Game']
-        if len(os.listdir(save_folder)) > 0:
+        if len(saves_files) > 0:
             options.append('Load Game')
         game_choice = select_from_list(options, horizontal=True)
         if game_choice == 'New Game':

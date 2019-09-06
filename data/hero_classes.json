@@ -1,0 +1,56 @@
+{
+    "dex_class": {
+        "per_lvl": {
+            "vit_p_lvl": 2,
+            "dex_p_lvl": 3,
+            "str_p_lvl": 1,
+            "int_p_lvl": 2,
+            "agility_p_lvl": 2,
+            "toughness_p_lvl": 2
+        },
+        "base": {
+            "vit_start": 4,
+            "dex_start": 9,
+            "str_start": 4,
+            "int_start": 2,
+            "agility_start": 6,
+            "toughness_start": 1
+        }
+    },
+    "str_class": {
+        "per_lvl": {
+            "vit_p_lvl": 3,
+            "dex_p_lvl": 1,
+            "str_p_lvl": 4,
+            "int_p_lvl": 1,
+            "agility_p_lvl": 1,
+            "toughness_p_lvl": 2
+        },
+        "base": {
+            "vit_start": 6,
+            "dex_start": 4,
+            "str_start": 8,
+            "int_start": 1,
+            "agility_start": 5,
+            "toughness_start": 2
+        }
+    },
+    "int_class": {
+        "per_lvl": {
+            "vit_p_lvl": 1,
+            "dex_p_lvl": 2,
+            "str_p_lvl": 1,
+            "int_p_lvl": 5,
+            "agility_p_lvl": 2,
+            "toughness_p_lvl": 1
+        },
+        "base": {
+            "vit_start": 4,
+            "dex_start": 4,
+            "str_start": 2,
+            "int_start": 10,
+            "agility_start": 5,
+            "toughness_start": 1
+        }
+    }
+}

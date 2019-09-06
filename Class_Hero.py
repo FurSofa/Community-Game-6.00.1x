@@ -3,13 +3,13 @@ from helper_functions import *
 
 
 class Hero(NPC):
-    def __init__(self, name, profession, level):
+    def __init__(self, name, profession, level, new_char=True):
         super().__init__(name, profession, level)
         self.type = 'Hero'
 
     @classmethod
-    def generate(cls, name='Mr. Lazy', profession='warrior', level=1):
-        return cls(name, profession, level)
+    def generate(cls, name='Mr. Lazy', profession='warrior', level=1, new_char=True):
+        return cls(name, profession, level, new_char)
 
     def __str__(self):
         return super().__str__()

@@ -60,8 +60,7 @@ class Party:
 
     def heal_everyone(self):
         for member in self.members:
-            while member.hp < member.max_hp:
-                member.set_hp(+member.max_hp)
+            member.set_hp(full=True)
 
     def party_members_info(self):
         print('\n', '=' * 6, 'Party Members Info', '=' * 6)

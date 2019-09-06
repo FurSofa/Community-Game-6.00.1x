@@ -1,11 +1,13 @@
 import json
 import copy
+import os
 
 from x_Attack_Setups import *
 import x_Spell_Setups
 from Item_Bases import *
 import battle
 from types import SimpleNamespace
+from data_src import data
 
 test_weapon = {
             'base_stats': {
@@ -35,7 +37,7 @@ test_weapon = {
 
 class NPC:
 
-    def __init__(self, name='Mr. Lazy', profession='warrior', level=1, weapon=test_weapon):
+    def __init__(self, name='Mr. Lazy', profession='str_class', level=1, new_char=True):
         """
         Create new person """
 
@@ -60,18 +62,10 @@ class NPC:
                         }
 
         # rewrite base stats for class_type from setup file
-        with open('char_creation_setup.json', 'r') as f:
-            class_stats = json.load(f)['cl_base_stats']['classes']
-            if self.profession.lower() == 'warrior':
-                class_key = 'str_class'
-            elif self.profession.lower() == 'mage':
-                class_key = 'int_class'
-            else:
-                class_key = 'dex_class'
-            for stat in class_stats[class_key].keys():
-                if stat[-6:] == '_start':
-                    self.base_stats[stat[:-6]] = class_stats[class_key][stat]
+        class_data = self.get_class_data()
 
+        for stat in class_data['base'].keys():
+            self.base_stats[stat[:-6]] = class_data['base'][stat]
         # self.stats = {
         #     # 'vit': self.base_stats.get('vit'),
         #     # 'dex': self.base_stats.get('dex'),
@@ -114,10 +108,11 @@ class NPC:
             'mana': 1
         }
 
-        level_up_counter = 1
-        while level_up_counter < level:
-            self.level_up(p=False)
-            level_up_counter += 1
+        if new_char:
+            level_up_counter = 1
+            while level_up_counter < level:
+                self.level_up(p=False)
+                level_up_counter += 1
         # self.calculate_stats_with_equipment()
 
         # TODO: why is this? fix mana and hp init
@@ -139,9 +134,19 @@ class NPC:
     #         self.stats[key] = self.base_stats[key] + sum([item.base_stats.get(key, 0) for item in gear])
 
     def get_conversion_ratios(self):
-        with open('char_creation_setup.json', 'r') as f:
-            conversion_ratios = json.load(f)['conversion_ratios']
-        return conversion_ratios
+        return data.conversion_ratios
+
+    def get_class_data(self):
+        # TODO: make get_class_data work for enemy stats and move tho to hero
+        if self.profession in data.hero_classes.keys():
+            class_key = self.profession
+        elif self.profession.lower() == 'warrior':
+            class_key = 'str_class'
+        elif self.profession.lower() == 'mage':
+            class_key = 'int_class'
+        else:
+            class_key = 'dex_class'
+        return data.hero_classes[class_key]
 
     def get_stat_from_equipment(self, stat, base_stat=True):
         gear = self.get_equipped_items()
@@ -488,18 +493,9 @@ class NPC:
     #     self.combine_derived_stats_with_equipment()
 
     def stat_growth(self):
-        with open('char_creation_setup.json', 'r') as f:
-            class_stats = json.load(f)['cl_base_stats']['classes']
-        if self.profession.lower() == 'warrior':
-            class_key = 'str_class'
-        elif self.profession.lower() == 'mage':
-            class_key = 'int_class'
-        else:
-            class_key = 'dex_class'
-
-        for stat in class_stats[class_key].keys():
-            if stat[-6:] == '_p_lvl':
-                self.base_stats[stat[:-6]] += class_stats[class_key][stat]
+        class_data = self.get_class_data()
+        for stat in class_data['per_lvl'].keys():
+            self.base_stats[stat[:-6]] += class_data['per_lvl'][stat]
 
     def level_up(self, p=True):
         self.level += 1
@@ -509,32 +505,40 @@ class NPC:
             print(f'{self.name} is now {self.level}!')
         self.stat_growth()
         # self.calculate_stats_with_equipment()
-        self.tracked_values['hp'] = self.max_hp
-        self.tracked_values['mana'] = self.max_mana
+        self.set_hp(full=True)
+        self.set_mana(full=True)
 
     @property
     def is_alive(self) -> bool:
         return self.tracked_values['hp'] > 0
 
-    def set_hp(self, amount):
+    def set_hp(self, amount=1, full=False):
         """
         set the hp safely
+        :param full: set True to fully heal char
         :param amount: int: to change / can be positive or negative
         :return: amount
         """
-        self.tracked_values['hp'] = min(self.tracked_values['hp'] + amount, self.max_hp)
-        if self.tracked_values['hp'] < 0:
-            self.tracked_values['hp'] = 0
+        if full:
+            self.tracked_values['hp'] = self.max_hp
+        else:
+            self.tracked_values['hp'] = min(self.tracked_values['hp'] + amount, self.max_hp)
+            if self.tracked_values['hp'] < 0:
+                self.tracked_values['hp'] = 0
 
-    def set_mana(self, amount):
+    def set_mana(self, amount=1, full=False):
         """
         set the mana safely
+        :param full: set True to fully heal char
         :param amount: int: to change / can be positive or negative
         :return: amount
         """
-        self.tracked_values['mana'] = min(self.tracked_values['mana'] + amount, self.max_mana)
-        if self.tracked_values['mana'] < 0:
-            self.tracked_values['mana'] = 0
+        if full:
+            self.tracked_values['mana'] = self.max_mana
+        else:
+            self.tracked_values['mana'] = min(self.tracked_values['mana'] + amount, self.max_mana)
+            if self.tracked_values['mana'] < 0:
+                self.tracked_values['mana'] = 0
 
     def add_status_effect(self, status_effect, p=True):
         self.tracked_values['status_effects'].append(status_effect.copy())
@@ -721,11 +725,11 @@ class NPC:
         return f'{self.name}, the {self.profession}'
 
     @classmethod
-    def generate(cls, name='Jeb', profession='Warrior', level=1):
+    def generate(cls, name='Jeb', profession='Warrior', level=1, new_char=True):
         """
         Create new character at level 1
         """
-        return cls(name, profession, level)
+        return cls(name, profession, level, new_char)
 
     @classmethod
     def generate_random(cls, level=1):
@@ -752,7 +756,7 @@ class NPC:
 
     @classmethod
     def deserialize(cls, save_data):
-        dummy = cls.generate()
+        dummy = cls.generate(new_char=False)
         dummy.__dict__ = save_data.copy()
         for key, item in dummy.equip_slots.items():
             if item:
