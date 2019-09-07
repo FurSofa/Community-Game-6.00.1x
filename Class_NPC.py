@@ -366,7 +366,7 @@ class NPC:
         self.xp -= self.next_level
         self.next_level = round(4 * (self.level ** 3) / 5) + 20
         if p:
-            print(f'{self.name} is now {self.level}!')
+            print(f'{self.name} is now level {self.level}!')
         self.stat_growth()
         # self.calculate_stats_with_equipment()
         self.set_hp(full=True)
@@ -608,7 +608,15 @@ class NPC:
 
         profession = random.choice([p for p in data.enemys[type].keys()])
         name = random.choice(data.enemys[type][profession]['names'])
-
+        # TODO: move level setting to game.create_char
+        flat_level = data.enemys[type][profession].get('flat_lvl', None)
+        if flat_level:
+            level = flat_level
+        else:
+            low_lvl = data.enemys[type][profession]['meta'].get('low_lvl', level)
+            high_lvl = data.enemys[type][profession]['meta'].get('high_lvl', level)
+            lvl_mod = random.randint(low_lvl, high_lvl)
+            level += lvl_mod
         # if name == 'Minky':
         #     profession = 'Miffy Muffin'
         # if name == 'Colin':

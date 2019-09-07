@@ -19,6 +19,11 @@ class Game:
         self.party = Party.generate(self)
         self.Mode = ''
         self.difficulty = ''
+        self.kill_count = {
+            'trash_mob': 0,
+            'elite_mob': 0,
+            'boss': 0,
+        }
 
     @staticmethod
     def create_character(name='Jeb', profession='Astronaut', level=1):
@@ -64,6 +69,10 @@ class Game:
             else:
                 continue
 
+    def count_kills(self, enemy_party):
+        for dead_enemy in enemy_party.dead_members:
+            self.kill_count[dead_enemy.type] += 1
+
     def adventure(self):
         event = randrange(5)
         print(event)
@@ -79,21 +88,19 @@ class Game:
         elif event == 1:
             # Battle
             enemy_party = Party.generate(self)
-            x = 0
             for x in range(randrange(max(1, len(self.party.members) - 1), len(self.party.members) + 1)):
                 enemy_party.add_member(
                     NPC.generate_random(randint(self.party.hero.level - 1, self.party.hero.level)), p=False)
-                x += 1
             clock_tick_battle(self.party, enemy_party)
+            self.count_kills(enemy_party)
         elif event == 2:
             # Battle
             enemy_party = Party.generate(self)
-            x = 0
             for x in range(randrange(max(1, len(self.party.members) - 1), len(self.party.members) + 1)):
                 enemy_party.add_member(
                     NPC.generate_random(randint(max([1, self.party.hero.level - 1]), self.party.hero.level)), p=False)
-                x += 1
             clock_tick_battle(self.party, enemy_party)
+            self.count_kills(enemy_party)
         elif event == 3:
             p1 = create_random_item(2)
             self.party.display_single_item_card(p1)
@@ -141,10 +148,14 @@ class Game:
         Contains Choices after new game and settings
         """
         print('*' * 100)
-        choice = select_from_list(['Adventure', 'Camp', 'Party Info'], f'\nWhat would you like to do\n ', True, True)
-        if choice == 0:
+        choice_list = ['Adventure', 'Camp']
+        if self.kill_count['trash_mob'] > 5:
+            choice_list.append('Boss Fight')
+        choice_list.append('Party Info')
+        choice = select_from_list(choice_list, f'\nWhat would you like to do\n ', index_pos=False, horizontal=True)
+        if choice == 'Adventure':
             self.adventure()
-        elif choice == 1:
+        elif choice == 'Camp':
             print('\n' * 20)
             print("""    
                  )
@@ -155,8 +166,15 @@ class Game:
             `--'.'`--' """'\n')
             print('  You build a beautiful camp fire.\n')
             self.camp()
-        elif choice == 2:
+        elif choice == 'Party Info':
             self.party.print_members_info_cards()
+        elif choice == 'Boss Fight':
+            enemy_party = Party.generate(self)
+            enemy_party.add_member(
+                NPC.generate_random(level=randint(self.party.hero.level - 1, self.party.hero.level), type='boss'),
+                p=False)
+            clock_tick_battle(self.party, enemy_party)
+            self.count_kills(enemy_party)
 
     def game_over(self):
         print('Game Over, Thanks for playing!')

@@ -6,6 +6,11 @@
         "Jim",
         "Frank"
     ],
+      "meta": {
+        "low_lvl": -1,
+        "high_lvl": 0,
+        "player_min_lvl": 1
+      },
       "per_lvl": {
         "vit_p_lvl": 3,
         "dex_p_lvl": 1,
@@ -29,6 +34,11 @@
         "xan",
         "xip"
     ],
+      "meta": {
+        "low_lvl": -1,
+        "high_lvl": 0,
+        "player_min_lvl": 1
+      },
       "per_lvl": {
         "vit_p_lvl": 2,
         "dex_p_lvl": 3,
@@ -54,6 +64,11 @@
         "xan",
         "xip"
         ],
+      "meta": {
+        "low_lvl": -1,
+        "high_lvl": 0,
+        "player_min_lvl": 1
+      },
       "per_lvl": {
         "vit_p_lvl": 2,
         "dex_p_lvl": 3,
@@ -72,13 +87,19 @@
       }
     }
   },
-  "bosses": {
-    "names": [
+  "boss": {
+    "boss1": {
+      "meta": {
+        "flat_lvl": 2,
+        "low_lvl": -1,
+        "high_lvl": 0,
+        "player_min_lvl": 1
+      },
+      "names": [
         "Minky",
         "Colin",
-        "Für"
+        "Skeletor"
         ],
-    "boss1": {
       "per_lvl": {
         "vit_p_lvl": 2,
         "dex_p_lvl": 3,

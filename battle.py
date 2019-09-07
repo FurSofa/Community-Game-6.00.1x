@@ -408,7 +408,6 @@ def clock_tick_battle(party_1, party_2):
         input('Congrats! Press Enter!')
         for member in party_1.members:
             member.add_xp(party_2.party_worth_xp())
-        party_2.__del__()
     else:
         print('Party 2 has won the battle!')
         input('Congrats! Press Enter!')
