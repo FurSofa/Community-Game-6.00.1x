@@ -86,7 +86,14 @@ class Equipment:
 
     @classmethod
     def deserialize(cls, save_data):
-        dummy = cls.generate()
+        cls_list = [Armor, Weapon, Jewelry]
+        if save_data['type'] == 'Armor':
+            gen_cls = Armor
+        elif save_data['type'] == 'Weapon':
+            gen_cls = Weapon
+        elif save_data['type'] == 'Jewelry':
+            gen_cls = Jewelry
+        dummy = gen_cls.generate()
         dummy.__dict__ = save_data.copy()
         return dummy
 
@@ -284,6 +291,7 @@ class Weapon(Equipment):
                    crit_chance, crit_multiplier,
                    attack_name, attack_setup)
 
+
     def show_stats(self):
         name = f'{self.quality} {self.type}'
         slot = f'{self.equipable_slot.title():>9}'
@@ -325,6 +333,7 @@ class Armor(Equipment):
                    max_durability, strength, dexterity, intelligence,
                    max_hp, defense, att_dmg_min, att_dmg_max, damage,
                    crit_chance, crit_multiplier)
+
 
     def show_stats(self):
         name = f'{self.quality} {self.type}'

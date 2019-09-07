@@ -1,5 +1,10 @@
 {
-    "dex_class": {
+    "Thief": {
+        "names": [
+        "Cat Woman",
+        "4 Finger Joe",
+        "Anon"
+        ],
         "per_lvl": {
             "vit_p_lvl": 2,
             "dex_p_lvl": 3,
@@ -17,7 +22,12 @@
             "toughness_start": 1
         }
     },
-    "str_class": {
+    "Warrior": {
+        "names": [
+        "Conan",
+        "He Man",
+        "Highlander"
+        ],
         "per_lvl": {
             "vit_p_lvl": 3,
             "dex_p_lvl": 1,
@@ -35,7 +45,12 @@
             "toughness_start": 2
         }
     },
-    "int_class": {
+    "Mage": {
+        "names": [
+        "Merlin",
+        "Pen",
+        "Teller"
+        ],
         "per_lvl": {
             "vit_p_lvl": 1,
             "dex_p_lvl": 2,

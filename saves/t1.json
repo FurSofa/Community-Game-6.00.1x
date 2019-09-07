@@ -4,158 +4,21 @@
             "members": [
                 {
                     "hero": true,
-                    "name": "Test",
-                    "profession": "dex_class",
-                    "party": null,
-                    "type": "Hero",
-                    "level": 1,
-                    "xp": 5,
-                    "next_level": 20,
-                    "worth_xp": 5,
-                    "base_stats": {
-                        "vit": 4,
-                        "dex": 9,
-                        "str": 4,
-                        "int": 2,
-                        "agility": 6,
-                        "toughness": 1
-                    },
-                    "spell_book": [
-                        {
-                            "name": "heal",
-                            "mana_cost": 5,
-                            "cool_down": 2,
-                            "attack_setup": {
-                                "target_num": 1,
-                                "primary": true,
-                                "primary_percent": 100,
-                                "rnd_target": true,
-                                "splash_dmg": 0,
-                                "elemental": "heal",
-                                "vamp": 0,
-                                "can_crit": true,
-                                "dmg_base": "int_based",
-                                "wpn_dmg_perc": 100,
-                                "max_hp_perc_dmg": 0,
-                                "c_hp_perc_dmg": 0,
-                                "can_dodge": false
-                            },
-                            "cd_timer": 0
-                        },
-                        {
-                            "name": "base_spell",
-                            "mana_cost": 5,
-                            "cool_down": 2,
-                            "attack_setup": {
-                                "target_num": 1,
-                                "primary": true,
-                                "primary_percent": 100,
-                                "rnd_target": true,
-                                "splash_dmg": 0,
-                                "elemental": "physical",
-                                "vamp": 0,
-                                "can_crit": true,
-                                "dmg_base": "int_based",
-                                "wpn_dmg_perc": 100,
-                                "max_hp_perc_dmg": 0,
-                                "c_hp_perc_dmg": 0,
-                                "can_dodge": true
-                            },
-                            "cd_timer": 0
-                        }
-                    ],
-                    "equip_slots": {
-                        "Main Hand": {
-                            "quality": "Common",
-                            "quality_val": 1,
-                            "value": 20,
-                            "max_durability": 10,
-                            "durability": 10,
-                            "enchants": [
-                                null,
-                                null
-                            ],
-                            "enchant_1": null,
-                            "enchant_2": null,
-                            "type": "Weapon",
-                            "equipable_slot": "Main Hand",
-                            "str": 0,
-                            "dex": 0,
-                            "int": 0,
-                            "max_hp": 0,
-                            "defense": 0,
-                            "att_dmg_min": 1,
-                            "att_dmg_max": 3,
-                            "damage": 0,
-                            "crit_chance": 0,
-                            "crit_multiplier": 0,
-                            "base_stats": {
-                                "vit": 0,
-                                "dex": 0,
-                                "str": 0,
-                                "int": 0,
-                                "agility": 1,
-                                "toughness": 1
-                            },
-                            "stats": {
-                                "max_hp": 0,
-                                "max_mana": 10,
-                                "armor": 0,
-                                "magic_resistance": 0,
-                                "speed": 0,
-                                "dodge": 0,
-                                "crit_chance": 0,
-                                "crit_dmg": 0,
-                                "elemental_resistance": 5,
-                                "wpn_dmg": 3
-                            },
-                            "attack_name": "single_attack_setup",
-                            "attack_setup": {
-                                "target_num": 1,
-                                "splash_dmg": 0,
-                                "primary": true,
-                                "primary_percent": 100,
-                                "rnd_target": true,
-                                "dmg_base": "dex_based",
-                                "can_crit": true,
-                                "can_dodge": true,
-                                "vamp": 0,
-                                "elemental": "physical"
-                            }
-                        },
-                        "Off Hand": null,
-                        "Head": null,
-                        "Chest": null,
-                        "Legs": null,
-                        "Feet": null,
-                        "Ring": null,
-                        "Necklace": null
-                    },
-                    "tracked_values": {
-                        "ct": 1000,
-                        "c": 0,
-                        "status_effects": [],
-                        "hp": 180,
-                        "mana": 35
-                    }
-                },
-                {
-                    "hero": false,
-                    "name": "Jackson",
+                    "name": "Norb",
                     "profession": "Thief",
                     "party": null,
                     "type": "Hero",
-                    "level": 1,
-                    "xp": 5,
-                    "next_level": 20,
+                    "level": 2,
+                    "xp": 15,
+                    "next_level": 26,
                     "worth_xp": 5,
                     "base_stats": {
-                        "vit": 4,
-                        "dex": 9,
-                        "str": 4,
-                        "int": 2,
-                        "agility": 6,
-                        "toughness": 1
+                        "vit": 6,
+                        "dex": 12,
+                        "str": 5,
+                        "int": 4,
+                        "agility": 8,
+                        "toughness": 3
                     },
                     "spell_book": [
                         {
@@ -260,8 +123,108 @@
                                 "elemental": "physical"
                             }
                         },
-                        "Off Hand": null,
-                        "Head": null,
+                        "Off Hand": {
+                            "quality": "Common",
+                            "quality_val": 1,
+                            "value": 20,
+                            "max_durability": 10,
+                            "durability": 10,
+                            "enchants": [
+                                null,
+                                null
+                            ],
+                            "enchant_1": null,
+                            "enchant_2": null,
+                            "type": "Weapon",
+                            "equipable_slot": "Off Hand",
+                            "str": 0,
+                            "dex": 0,
+                            "int": 0,
+                            "max_hp": 0,
+                            "defense": 0,
+                            "att_dmg_min": 1,
+                            "att_dmg_max": 4,
+                            "damage": 0,
+                            "crit_chance": 0,
+                            "crit_multiplier": 0,
+                            "base_stats": {
+                                "vit": 0,
+                                "dex": 0,
+                                "str": 0,
+                                "int": 0,
+                                "agility": 1,
+                                "toughness": 1
+                            },
+                            "stats": {
+                                "max_hp": 0,
+                                "max_mana": 10,
+                                "armor": 0,
+                                "magic_resistance": 0,
+                                "speed": 0,
+                                "dodge": 0,
+                                "crit_chance": 0,
+                                "crit_dmg": 0,
+                                "elemental_resistance": 5,
+                                "wpn_dmg": 4
+                            },
+                            "attack_name": "multi_attack_setup",
+                            "attack_setup": {
+                                "target_num": "all",
+                                "splash_dmg": 50,
+                                "primary": false,
+                                "primary_percent": 100,
+                                "rnd_target": true,
+                                "dmg_base": "str_based",
+                                "can_crit": true,
+                                "vamp": 0,
+                                "elemental": "physical"
+                            }
+                        },
+                        "Head": {
+                            "quality": "Legendary",
+                            "quality_val": 2.5,
+                            "value": 35,
+                            "max_durability": 10,
+                            "durability": 10,
+                            "enchants": [
+                                null,
+                                null
+                            ],
+                            "enchant_1": null,
+                            "enchant_2": null,
+                            "type": "Armor",
+                            "equipable_slot": "Head",
+                            "str": 0,
+                            "dex": 0,
+                            "int": 0,
+                            "max_hp": 0,
+                            "defense": 19,
+                            "att_dmg_min": 0,
+                            "att_dmg_max": 0,
+                            "damage": 0,
+                            "crit_chance": 0,
+                            "crit_multiplier": 0,
+                            "base_stats": {
+                                "vit": 0,
+                                "dex": 0,
+                                "str": 0,
+                                "int": 0,
+                                "agility": 1,
+                                "toughness": 1
+                            },
+                            "stats": {
+                                "max_hp": 0,
+                                "max_mana": 10,
+                                "armor": 19,
+                                "magic_resistance": 0,
+                                "speed": 0,
+                                "dodge": 0,
+                                "crit_chance": 0,
+                                "crit_dmg": 0,
+                                "elemental_resistance": 5,
+                                "wpn_dmg": 0
+                            }
+                        },
                         "Chest": null,
                         "Legs": null,
                         "Feet": null,
@@ -272,13 +235,71 @@
                         "ct": 1000,
                         "c": 0,
                         "status_effects": [],
-                        "hp": 180,
-                        "mana": 35
+                        "hp": 230,
+                        "mana": 50
                     }
                 }
             ],
             "dead_members": [],
-            "inventory": [],
+            "inventory": [
+                {
+                    "quality": "Common",
+                    "quality_val": 1,
+                    "value": 20,
+                    "max_durability": 10,
+                    "durability": 10,
+                    "enchants": [
+                        null,
+                        null
+                    ],
+                    "enchant_1": null,
+                    "enchant_2": null,
+                    "type": "Weapon",
+                    "equipable_slot": "Off Hand",
+                    "str": 0,
+                    "dex": 0,
+                    "int": 0,
+                    "max_hp": 0,
+                    "defense": 0,
+                    "att_dmg_min": 1,
+                    "att_dmg_max": 4,
+                    "damage": 0,
+                    "crit_chance": 0,
+                    "crit_multiplier": 0,
+                    "base_stats": {
+                        "vit": 0,
+                        "dex": 0,
+                        "str": 0,
+                        "int": 0,
+                        "agility": 1,
+                        "toughness": 1
+                    },
+                    "stats": {
+                        "max_hp": 0,
+                        "max_mana": 10,
+                        "armor": 0,
+                        "magic_resistance": 0,
+                        "speed": 0,
+                        "dodge": 0,
+                        "crit_chance": 0,
+                        "crit_dmg": 0,
+                        "elemental_resistance": 5,
+                        "wpn_dmg": 4
+                    },
+                    "attack_name": "single_attack_vamp",
+                    "attack_setup": {
+                        "target_num": 1,
+                        "splash_dmg": 0,
+                        "primary": true,
+                        "primary_percent": 100,
+                        "rnd_target": true,
+                        "dmg_base": "int_based",
+                        "can_crit": true,
+                        "vamp": 25,
+                        "elemental": "physical"
+                    }
+                }
+            ],
             "equipment": [],
             "gold": 0,
             "game": null

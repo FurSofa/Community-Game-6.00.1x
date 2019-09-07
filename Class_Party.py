@@ -39,8 +39,10 @@ class Party:
     def deserialize(cls, save_data):
         dummy = cls.generate(None)
         dummy.__dict__ = save_data.copy()
-        dummy.members = [NPC.deserialize(m) if m['type'] == 'NPC' else Hero.deserialize(m) for m in dummy.members]
-        dummy.dead_members = [NPC.deserialize(m) for m in dummy.dead_members]
+        dummy.members = [Hero.deserialize(m) if m['type'] == 'Hero' else NPC.deserialize(m) for m in dummy.members]
+        dummy.dead_members = [Hero.deserialize(m) if m['type'] == 'Hero' else NPC.deserialize(m) for m in dummy.dead_members]
+        dummy.equipment = [Equipment.deserialize(i) for i in dummy.equipment]
+        dummy.inventory = [Equipment.deserialize(i) for i in dummy.inventory]
         for m in dummy.members + dummy.dead_members:
             m.party = dummy
         return dummy

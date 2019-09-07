@@ -37,7 +37,7 @@ test_weapon = {
 
 class NPC:
 
-    def __init__(self, name='Mr. Lazy', profession='str_class', level=1, new_char=True):
+    def __init__(self, name='Mr. Lazy', profession='str_class', level=1, new_char=True, type='trash_mob'):
         """
         Create new person """
 
@@ -45,7 +45,7 @@ class NPC:
         self.name = name
         self.profession = profession
         self.party = None  # Only one party at a time
-        self.type = 'NPC'
+        self.type = type
 
         self.level = 1
         self.xp = 0
@@ -66,25 +66,6 @@ class NPC:
 
         for stat in class_data['base'].keys():
             self.base_stats[stat[:-6]] = class_data['base'][stat]
-        # self.stats = {
-        #     # 'vit': self.base_stats.get('vit'),
-        #     # 'dex': self.base_stats.get('dex'),
-        #     # 'str': self.base_stats.get('str'),
-        #     # 'int': self.base_stats.get('int'),
-        #     # 'agility': self.base_stats.get('agility'),
-        #     # 'toughness': self.base_stats.get('toughness'),
-        #
-        #     'max_hp': 0,
-        #     'max_mana': 0,
-        #     'armor': 0,
-        #     'magic_resistance': 0,
-        #     'speed': 0,
-        #     'dodge': 0,
-        #     'crit_chance': 0,
-        #     'crit_dmg': 0,
-        #     'elemental_resistance': 0,  # from items (and toughness?)
-        #     'wpn_dmg': 0
-        # }
 
         self.spell_book = [x_Spell_Setups.heal.copy(), x_Spell_Setups.base_spell.copy()]
 
@@ -119,34 +100,17 @@ class NPC:
         self.tracked_values['hp'] = self.max_hp
         self.tracked_values['mana'] = self.max_mana
 
-    # def combine_base_stats_with_equipment(self):
-    #     # base_stats = {
-    #     #     'str': self.base_stats['str'],
-    #     #     'dex': self.base_stats['dex'],
-    #     #     'int': self.base_stats['int'],
-    #     #     'vit': self.base_stats['vit'],
-    #     #     'agility': self.base_stats['agility'],
-    #     #     'toughness': self.base_stats['toughness'],
-    #     # }
-    #     #
-    #     gear = [value for value in self.equip_slots.values() if value]
-    #     for key in self.base_stats.keys():
-    #         self.stats[key] = self.base_stats[key] + sum([item.base_stats.get(key, 0) for item in gear])
-
     def get_conversion_ratios(self):
         return data.conversion_ratios
 
+    def get_data(self):
+        return data.enemys
+
     def get_class_data(self):
         # TODO: make get_class_data work for enemy stats and move tho to hero
-        if self.profession in data.hero_classes.keys():
-            class_key = self.profession
-        elif self.profession.lower() == 'warrior':
-            class_key = 'str_class'
-        elif self.profession.lower() == 'mage':
-            class_key = 'int_class'
-        else:
-            class_key = 'dex_class'
-        return data.hero_classes[class_key]
+        class_key = self.profession
+        mob_type = self.type
+        return self.get_data()[mob_type][class_key]
 
     def get_stat_from_equipment(self, stat, base_stat=True):
         gear = self.get_equipped_items()
@@ -229,8 +193,6 @@ class NPC:
 
 # deriving stats
     #  full values are for display only
-
-
     @property
     def full_speed(self):
         stat = 'speed'
@@ -393,104 +355,6 @@ class NPC:
         dummy_target = SimpleNamespace(hp=1, max_hp=1)
         # TODO: get dot notation for the dummy going
         return battle.generate_dmg(self, dummy_target, dmg_base=dmg_base)
-
-    # def derive_stats(self):
-    #     with open('char_creation_setup.json', 'r') as f:
-    #         conversion_ratios = json.load(f)['conversion_ratios']
-    #
-    #     #  armor
-    #     # armor_per_str = 2
-    #     # armor_per_lvl = 2
-    #     # armor_per_toughness = 4
-    #
-    #     armor_per_str = conversion_ratios['str_to_armor']['armor_per_str']
-    #     armor_per_lvl = conversion_ratios['str_to_armor']['armor_per_level']
-    #     armor_per_toughness = conversion_ratios['toughness_to_armor']['armor_per_toughness']
-    #
-    #     #  speed
-    #     # speed_per_dex = 0.03
-    #     # speed_per_agility = 0.2
-    #     # speed_factor = 0.1
-    #     # speed_start = 9
-    #
-    #     speed_per_dex = conversion_ratios['dex_to_speed']['speed_per_dex']
-    #     speed_per_agility = conversion_ratios['dex_to_speed']['speed_per_agility']
-    #     speed_factor = conversion_ratios['dex_to_speed']['speed_factor']
-    #     speed_start = conversion_ratios['dex_to_speed']['speed_start']
-    #
-    #     #  dodge
-    #     dodge_start = 3
-    #     dodge_per_speed = 0.3
-    #     dodge_per_dex = 0.2
-    #
-    #     dodge_start = conversion_ratios['dex_speed_to_dodge']['start']
-    #     dodge_per_speed = conversion_ratios['dex_speed_to_dodge']['dodge_per_speed']
-    #     dodge_per_dex = conversion_ratios['dex_speed_to_dodge']['dodge_per_dex']
-    #
-    #     #  crit
-    #     # crit_chance_start = 5
-    #     # crit_chan_per_level = 0.25
-    #     # crit_chan_per_dex = 0.25
-    #     #
-    #     # crit_dmg_start = 125
-    #     # crit_dmg_per_level = 1
-    #     # crit_dmg_per_dex = 3
-    #
-    #     crit_chance_start = conversion_ratios['dex_to_crit']['chance_start']
-    #     crit_chan_per_level = conversion_ratios['dex_to_crit']['crit_chan_per_level']
-    #     crit_chan_per_dex =conversion_ratios['dex_to_crit']['crit_chan_per_dex']
-    #
-    #     crit_dmg_start = conversion_ratios['dex_to_crit']['dmg_start']
-    #     crit_dmg_per_level = conversion_ratios['dex_to_crit']['crit_dmg_per_level']
-    #     crit_dmg_per_dex = conversion_ratios['dex_to_crit']['crit_dmg_per_dex']
-    #
-    #     #  hp
-    #     # hp_start = 800
-    #     # hp_per_vit = 40
-    #     # hp_per_lvl = 15
-    #
-    #     hp_start = conversion_ratios['vit_to_hp']['start']
-    #     hp_per_vit = conversion_ratios['vit_to_hp']['hp_per_vit']
-    #     hp_per_lvl = conversion_ratios['vit_to_hp']['hp_per_lvl']
-    #
-    #     # speed calculation
-    #     speed_from_dex = self.stats['dex'] * speed_per_dex
-    #     speed_from_agility = self.stats['agility'] * speed_per_agility
-    #     self.stats['speed'] = (speed_from_dex + speed_from_agility) * speed_factor + speed_start
-    #
-    #     #  dodge calculation
-    #     dodge_from_dex = self.stats['dex'] * dodge_per_dex
-    #     dodge_from_speed = self.stats['speed'] * dodge_per_speed
-    #     self.stats['dodge'] = dodge_from_dex + dodge_from_speed + dodge_start
-    #
-    #     #  armor calculation
-    #     armor_from_str = (self.stats['str'] * armor_per_str) + (self.level * armor_per_lvl)
-    #     armor_from_toughness = self.stats['toughness'] * armor_per_toughness
-    #     self.stats['armor'] = armor_from_str + armor_from_toughness
-    #
-    #     #  crit calculation
-    #     crit_chance_from_dex = self.stats['dex'] * crit_chan_per_dex
-    #     crit_chance_from_lvl = self.level * crit_chan_per_level
-    #     self.stats['crit_chance'] = crit_chance_from_dex + crit_chance_from_lvl + crit_chance_start
-    #
-    #     crit_dmg_from_dex = self.stats['dex'] * crit_dmg_per_dex
-    #     crit_dmg_from_level = self.level * crit_dmg_per_level
-    #     self.stats['crit_dmg'] = crit_dmg_from_dex + crit_dmg_from_level + crit_dmg_start
-    #
-    #     #  hp calculation
-    #     self.stats['max_hp'] = self.stats['vit'] * hp_per_vit + self.level * hp_per_lvl + hp_start
-    #
-    # def combine_derived_stats_with_equipment(self):
-    #     keys_to_combine = ['max_hp', 'max_mana', 'armor', 'magic_resistance', 'speed', 'dodge',
-    #                        'crit_chance', 'crit_dmg', 'elemental_resistance', 'wpn_dmg']
-    #     gear = [value for value in self.equip_slots.values() if value]
-    #     for key in keys_to_combine:
-    #         self.stats[key] = self.stats[key] + sum([item.stats.get(key, 0) for item in gear])
-    #
-    # def calculate_stats_with_equipment(self):
-    #     self.combine_base_stats_with_equipment()
-    #     self.derive_stats()
-    #     self.combine_derived_stats_with_equipment()
 
     def stat_growth(self):
         class_data = self.get_class_data()
@@ -718,6 +582,7 @@ class NPC:
         bar = BarGFX(self.mana, self.max_mana, length=length, f_color=f_color,
                      m_color=m_color, f_char=f_char, m_char=m_char)
         return bar.bar_str(no_color=no_color, border=border)
+
     def __repr__(self):
         return self.name
 
@@ -725,26 +590,30 @@ class NPC:
         return f'{self.name}, the {self.profession}'
 
     @classmethod
-    def generate(cls, name='Jeb', profession='Warrior', level=1, new_char=True):
+    def generate(cls, name='Jeb', profession='Warrior', level=1, new_char=True, type='trash_mob'):
         """
         Create new character at level 1
         """
-        return cls(name, profession, level, new_char)
+        return cls(name, profession, level, new_char, type)
 
     @classmethod
-    def generate_random(cls, level=1):
+    def generate_random(cls, level=1, type='trash_mob'):
         """
         Create new random character at level 1
         """
         level = level
-        name = random.choice(['Lamar', 'Colin', 'Ali', 'Jackson', 'Minky',
-                              'Leo', 'Phylis', 'Lindsay', 'Tongo', 'Paku', ])
-        profession = random.choice(['Warrior', 'Archer', 'Mage', 'Blacksmith', 'Thief', 'Bard'])
-        if name == 'Minky':
-            profession = 'Miffy Muffin'
-        if name == 'Colin':
-            profession = 'Bard of Bass'
-        return cls(name, profession, level)
+        # name = random.choice(['Lamar', 'Colin', 'Ali', 'Jackson', 'Minky',
+        #                       'Leo', 'Phylis', 'Lindsay', 'Tongo', 'Paku', ])
+        # profession = random.choice(['Warrior', 'Archer', 'Mage', 'Blacksmith', 'Thief', 'Bard'])
+
+        profession = random.choice([p for p in data.enemys[type].keys()])
+        name = random.choice(data.enemys[type][profession]['names'])
+
+        # if name == 'Minky':
+        #     profession = 'Miffy Muffin'
+        # if name == 'Colin':
+        #     profession = 'Bard of Bass'
+        return cls(name, profession, level, type=type)
 
     def serialize(self):
         dummy = copy.deepcopy(self.__dict__)

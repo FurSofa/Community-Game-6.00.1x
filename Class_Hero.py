@@ -3,13 +3,34 @@ from helper_functions import *
 
 
 class Hero(NPC):
-    def __init__(self, name, profession, level, new_char=True):
+    def __init__(self, name, profession, level, new_char=True, type='Hero'):
         super().__init__(name, profession, level)
+        _ = type
         self.type = 'Hero'
 
     @classmethod
-    def generate(cls, name='Mr. Lazy', profession='warrior', level=1, new_char=True):
-        return cls(name, profession, level, new_char)
+    def generate(cls, name='Mr. Lazy', profession='Warrior', level=1, new_char=True, type='Hero'):
+        return cls(name, profession, level, new_char, type=type)
+
+    @classmethod
+    def generate_random(cls, level=1, type='Hero'):
+        """
+        Create new random character at level 1
+        """
+        level = level
+        # name = random.choice(['Lamar', 'Colin', 'Ali', 'Jackson', 'Minky',
+        #                       'Leo', 'Phylis', 'Lindsay', 'Tongo', 'Paku', ])
+        # profession = random.choice(['Warrior', 'Archer', 'Mage', 'Blacksmith', 'Thief', 'Bard'])
+        _ = type
+        profession = random.choice([p for p in data.hero_classes.keys()])
+        name = random.choice(data.hero_classes[profession]['names'])
+
+        # if name == 'Minky':
+        #     profession = 'Miffy Muffin'
+        # if name == 'Colin':
+        #     profession = 'Bard of Bass'
+        return cls(name, profession, level, type='Hero')
+
 
     def __str__(self):
         return super().__str__()
@@ -36,6 +57,12 @@ class Hero(NPC):
         action = select_from_list(possible_actions, q='What do you want to do?')
         return action
 
+    def get_data(self):
+        return data.hero_classes
+
+    def get_class_data(self):
+        class_key = self.profession
+        return self.get_data()[class_key]
 
 # Testing Code!
 if __name__ == '__main__':
