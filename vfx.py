@@ -1,3 +1,4 @@
+from os import system, name
 
 class bcolors:
     HeadER = '\033[95m'
@@ -90,3 +91,12 @@ class BarGFX:
 #     def hp_bar_short(attacker):
 #         hp_bar = BarGFX(10, bcolors.OKGREEN, attacker.hp, attacker.maxhp)
 #         return hp_bar
+
+def clear_screen():
+    # for windows
+    if name == 'nt':
+        _ = system('cls')
+        # for mac and linux(here, os.name is 'posix')
+    else:
+        _ = system('clear')
+
