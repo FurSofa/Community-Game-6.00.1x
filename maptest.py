@@ -38,7 +38,7 @@ def draw_map(old_map, loc):
     return new_map
 
 
-def printmap(map):
+def print_map(map):
     for row in map:
         for cell in row:
             print(cell, end=' ')
@@ -52,7 +52,7 @@ def print_player_in_map(p_loc, base_map, events):
         active_map = draw_map(active_map, e)
     map_with_player = draw_map(active_map, p_loc)
     clear_screen()
-    printmap(map_with_player)
+    print_map(map_with_player)
     for e in events:
         if p_loc.x == e.x and p_loc.y == e.y:
             print(f'an event is triggered!')

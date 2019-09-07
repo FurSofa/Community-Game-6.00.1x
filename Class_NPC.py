@@ -61,7 +61,7 @@ class NPC:
                             'toughness': 1,
                         }
 
-        # rewrite base stats for class_type from setup file
+        # rewrite base stats for class_type from setup file TODO: move to generator
         class_data = self.get_class_data()
 
         for stat in class_data['base'].keys():
