@@ -5,6 +5,8 @@ from helper_functions import select_from_list
 from vfx import clear_screen
 
 
+rand_event_chance = 30
+
 class Map:
     def __init__(self, game, base_map, events, p_loc_tx=0, p_loc_ty=0, p_loc_wx=0, p_loc_wy=0):
         self.events = events
@@ -14,7 +16,7 @@ class Map:
         self.party_loc = {'pos': {
             'w': {'x': p_loc_wx, 'y': p_loc_wy,},
             't': {'x': p_loc_tx, 'y': p_loc_ty},
-        }, 'char': 'O'}
+        }, 'char': 'o'}
 
     @property
     def active_base_tile(self):
@@ -53,7 +55,8 @@ class Map:
         return new_map
 
     def print_map(self, active_map):
-        print(f'{self.party_loc["pos"]["w"]}')
+        coordinat_str = f'X: {self.party_loc["pos"]["w"]["x"]} / Y: {self.party_loc["pos"]["w"]["y"]}'
+        print(f'{coordinat_str:^18}')
         for row in active_map:
             for cell in row:
                 print(cell, end=' ')
@@ -69,11 +72,13 @@ class Map:
         for e in self.events:
             if self.party_loc['pos'] == e['pos']:
                 print(f'an event is triggered!')
+                return e
+        return None
 
     def move(self):
         direction = self.choose_move()
         if direction == 'Camp':
-            quit()
+            return direction
         move = self.build_move(direction)
         if self.eval_move(move):
             self.make_move(move)
@@ -88,27 +93,13 @@ class Map:
     def make_move(self, move):
         self.party_loc = self.sum_pos(self.party_loc, move)
 
-    def choose_move(self, scope='t'):
-        # build move option list
-        loc = self.party_loc
-        na_str = ' N/A'
+    def choose_move(self):
         option_list = ['Left', 'Down', 'Right', 'Camp', 'Up']
-        # if loc['pos'][scope]['y'] - 1 < 0:
-        #     option_list[4] += na_str
-        # if loc['pos'][scope]['y'] + 1 > self.max_y:
-        #     option_list[1] += na_str
-        # if loc['pos'][scope]['x'] - 1 < 0:
-        #     option_list[0] += na_str
-        # if loc['pos'][scope]['x'] + 1 > self.max_x:
-        #     option_list[2] += na_str
         direction = select_from_list(option_list, q='Move where?', horizontal=True)
-        # if direction[-len(na_str):] == na_str:
-        #     print('You can not move there!')
-        #     direction = self.choose_move()
         return direction
 
     def build_move(self, direction, scope='t', ):
-        move = {'pos': {'w': {'x': 0, 'y': 0}, 't': {'x': 0, 'y': 0},}, 'char': ''}
+        move = {'pos': {'w': {'x': 0, 'y': 0}, 't': {'x': 0, 'y': 0}}, 'char': ''}
         if direction == 'Up':
             move['pos'][scope]['y'] -= 1
             if scope == 'w':
@@ -149,38 +140,38 @@ class Map:
         except IndexError:
             return False
 
-            # new_w_loc = self.sum_pos(w_move, self.party_loc)
-            # try:
-            #     self.draw_map(self.get_map_tile(new_w_loc), new_w_loc)
-            #     print('world move success')
-            # except IndexError:
-            #     print('Move Impossible')
-
-
-
-
     def run_map(self):
         while True:
             self.print_player_in_map()
-            self.event_check()
             self.move()
+            event = self.event_check()
+            if event:
+                print(f'{event.get("description")}')
+                return event
+            else:
+                if random.randint(0, 100) < rand_event_chance:
+                    return 'random'
 
 
     @classmethod
-    def generate(cls, game, tile_width=10, tile_rows=10, event_num=10, world_w=2, world_r=2, party_loc_x=0, party_loc_y=0):
+    def generate(cls, game, tile_width=8, tile_rows=8, event_num=30, world_w=2, world_r=2, party_loc_x=0, party_loc_y=0):
         base_map = Map.generate_new_map(world_w, world_r, tile_width, tile_rows)
 
         events = [
-            {'pos': {
-                't': {
-                    'x': random.randint(0, tile_width - 1),
-                    'y': random.randint(0, tile_rows - 1)
+            {
+                'pos': {
+                    't': {
+                        'x': random.randint(0, tile_width - 1),
+                        'y': random.randint(0, tile_rows - 1)
+                    },
+                    'w': {
+                        'x': random.randint(0, world_w - 1),
+                        'y': random.randint(0, world_r - 1),
+                    }
                 },
-                'w': {
-                    'x': random.randint(0, world_w - 1),
-                    'y': random.randint(0, world_r - 1),
-                }
-            }, 'char': num} for num in range(event_num)
+                'char': 'x',
+                'description': f'Event Nr {num + 1}'
+            } for num in range(event_num)
         ]
 
         return cls(game=game, base_map=base_map, events=events, p_loc_tx=party_loc_x, p_loc_ty=party_loc_y)
@@ -190,6 +181,17 @@ class Map:
         base_map = [[[['.' for tc in range(tile_width)] for tr in range(tile_rows)]
                      for wx in range(world_width)] for wy in range(world_rows)]
         return base_map
+
+    def serialize(self):
+        dummy = self.__dict__.copy()
+        dummy['game'] = None
+        return dummy
+
+    @classmethod
+    def deserialize(cls, save_data):
+        dummy = cls.generate(None)
+        dummy.__dict__ = save_data.copy()
+        return dummy
 
 
 a = {'pos': {'w': {'x': 1, 'y': 1}, 't': {'x': 0, 'y': 0}}, 'char': '#'}

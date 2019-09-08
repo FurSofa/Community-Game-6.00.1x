@@ -8,6 +8,8 @@ from Class_Hero import *
 from helper_functions import *
 from battle import *
 from data_src import get_save_games, data
+from vfx import camp_fire
+from Class_Map import *
 
 project_path = os.getcwd()
 save_file_extention = '.json'
@@ -18,6 +20,7 @@ class Game:
     def __init__(self):
         self.party = Party.generate(self)
         self.Mode = ''
+        self.lvl_map = Map.generate(self)
         self.difficulty = ''
         self.kill_count = {
             'trash_mob': 0,
@@ -154,16 +157,20 @@ class Game:
         choice_list.append('Party Info')
         choice = select_from_list(choice_list, f'\nWhat would you like to do\n ', index_pos=False, horizontal=True)
         if choice == 'Adventure':
-            self.adventure()
+            event = self.lvl_map.run_map()
+            if event == 'random':
+                self.adventure()
+            elif event == 'Camp':
+                print('\n' * 20)
+                print(camp_fire + '\n')
+                print('  You build a beautiful camp fire.\n')
+                self.camp()
+            else:
+                print(f'This will trigger a specific event once it is implemented')
+                print(f'{event["description"]}')
         elif choice == 'Camp':
             print('\n' * 20)
-            print("""    
-                 )
-                (\033[1;33m
-               /`/\\
-              (% \033[1;31m%)\033[1;33m)\033[0;0m
-            .-'....`-.
-            `--'.'`--' """'\n')
+            print(camp_fire + '\n')
             print('  You build a beautiful camp fire.\n')
             self.camp()
         elif choice == 'Party Info':
@@ -190,6 +197,7 @@ class Game:
     def serialize(self):
         dummy = self.__dict__.copy()
         dummy['party'] = dummy['party'].serialize()
+        dummy['lvl_map'] = dummy['lvl_map'].serialize()
         return dummy
 
     @classmethod
@@ -198,6 +206,8 @@ class Game:
         dummy.__dict__ = save_data['game'].copy()
         dummy.party = Party.deserialize(dummy.party.copy())
         dummy.party.game = dummy
+        dummy.lvl_map = Map.deserialize(dummy.lvl_map.copy())
+        dummy.lvl_map.game = dummy
         return dummy
 
     def save(self):
