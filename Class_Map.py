@@ -10,18 +10,34 @@ class Map:
         self.events = events
         self.known_events = []
         self.base_map = base_map
-        self.active_map = ''
         self.game = game
         self.party_loc = {'pos': {
-            'w': {'wx': p_loc_wx, 'wy': p_loc_wy,},
-            't': {'tx': p_loc_tx, 'ty': p_loc_ty},
+            'w': {'x': p_loc_wx, 'y': p_loc_wy,},
+            't': {'x': p_loc_tx, 'y': p_loc_ty},
         }, 'char': 'O'}
 
     @property
-    def active_tile(self):
-        world_row = self.party_loc['pos']['w']['wy']
-        world_cell = self.party_loc['pos']['w']['wx']
+    def active_base_tile(self):
+        world_row = self.party_loc['pos']['w']['y']
+        world_cell = self.party_loc['pos']['w']['x']
         return self.base_map[world_row][world_cell]
+
+    @property
+    def active_tile(self):
+        return self.get_map_tile(self.party_loc['pos'])
+
+    def get_base_map_tile(self, pos):
+        w_loc = pos['w']
+        world_row = w_loc['y']
+        world_cell = w_loc['x']
+        return self.base_map[world_row][world_cell]
+
+    def get_map_tile(self, pos):
+        map_tile = copy.deepcopy(self.get_base_map_tile(pos))
+        for e in self.events:
+            if e['pos']['w'] == pos['w']:
+                map_tile = self.draw_map(map_tile, e)
+        return map_tile
 
     @property
     def max_y(self):
@@ -33,10 +49,11 @@ class Map:
 
     def draw_map(self, map_data, loc):
         new_map = copy.deepcopy(map_data)
-        new_map[loc['pos']['t']['ty']][loc['pos']['t']['tx']] = loc['char']
+        new_map[loc['pos']['t']['y']][loc['pos']['t']['x']] = loc['char']
         return new_map
 
     def print_map(self, active_map):
+        print(f'{self.party_loc["pos"]["w"]}')
         for row in active_map:
             for cell in row:
                 print(cell, end=' ')
@@ -44,52 +61,110 @@ class Map:
 
     def print_player_in_map(self):
         active_map = copy.deepcopy(self.active_tile)
-        for e in self.events:
-            if e['pos']['w'] == self.party_loc['pos']['w']:
-                active_map = self.draw_map(active_map, e)
         map_with_player = self.draw_map(active_map, self.party_loc)
         clear_screen()
         self.print_map(map_with_player)
+
+    def event_check(self):
         for e in self.events:
             if self.party_loc['pos'] == e['pos']:
                 print(f'an event is triggered!')
 
-    def choose_move(self):
+    def move(self):
+        direction = self.choose_move()
+        if direction == 'Camp':
+            quit()
+        move = self.build_move(direction)
+        if self.eval_move(move):
+            self.make_move(move)
+        else:
+            move = self.build_move(direction, scope='w')
+            if self.eval_move(move):
+                self.make_move(move)
+            else:
+                print('Move impossible')
+                self.move()
+
+    def make_move(self, move):
+        self.party_loc = self.sum_pos(self.party_loc, move)
+
+    def choose_move(self, scope='t'):
         # build move option list
         loc = self.party_loc
         na_str = ' N/A'
         option_list = ['Left', 'Down', 'Right', 'Camp', 'Up']
-        if loc['pos']['t']['ty'] - 1 < 0:
-            option_list[4] += na_str
-        if loc['pos']['t']['ty'] + 1 > self.max_y:
-            option_list[1] += na_str
-        if loc['pos']['t']['tx'] - 1 < 0:
-            option_list[0] += na_str
-        if loc['pos']['t']['tx'] + 1 > self.max_x:
-            option_list[2] += na_str
-        direction = select_from_list(option_list, q='Move wehre?', horizontal=True)
-        if direction[-len(na_str):] == na_str:
-            direction = self.choose_move()
+        # if loc['pos'][scope]['y'] - 1 < 0:
+        #     option_list[4] += na_str
+        # if loc['pos'][scope]['y'] + 1 > self.max_y:
+        #     option_list[1] += na_str
+        # if loc['pos'][scope]['x'] - 1 < 0:
+        #     option_list[0] += na_str
+        # if loc['pos'][scope]['x'] + 1 > self.max_x:
+        #     option_list[2] += na_str
+        direction = select_from_list(option_list, q='Move where?', horizontal=True)
+        # if direction[-len(na_str):] == na_str:
+        #     print('You can not move there!')
+        #     direction = self.choose_move()
         return direction
 
-    def move(self):
-        direction = self.choose_move()
+    def build_move(self, direction, scope='t', ):
+        move = {'pos': {'w': {'x': 0, 'y': 0}, 't': {'x': 0, 'y': 0},}, 'char': ''}
         if direction == 'Up':
-            self.party_loc['pos']['t']['ty'] -= 1
+            move['pos'][scope]['y'] -= 1
+            if scope == 'w':
+                move['pos']['t']['y'] = self.max_y
         elif direction == 'Down':
-            self.party_loc['pos']['t']['ty'] += 1
+            move['pos'][scope]['y'] += 1
+            if scope == 'w':
+                move['pos']['t']['y'] = -self.max_y
         elif direction == 'Left':
-            self.party_loc['pos']['t']['tx'] -= 1
+            move['pos'][scope]['x'] -= 1
+            if scope == 'w':
+                move['pos']['t']['x'] = self.max_x
         elif direction == 'Right':
-            self.party_loc['pos']['t']['tx'] += 1
-        elif direction == 'Camp':
-            quit()
-            # self.game.camp()
+            move['pos'][scope]['x'] += 1
+            if scope == 'w':
+                move['pos']['t']['x'] = -self.max_x
+        return move
+
+    def sum_pos(self, pos1, pos2):
+        new_pos = {'pos': {}}
+        for scope in pos1['pos'].keys():
+            new_pos['pos'][scope] = {}
+            for loc in pos1['pos'].get(scope).keys():
+                new_pos['pos'][scope][loc] = pos1['pos'][scope].get(loc) + pos2['pos'][scope].get(loc)
+        new_pos['char'] = pos1['char']
+        return new_pos
+
+    def eval_move(self, move):
+        new_loc = self.sum_pos(self.party_loc, move)
+        w_pos = [n for n in new_loc['pos']['w'].values()]
+        t_pow = [t for t in new_loc['pos']['t'].values()]
+        if any([v < 0 for v in w_pos + t_pow]):
+            return False
+        try:
+            self.draw_map(self.get_map_tile(new_loc['pos']), new_loc)
+            print('move success')
+            return True
+        except IndexError:
+            return False
+
+            # new_w_loc = self.sum_pos(w_move, self.party_loc)
+            # try:
+            #     self.draw_map(self.get_map_tile(new_w_loc), new_w_loc)
+            #     print('world move success')
+            # except IndexError:
+            #     print('Move Impossible')
+
+
+
 
     def run_map(self):
         while True:
             self.print_player_in_map()
+            self.event_check()
             self.move()
+
 
     @classmethod
     def generate(cls, game, tile_width=10, tile_rows=10, event_num=10, world_w=2, world_r=2, party_loc_x=0, party_loc_y=0):
@@ -98,12 +173,12 @@ class Map:
         events = [
             {'pos': {
                 't': {
-                    'tx': random.randint(0, tile_width - 1),
-                    'ty': random.randint(0, tile_rows - 1)
+                    'x': random.randint(0, tile_width - 1),
+                    'y': random.randint(0, tile_rows - 1)
                 },
                 'w': {
-                    'wx': random.randint(0, world_w - 1),
-                    'wy': random.randint(0, world_r - 1),
+                    'x': random.randint(0, world_w - 1),
+                    'y': random.randint(0, world_r - 1),
                 }
             }, 'char': num} for num in range(event_num)
         ]
@@ -117,6 +192,7 @@ class Map:
         return base_map
 
 
+a = {'pos': {'w': {'x': 1, 'y': 1}, 't': {'x': 0, 'y': 0}}, 'char': '#'}
 
 if __name__ == '__main__':
     m1 = Map.generate(None)
