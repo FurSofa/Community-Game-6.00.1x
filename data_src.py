@@ -24,12 +24,23 @@ def get_save_games():
 
 
 def get_data():
-    data = SimpleNamespace()
+    f_data = SimpleNamespace()
     for fn in os.listdir(data_path):
         if fn[-len(data_file_ext):] == data_file_ext:
             with open(os.path.join(data_path, fn), 'r') as f:
-                data.__setattr__(fn[:-len(data_file_ext)], json.load(f))
-    return data
+                f_data.__setattr__(fn[:-len(data_file_ext)], json.load(f))
+    return f_data
 
 
 data = get_data()
+
+
+def save_to_json(s_data, file_name):
+    fn = os.path.join(data_path, file_name+data_file_ext)
+    with open(fn, 'w') as f:
+        json.dump(s_data, f, indent=4)
+
+
+def get_attack_setup(item):
+    atks_loc = item.get('attack_setup').split('/')
+    return data.attack_setups[atks_loc[0]][atks_loc[1]]

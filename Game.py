@@ -1,15 +1,15 @@
 # Game Class
 import json
 import os
+from random import *
 
 from Class_Party import *
-from random import *
+from Class_Map import *
 from Class_Hero import *
 from helper_functions import *
 from battle import *
 from data_src import get_save_games, data
 from vfx import camp_fire
-from Class_Map import *
 
 project_path = os.getcwd()
 save_file_extention = '.json'

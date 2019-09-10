@@ -483,7 +483,6 @@ class NPC:
         if self.xp > self.next_level:
             self.level_up()
 
-
     def info_card(self):
 
         name = f'{self.name}'
@@ -505,12 +504,13 @@ class NPC:
         crit_stat = f'{self.crit_chance:>2}/{self.crit_dmg:<3}'  # 15
 
         # Combine L an R lines
-        name = f'{name:<1}{prof:>{21 - len(name)}}'
-        level_xp = f'{lvl}{xp:>{21 - len(lvl)}}'
-        hp_def = f'{hp}{defense:>{21 - len(hp)}}'
+        char_num = 21
+        name = f'{name:<1}{prof:>{char_num - len(name)}}'
+        level_xp = f'{lvl}{xp:>{char_num - len(lvl)}}'
+        hp_def = f'{hp}{defense:>{char_num - len(hp)}}'
         stats = f'{stats_str:<7}{stats_dex:<7}{stats_int:<7}'
-        dmg = f'{dmg_w}{dmg_stat:>{21 - len(dmg_w)}}'
-        crit = f'{crit_w}{crit_stat:>{21 - len(crit_w)}}'
+        dmg = f'{dmg_w}{dmg_stat:>{char_num - len(dmg_w)}}'
+        crit = f'{crit_w}{crit_stat:>{char_num - len(crit_w)}}'
         return [name, level_xp, hp_def, stats, dmg, crit]
 
     def show_stats(self):

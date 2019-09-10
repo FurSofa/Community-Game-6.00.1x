@@ -132,10 +132,10 @@ def get_target(attacker, primary, forced_primary_target,
 
 
 # TODO: add a function to modify setup based on player stats and percs once we have that before running attack?
-def run_attack(attacker, target_party, target_num=1, primary=True, primary_percent=100,
+def run_attack(attacker, target_party, target_num=1, primary=True, primary_pct=100,
                rnd_target=True, forced_primary_target=None, splash_dmg=0,
                elemental='physical', vamp=0, can_crit=True, dmg_base='str_based',
-               wpn_dmg_perc=100, c_hp_perc_dmg=0, max_hp_perc_dmg=0, can_dodge=True, status_effect=None, p=True):
+               wpn_dmg_pct=100, c_hp_pct_dmg=0, max_hp_pct_dmg=0, can_dodge=True, status_effect=None, p=True):
     """
 
     :param status_effect: status effects applied to the target on hit
@@ -144,7 +144,7 @@ def run_attack(attacker, target_party, target_num=1, primary=True, primary_perce
     :param target_party: party
     :param target_num: int: number of targets including primary / 'all' for full target party
     :param primary: bool: is there a primary target hit for primary percent
-    :param primary_percent: percent of full dmg the primary target is hit for
+    :param primary_pct: percent of full dmg the primary target is hit for
     :param rnd_target: bool: chooses non primary targets randomly
     :param forced_primary_target: npc or subclass: used as primary target
     :param splash_dmg: dmg to non primary targets
@@ -152,9 +152,9 @@ def run_attack(attacker, target_party, target_num=1, primary=True, primary_perce
     :param vamp: int: percentage of dmg dealt affecting attacker hp. can be negative
     :param can_crit: bool:
     :param dmg_base: 'str_based' or 'int_based' or 'dex_bases'. for dmg generation
-    :param max_hp_perc_dmg: int: percent of target max hp as dmg
-    :param c_hp_perc_dmg: int: percent of target current hp as dmg
-    :param wpn_dmg_perc: int: percentage modifier for weapon dmg / set to 0 if you want only target hp pool based dmg
+    :param max_hp_pct_dmg: int: percent of target max hp as dmg
+    :param c_hp_pct_dmg: int: percent of target current hp as dmg
+    :param wpn_dmg_pct: int: percentage modifier for weapon dmg / set to 0 if you want only target hp pool based dmg
     :return: int: overall dmg done
     """
     members_list = attacker.party.members[:] if elemental == 'heal' else target_party.members[:]
@@ -164,13 +164,13 @@ def run_attack(attacker, target_party, target_num=1, primary=True, primary_perce
 
     dmg_combined = 0
     while target_num > 0:
-        dmg_mod = primary_percent if primary else splash_dmg
+        dmg_mod = primary_pct if primary else splash_dmg
         target = get_target(attacker, primary, forced_primary_target, target_num,
                             members_list, rnd_target)
         primary = False
         is_crit = check_crit(attacker, can_crit)
-        raw_dmg = generate_dmg(attacker, target, dmg_base, is_crit, wpn_dmg_perc,
-                               c_hp_perc_dmg, max_hp_perc_dmg, )  # value for full dmg before and mod or reduction
+        raw_dmg = generate_dmg(attacker, target, dmg_base, is_crit, wpn_dmg_pct,
+                               c_hp_pct_dmg, max_hp_pct_dmg, )  # value for full dmg before and mod or reduction
 
         #  other modification, not really generation, not really defense reduction
         dmg_dealt = raw_dmg * dmg_mod // 100  # modify for splash or primary dmg factor
@@ -187,7 +187,7 @@ def run_attack(attacker, target_party, target_num=1, primary=True, primary_perce
 
             if not vamp == 0:
                 run_attack(attacker, attacker.party, 1, forced_primary_target=attacker,
-                           primary_percent=vamp, dmg_base=dmg_base, elemental='heal',
+                           primary_pct=vamp, dmg_base=dmg_base, elemental='heal',
                            can_dodge=False)
 
             dmg_combined += dmg_received

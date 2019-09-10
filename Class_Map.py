@@ -14,8 +14,8 @@ class Map:
         self.base_map = base_map
         self.game = game
         self.party_loc = {'pos': {
-            'w': {'x': p_loc_wx, 'y': p_loc_wy,},
-            't': {'x': p_loc_tx, 'y': p_loc_ty},
+            'w': {'x': p_loc_wx, 'y': p_loc_wy},  # position  on the world
+            't': {'x': p_loc_tx, 'y': p_loc_ty},  # position on the tile
         }, 'char': 'o'}
 
     @property
@@ -55,8 +55,8 @@ class Map:
         return new_map
 
     def print_map(self, active_map):
-        coordinat_str = f'X: {self.party_loc["pos"]["w"]["x"]} / Y: {self.party_loc["pos"]["w"]["y"]}'
-        print(f'{coordinat_str:^18}')
+        coordinate_str = f'X: {self.party_loc["pos"]["w"]["x"]} / Y: {self.party_loc["pos"]["w"]["y"]}'
+        print(f'{coordinate_str:^{len(active_map[0]*2)}}')
         for row in active_map:
             for cell in row:
                 print(cell, end=' ')
@@ -144,6 +144,7 @@ class Map:
         while True:
             self.print_player_in_map()
             self.move()
+            self.print_player_in_map()
             event = self.event_check()
             if event:
                 print(f'{event.get("description")}')

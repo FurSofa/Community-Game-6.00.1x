@@ -64,6 +64,12 @@ class Party:
         for member in self.members:
             member.set_hp(full=True)
 
+    def revive_member(self, member):
+        self.dead_members.pop(member)
+        member.set_hp(full=True)
+        member.set_mana(full=True)
+        self.members.append(member)
+
     def party_members_info(self):
         print('\n', '=' * 6, 'Party Members Info', '=' * 6)
         for member in self.members:
@@ -141,7 +147,7 @@ class Party:
         """
         return any([isinstance(member, Hero) for member in self.members])
 
-    def remove_dead(self):
+    def remove_dead(self, p=True):
         """
         removes dead players from active members and places them in dead members
         :return: number of members found dead
@@ -150,7 +156,8 @@ class Party:
         for i, member in enumerate(self.members):
             if not member.is_alive:
                 delete_index.append(i)
-                print(member.name, 'is dead!')
+                if p:
+                    print(member.name, 'is dead!')
         for i in reversed(delete_index):
             self.dead_members.append(self.members.pop(i))
         return len(delete_index)

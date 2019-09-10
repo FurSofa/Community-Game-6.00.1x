@@ -15,9 +15,9 @@ bleed = {
     'caster': None,
     'attack_setup': {
         'target_num': 1,
-        'max_hp_perc_dmg': 3,
+        'max_hp_pct_dmg': 3,
         'can_dodge': False,
         'dmg_base': 'dex_based',
-        'wpn_dmg_perc': 0,
+        'wpn_dmg_pct': 0,
     }
 }

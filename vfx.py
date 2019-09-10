@@ -11,6 +11,17 @@ class bcolors:
     UNDERLINE = '\033[4m'
 
 
+
+# colors:
+escape_code = '\033'
+low_intensity = {
+
+}
+high_intensity = {}
+class Colors:
+
+
+
 # TODO: refactor into function - no need for a class?
 # TODO: make color change depending on value
 class BarGFX:

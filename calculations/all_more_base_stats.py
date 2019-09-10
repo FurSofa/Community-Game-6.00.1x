@@ -873,16 +873,16 @@ cl_df_list = create_cl_stats(**char_creation_setup)
 full_setup_d3 = {
     'target_num': 1,
     'primary': True,
-    'primary_percent': 100,
+    'primary_pct': 100,
     'rnd_target': True,
     'splash_dmg': 0,
     'elemental': 'physical',
     'vamp': 0,
     'can_crit': True,
     'dmg_base': 'magic',
-    'wpn_dmg_perc': 100,
-    'max_hp_perc_dmg': 0,
-    'c_hp_perc_dmg': 0,
+    'wpn_dmg_pct': 100,
+    'max_hp_pct_dmg': 0,
+    'c_hp_pct_dmg': 0,
     'can_dodge': True,
     'reduction_calc': 'd3'
 }
@@ -890,16 +890,16 @@ full_setup_d3 = {
 full_setup_lol = {
     'target_num': 1,
     'primary': True,
-    'primary_percent': 100,
+    'primary_pct': 100,
     'rnd_target': True,
     'splash_dmg': 0,
     'elemental': 'physical',
     'vamp': 0,
     'can_crit': True,
     'dmg_base': 'magic',
-    'wpn_dmg_perc': 100,
-    'max_hp_perc_dmg': 0,
-    'c_hp_perc_dmg': 0,
+    'wpn_dmg_pct': 100,
+    'max_hp_pct_dmg': 0,
+    'c_hp_pct_dmg': 0,
     'can_dodge': True,
     'reduction_calc': 'lol'
 }
