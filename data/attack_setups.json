@@ -1,6 +1,6 @@
 {
   "weapons": {
-    "single_attack_setup": {
+    "basic_attack_dex": {
       "meta": {
         "name": "Basic Attack",
         "description": "The standard attack."
@@ -17,6 +17,8 @@
         "vamp": 0,
         "elemental": "physical"
       },
+
+
       "multi_attack_setup": {
         "meta": {
           "name": "Multi Target Attack",

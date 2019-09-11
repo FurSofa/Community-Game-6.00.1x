@@ -100,15 +100,61 @@
         "str_p_lvl": 1,
         "int_p_lvl": 2,
         "agility_p_lvl": 2,
+        "toughness_p_lvl": 1
+      },
+      "base": {
+        "vit_start": 3,
+        "dex_start": 6,
+        "str_start": 3,
+        "int_start": 2,
+        "agility_start": 5,
+        "toughness_start": 1
+      }
+    },
+    "orc": {
+      "names": [
+          "Neghed",
+          "Crothu",
+          "Xurl",
+          "Khagra",
+          "Sakgu",
+          "Gulm",
+          "Bazgulub",
+          "Surghed",
+          "Pughilug",
+          "Sumhug",
+          "Mabub",
+          "Dakgu",
+          "Vorgak",
+          "Yonkathu",
+          "Sunuguk",
+          "Shat",
+          "Surbag",
+          "Yulakgh",
+          "Opeghat",
+          "Sugarod"
+        ],
+      "meta": {
+        "low_lvl": -1,
+        "high_lvl": 0,
+        "player_min_lvl": 1,
+        "xp": 10
+      },
+      "per_lvl": {
+        "vit_p_lvl": 3,
+        "dex_p_lvl": 1,
+        "str_p_lvl": 3,
+        "int_p_lvl": 1,
+        "agility_p_lvl": 1,
         "toughness_p_lvl": 2
       },
       "base": {
         "vit_start": 4,
-        "dex_start": 9,
-        "str_start": 4,
-        "int_start": 2,
-        "agility_start": 6,
-        "toughness_start": 1
+        "dex_start": 2,
+        "str_start": 5,
+        "int_start": 1,
+        "agility_start": 3,
+        "toughness_start": 2
       }
     }
   },

@@ -2,6 +2,7 @@
 import json
 import os
 from random import *
+from time import sleep
 
 from Class_Party import *
 from Class_Map import *
@@ -228,7 +229,10 @@ class Game:
 
     def event_handler(self, event):
         clear_screen()
-        print(f'{event["texts"]["start"]}')
+        for line in event["texts"]["start"]:
+            print(f'{line:^80}')  # end='\n')
+            sleep(0.5)
+        print('')
         input('Press enter.')
         if event['enemies']:
             enemy_party = Party(self)
@@ -248,14 +252,15 @@ class Game:
                 input('Press enter.')
                 vfx.clear_screen()
                 # award loot here
-                print(f'{event["texts"]["end"]}')
+                for line in event["texts"]["end"]:
+                    print(f'{line:^80}')  # end='\n')
+                    sleep(0.5)
                 input('Press enter.')
             else:
                 if self.party.has_units_left:
                     print(f'You got away.')
             self.count_kills(enemy_party)
             input('Press enter.')
-
 
     def serialize(self):
         dummy = self.__dict__.copy()
