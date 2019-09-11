@@ -1,5 +1,5 @@
 {
-  "trash_mob": {
+  "trash": {
     "zombie": {
       "names": [
         "Geoge",
@@ -9,7 +9,8 @@
       "meta": {
         "low_lvl": -1,
         "high_lvl": 0,
-        "player_min_lvl": 1
+        "player_min_lvl": 1,
+        "xp": 5
       },
       "per_lvl": {
         "vit_p_lvl": 3,
@@ -37,7 +38,8 @@
       "meta": {
         "low_lvl": -1,
         "high_lvl": 0,
-        "player_min_lvl": 1
+        "player_min_lvl": 1,
+        "xp": 5
       },
       "per_lvl": {
         "vit_p_lvl": 2,
@@ -57,7 +59,7 @@
       }
     }
   },
-  "elite_mob": {
+  "elite": {
     "elite1": {
       "names": [
         "xul",
@@ -67,7 +69,8 @@
       "meta": {
         "low_lvl": -1,
         "high_lvl": 0,
-        "player_min_lvl": 1
+        "player_min_lvl": 1,
+        "xp": 10
       },
       "per_lvl": {
         "vit_p_lvl": 2,
@@ -93,7 +96,8 @@
         "flat_lvl": 2,
         "low_lvl": -1,
         "high_lvl": 0,
-        "player_min_lvl": 1
+        "player_min_lvl": 1,
+        "xp": 20
       },
       "names": [
         "Minky",

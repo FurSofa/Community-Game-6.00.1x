@@ -49,7 +49,7 @@ weapon_setups = {
         'primary': True,
         'primary_pct': 100,
         'rnd_target': True,
-        'dmg_base': 'dex_based',
+        'dmg_base': 'dex',
         'can_crit': True,
         'can_dodge': True,
         'vamp': 0,
@@ -62,7 +62,7 @@ weapon_setups = {
         'primary': False,
         'primary_pct': 100,
         'rnd_target': True,
-        'dmg_base': 'str_based',
+        'dmg_base': 'str',
         'can_crit': True,
         'vamp': 0,
         'elemental': 'physical'
@@ -74,7 +74,7 @@ weapon_setups = {
         'primary': True,
         'primary_pct': 100,
         'rnd_target': True,
-        'dmg_base': 'dex_based',
+        'dmg_base': 'dex',
         'vamp': 0,
         'can_crit': True,
         'elemental': 'true'
@@ -86,7 +86,7 @@ weapon_setups = {
         'primary': True,
         'primary_pct': 100,
         'rnd_target': True,
-        'dmg_base': 'int_based',
+        'dmg_base': 'int',
         'can_crit': True,
         'vamp': 25,
         'elemental': 'physical'

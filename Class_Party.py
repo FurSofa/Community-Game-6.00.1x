@@ -16,7 +16,11 @@ class Party:
         self.game = game
 
     def __str__(self):
-        return 'h: ' + str(self.hero()) + ' ' + str(self.members)
+        if self.hero:
+            hero = str(self.hero())
+        else:
+            hero = 'npc party'
+        return hero + ' ' + str(self.members)
 
     @classmethod
     def generate(cls, game):

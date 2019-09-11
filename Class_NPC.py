@@ -104,7 +104,7 @@ class NPC:
         return data.conversion_ratios
 
     def get_data(self):
-        return data.enemys
+        return data.enemies
 
     def get_class_data(self):
         # TODO: make get_class_data work for enemy stats and move tho to hero
@@ -590,14 +590,14 @@ class NPC:
         return f'{self.name}, the {self.profession}'
 
     @classmethod
-    def generate(cls, name='Jeb', profession='Warrior', level=1, new_char=True, type='trash_mob'):
+    def generate(cls, name='Jeb', profession='Warrior', level=1, new_char=True, e_type='trash'):
         """
         Create new character at level 1
         """
-        return cls(name, profession, level, new_char, type)
+        return cls(name, profession, level, new_char, e_type)
 
     @classmethod
-    def generate_random(cls, level=1, type='trash_mob'):
+    def generate_random(cls, level=1, e_type='trash'):
         """
         Create new random character at level 1
         """
@@ -606,22 +606,39 @@ class NPC:
         #                       'Leo', 'Phylis', 'Lindsay', 'Tongo', 'Paku', ])
         # profession = random.choice(['Warrior', 'Archer', 'Mage', 'Blacksmith', 'Thief', 'Bard'])
 
-        profession = random.choice([p for p in data.enemys[type].keys()])
-        name = random.choice(data.enemys[type][profession]['names'])
+        profession = random.choice([p for p in data.enemies[e_type].keys()])
+        name = random.choice(data.enemies[e_type][profession]['names'])
         # TODO: move level setting to game.create_char
-        flat_level = data.enemys[type][profession].get('flat_lvl', None)
+        flat_level = data.enemies[e_type][profession].get('flat_lvl', None)
         if flat_level:
             level = flat_level
         else:
-            low_lvl = data.enemys[type][profession]['meta'].get('low_lvl', level)
-            high_lvl = data.enemys[type][profession]['meta'].get('high_lvl', level)
+            low_lvl = data.enemies[e_type][profession]['meta'].get('low_lvl', level)
+            high_lvl = data.enemies[e_type][profession]['meta'].get('high_lvl', level)
             lvl_mod = random.randint(low_lvl, high_lvl)
             level += lvl_mod
         # if name == 'Minky':
         #     profession = 'Miffy Muffin'
         # if name == 'Colin':
         #     profession = 'Bard of Bass'
-        return cls(name, profession, level, type=type)
+        return cls(name, profession, level, type=e_type)
+
+    @classmethod
+    def generate_enemy(cls, enemy_keys, level):
+        e_type = enemy_keys[0]
+        e_unit = enemy_keys[1]
+        enemy_data = data.enemies[e_type][e_unit]
+        name = random.choice(enemy_data['names'])
+        flat_level = enemy_data.get('flat_lvl', None)
+        if flat_level:
+            level = flat_level
+        else:
+            low_lvl = enemy_data['meta'].get('low_lvl', level)
+            high_lvl = enemy_data['meta'].get('high_lvl', level)
+            lvl_mod = random.randint(low_lvl, high_lvl)
+            level += lvl_mod
+        return NPC(name, e_unit, level, type=e_type)
+
 
     def serialize(self):
         dummy = copy.deepcopy(self.__dict__)

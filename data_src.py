@@ -1,6 +1,9 @@
 import json
 import os
 from types import SimpleNamespace
+import random
+
+from Class_NPC import *
 
 project_root = os.getcwd()
 
@@ -44,3 +47,4 @@ def save_to_json(s_data, file_name):
 def get_attack_setup(item):
     atks_loc = item.get('attack_setup').split('/')
     return data.attack_setups[atks_loc[0]][atks_loc[1]]
+

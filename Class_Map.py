@@ -3,7 +3,7 @@ import random
 
 from helper_functions import select_from_list
 from vfx import clear_screen
-
+from data_src import data
 
 rand_event_chance = 30
 
@@ -129,9 +129,9 @@ class Map:
 
     def eval_move(self, move):
         new_loc = self.sum_pos(self.party_loc, move)
-        w_pos = [n for n in new_loc['pos']['w'].values()]
+        w_pos = [n for n in new_loc['pos']['w'].values()]  # list(new_loc['pos']['w'].values())
         t_pow = [t for t in new_loc['pos']['t'].values()]
-        if any([v < 0 for v in w_pos + t_pow]):
+        if any([value < 0 for value in w_pos + t_pow]):  # negative value would access reverse index: map[-1]
             return False
         try:
             self.draw_map(self.get_map_tile(new_loc['pos']), new_loc)
@@ -148,7 +148,7 @@ class Map:
             event = self.event_check()
             if event:
                 print(f'{event.get("description")}')
-                return event
+                return event['event_key']
             else:
                 if random.randint(0, 100) < rand_event_chance:
                     return 'random'
@@ -156,7 +156,7 @@ class Map:
 
     @classmethod
     def generate(cls, game, tile_width=8, tile_rows=8, event_num=30, world_w=2, world_r=2, party_loc_x=0, party_loc_y=0):
-        base_map = Map.generate_new_map(world_w, world_r, tile_width, tile_rows)
+        base_map = Map.generate_new_level(world_w, world_r, tile_width, tile_rows)
 
         events = [
             {
@@ -171,14 +171,15 @@ class Map:
                     }
                 },
                 'char': 'x',
-                'description': f'Event Nr {num + 1}'
+                'description': f'Event Nr {num + 1}',
+                'event_key': 'elite/' + random.choice(list(data.events['elite'].keys()))
             } for num in range(event_num)
         ]
 
         return cls(game=game, base_map=base_map, events=events, p_loc_tx=party_loc_x, p_loc_ty=party_loc_y)
 
     @classmethod
-    def generate_new_map(cls, world_width=3, world_rows=3, tile_width=3, tile_rows=3):
+    def generate_new_level(cls, world_width=3, world_rows=3, tile_width=3, tile_rows=3):
         base_map = [[[['.' for tc in range(tile_width)] for tr in range(tile_rows)]
                      for wx in range(world_width)] for wy in range(world_rows)]
         return base_map

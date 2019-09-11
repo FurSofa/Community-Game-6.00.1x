@@ -1,6 +1,7 @@
 import random
 from itertools import zip_longest
 from x_Attack_Setups import weapon_setups
+from data_src import data
 from combat_funcs import *
 import random
 
@@ -62,20 +63,16 @@ def check_crit(attacker, can_crit):
     return (random.randrange(100) < attacker.crit_chance) if can_crit else False
 
 
-def generate_dmg(attacker, target, dmg_base='str_based', is_crit=False,
+def generate_dmg(attacker, target, dmg_base='str', is_crit=False,
                  wpn_dmg_perc=100, c_hp_perc_dmg=0, max_hp_perc_dmg=0):
 
     c_hp_dmg = target.hp / 100 * c_hp_perc_dmg
     max_hp_dmg = target.max_hp / 100 * max_hp_perc_dmg
 
-    dmg_key = dmg_base[:3]
+    dmg_calc = data.conversion_ratios[dmg_base+'_to_dmg']
 
-    with open('char_creation_setup.json') as f:
-        conversion_ratios = json.load(f)['conversion_ratios']
-    dmg_calc = conversion_ratios[dmg_key+'_to_dmg']
-
-    dmg_wo_wpn = (attacker.__getattribute__(dmg_key) * dmg_calc['dmg_per_'+dmg_key]) + (attacker.level * dmg_calc['dmg_per_level'])
-    wpn_dmg = round((dmg_wo_wpn / 100) * conversion_ratios['b_dmg_wpn_dmg_factor'] * attacker.__getattribute__('wpn_dmg')) + attacker.__getattribute__('wpn_dmg') + dmg_calc['start']
+    dmg_wo_wpn = (attacker.__getattribute__(dmg_base) * dmg_calc['dmg_per_'+dmg_base]) + (attacker.level * dmg_calc['dmg_per_level'])
+    wpn_dmg = round((dmg_wo_wpn / 100) * data.conversion_ratios['b_dmg_wpn_dmg_factor'] * attacker.__getattribute__('wpn_dmg')) + attacker.__getattribute__('wpn_dmg') + dmg_calc['start']
 
     wpn_dmg = wpn_dmg / 100 * wpn_dmg_perc
 
@@ -406,13 +403,9 @@ def clock_tick_battle(party_1, party_2):
         party_1.party_members_info()
         print('Party 1 has won the battle!')
         input('Congrats! Press Enter!')
-        for member in party_1.members:
-            member.add_xp(party_2.party_worth_xp())
+
     else:
         print('Party 2 has won the battle!')
-        input('Congrats! Press Enter!')
-        for member in party_2.members:
-            member.add_xp(party_1.party_worth_xp())
     return party_1.has_units_left
 
 
