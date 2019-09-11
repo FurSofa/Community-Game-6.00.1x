@@ -1,12 +1,11 @@
 from helper_functions import *
 from Class_Hero import *
-from new_npc import *
+from Class_NPC import *
 from Item_Bases import *
 
 
 class Party:
     def __init__(self, game):
-        self.hero = None
         self.members = []
         self.dead_members = []
         # inventory
@@ -17,7 +16,11 @@ class Party:
         self.game = game
 
     def __str__(self):
-        return 'h: ' + str(self.hero()) + ' ' + str(self.members)
+        if self.hero:
+            hero = str(self.hero())
+        else:
+            hero = 'npc party'
+        return hero + ' ' + str(self.members)
 
     @classmethod
     def generate(cls, game):
@@ -26,6 +29,27 @@ class Party:
     @classmethod
     def __del__(cls):
         del cls
+
+    def serialize(self):
+        dummy = self.__dict__.copy()
+        dummy['members'] = [m.serialize() for m in dummy['members']]
+        dummy['dead_members'] = [m.serialize() for m in dummy['dead_members']]
+        dummy['equipment'] = [i.serialize() for i in dummy['equipment']]
+        dummy['inventory'] = [i.serialize() for i in dummy['inventory']]
+        dummy['game'] = None
+        return dummy
+
+    @classmethod
+    def deserialize(cls, save_data):
+        dummy = cls.generate(None)
+        dummy.__dict__ = save_data.copy()
+        dummy.members = [Hero.deserialize(m) if m['type'] == 'Hero' else NPC.deserialize(m) for m in dummy.members]
+        dummy.dead_members = [Hero.deserialize(m) if m['type'] == 'Hero' else NPC.deserialize(m) for m in dummy.dead_members]
+        dummy.equipment = [Equipment.deserialize(i) for i in dummy.equipment]
+        dummy.inventory = [Equipment.deserialize(i) for i in dummy.inventory]
+        for m in dummy.members + dummy.dead_members:
+            m.party = dummy
+        return dummy
 
     def alive(self):
         """ Checks if anyone is alive
@@ -42,12 +66,18 @@ class Party:
 
     def heal_everyone(self):
         for member in self.members:
-            member.heal(member.max_hp)
+            member.set_hp(full=True)
+
+    def revive_member(self, member):
+        self.dead_members.pop(member)
+        member.set_hp(full=True)
+        member.set_mana(full=True)
+        self.members.append(member)
 
     def party_members_info(self):
         print('\n', '=' * 6, 'Party Members Info', '=' * 6)
         for member in self.members:
-            print(f'- {member.name}, {member.profession} Lv: {member.level} {member.tracked_values["hp"]}/{member.stats["max_hp"]}')
+            print(f'- {member.name}, {member.profession} Lv: {member.level} {member.hp}/{member.max_hp}')
 
     def print_members_info_cards(self):
         empty_card = [" " * 21] * 6
@@ -104,11 +134,12 @@ class Party:
         """
         return self.members[position]
 
+    @property
     def hero(self):
         """
         :return: returns the hero or None
         """
-        heroes = [member.name for member in self.members if member.is_alive and isinstance(member, Hero)]
+        heroes = [member for member in self.members if member.is_alive and isinstance(member, Hero)]
         if heroes:
             return heroes[0]
         else:
@@ -120,7 +151,7 @@ class Party:
         """
         return any([isinstance(member, Hero) for member in self.members])
 
-    def remove_dead(self):
+    def remove_dead(self, p=True):
         """
         removes dead players from active members and places them in dead members
         :return: number of members found dead
@@ -129,7 +160,8 @@ class Party:
         for i, member in enumerate(self.members):
             if not member.is_alive:
                 delete_index.append(i)
-                print(member.name, 'is dead!')
+                if p:
+                    print(member.name, 'is dead!')
         for i in reversed(delete_index):
             self.dead_members.append(self.members.pop(i))
         return len(delete_index)
@@ -137,20 +169,18 @@ class Party:
     def party_worth_xp(self):
         return len(self.dead_members) * 5
 
-    def add_member(self, member):
+    def add_member(self, member, p=True):
         """
         adds a member to the party
         :param member: NPC or Hero class object
         :return:
         """
-        print(f'{member.name}, the {member.profession} joins the party!')
         member.party = self
         self.members.append(member)
-        if member.hero:
-            self.hero = member
+        if p:
+            print(f'{member.name}, the {member.profession} joins the party!')
 
     #  inventory and trading
-
     def inventory_menu(self):
         self.display_inventory()
         x = select_from_list(['Inventory', 'Character Inventory', 'Exit'], '', True, False)
@@ -252,9 +282,10 @@ class Party:
         char.equip_slots[slot] = item
         if item in self.inventory:
             self.inventory.remove(item)
-        char.calculate_stats()
 
-    def change_gold(self, gold_amount):
+        # char.calculate_stats_with_equipment()
+
+    def set_gold(self, gold_amount):
         #  check if person has enough gold might be better in merchant class
         if self.gold + gold_amount < 0:
             print('Not enough gold!')
@@ -270,7 +301,7 @@ class Party:
         question = f'Confirm selling \'{item_to_sell}\' for {item_to_sell.value} gold'
         you_sure = select_from_list(['Yes', 'No'], question, True, True)
         if you_sure == 0:
-            self.gold += item_to_sell.value
+            self.set_gold(item_to_sell.value)
             self.inventory.remove(item_to_sell)
         else:
             # TODO: Split all menus into callable functions

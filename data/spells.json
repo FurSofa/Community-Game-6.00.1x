@@ -1,0 +1,18 @@
+{
+    "base_spell": {
+        "name": "basic spell example",
+        "description": "this is just an example for testing. a basic attack.",
+        "mana_cost": 5,
+        "cool_down": 2,
+        "attack_setup": "spells/base_spell",
+        "cd_timer": 0
+    },
+    "heal": {
+        "name": "heal",
+        "description": "Heals the target.",
+        "mana_cost": 5,
+        "cool_down": 2,
+        "attack_setup": "spells/heal",
+        "cd_timer": 0
+    }
+}

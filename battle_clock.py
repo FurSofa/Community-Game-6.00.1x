@@ -1,4 +1,4 @@
-from Class_NPC import NPC
+from old_Class_NPC import NPC
 from Class_Hero import Hero
 from Class_Party import Party
 from Item_Bases import *

@@ -1,0 +1,107 @@
+{
+  "default":{
+    "event 1": {
+      "texts": {
+        "start": ["text before anything happens"],
+        "end": ["text after the event"]
+      },
+      "enemies": ["trash/rng", "trash/rng"],
+      "other": ["other npc here", "vendors", "quest givers"],
+      "loot": {
+        "xp": 2,
+        "equipment": ["rng/rng"],
+        "items": []
+      }
+    },
+    "event 2": {
+      "texts": {
+        "start": ["text before anything happens"],
+        "end": ["text after the event"]
+      },
+      "enemies": ["trash/rng"],
+      "other": ["other npc here", "vendors", "quest givers"],
+      "loot": {
+        "xp": 2,
+        "equipment": ["rng/rng"],
+        "items": []
+      }
+    }
+  },
+  "elite": {
+    "event 1": {
+      "texts": {
+        "start": ["text before anything happens"],
+        "end": ["text after the event"]
+      },
+      "enemies": ["elite/rng", "elite/rng"],
+      "other": ["other npc here", "vendors", "quest givers"],
+      "loot": {
+        "xp": 5,
+        "equipment": ["rng/rng"],
+        "items": []
+      }
+    },
+    "event 2": {
+      "texts": {
+        "start": ["text before anything happens"],
+        "end": ["text after the event"]
+      },
+      "enemies": ["elite/rng"],
+      "other": ["other npc here", "vendors", "quest givers"],
+      "loot": {
+        "xp": 5,
+        "equipment": ["rng/rng"],
+        "items": []
+      }
+    }
+  },
+  "test": {
+    "high_boss": {
+      "texts": {
+        "start": [
+          "Out of nowhere you begin shiver. You feel panic building inside you.",
+          "You are not supposed to be here!",
+          "You want to run, but it is too late..."
+        ],
+        "end": ["How did you survive this?"]
+      },
+      "enemies": [
+        "boss/high_boss_test"
+      ],
+      "other": [
+        "other npc here",
+        "vendors",
+        "quest givers"
+      ],
+      "loot": {
+        "xp": 2,
+        "equipment": [
+          "rng/rng"
+        ],
+        "items": []
+      }
+    },
+    "event 2": {
+      "texts": {
+        "start": ["text before anything happens"],
+        "end": ["text after the event"]
+      },
+      "enemies": [
+        "elite/rng"
+      ],
+      "other": [
+        "other npc here",
+        "vendors",
+        "quest givers"
+      ],
+      "loot": {
+        "xp": 2,
+        "equipment": [
+          "rng/rng"
+        ],
+        "items": []
+      }
+    }
+  }
+}
+

@@ -27,7 +27,11 @@ class Equipment:
         self.value = value + int(10 * quality_value + 10)
         self.max_durability = max_durability
         self.durability = self.max_durability
-        self.enchants = []
+
+        # TODO: Fix enchants!
+        self.enchants = [None, None]
+        self.enchant_1 = None
+        self.enchant_2 = None
 
         self.type = etype
         self.equipable_slot = equipable_slot
@@ -43,6 +47,28 @@ class Equipment:
         self.crit_chance = round(crit_chance * self.quality_val)
         self.crit_multiplier = round(crit_multiplier * self.quality_val)
 
+        self.base_stats = {
+            'vit': 0,
+            'dex': round(dexterity * self.quality_val),
+            'str': round(strength * self.quality_val),
+            'int': round(intelligence * self.quality_val),
+            'agility': 1,
+            'toughness': 1,
+        }
+        self.stats = {
+            'max_hp': round(max_hp * self.quality_val),
+            'max_mana': 10,
+            'armor': round(defense * self.quality_val),
+            'magic_resistance': 0,
+            'speed': 0,
+            'dodge': 0,
+            'crit_chance': round(crit_chance * self.quality_val),
+            'crit_dmg': round(crit_multiplier * self.quality_val),
+            'elemental_resistance': 5,
+            'wpn_dmg': round(att_dmg_max * self.quality_val),
+        }
+
+
     @classmethod
     def generate(cls, quality='Common', quality_val=1, etype='Weapon', equipable_slot='Main Hand', value=0,
                  max_durability=10, strength=0, dexterity=0, intelligence=0,
@@ -55,11 +81,29 @@ class Equipment:
                    max_hp, defense, att_dmg_min, att_dmg_max, damage,
                    crit_chance, crit_multiplier)
 
+    def serialize(self):
+        return self.__dict__.copy()
+
+    @classmethod
+    def deserialize(cls, save_data):
+        cls_list = [Armor, Weapon, Jewelry]
+        if save_data['type'] == 'Armor':
+            gen_cls = Armor
+        elif save_data['type'] == 'Weapon':
+            gen_cls = Weapon
+        elif save_data['type'] == 'Jewelry':
+            gen_cls = Jewelry
+        dummy = gen_cls.generate()
+        dummy.__dict__ = save_data.copy()
+        return dummy
+
+
     def __repr__(self):
-        _max_left = max(len(k) for k in self.__dict__.keys()) + 10
-        return '\n'.join(
-            [f"{k.title()}: {str(v).rjust(_max_left - len(k), ' ')}"
-             for k, v in self.__dict__.items()])
+        return f'{self.quality} {self.type}: {self.equipable_slot}'
+        # _max_left = max(len(k) for k in self.__dict__.keys()) + 10
+        # return '\n'.join(
+        #     [f"{k.title()}: {str(v).rjust(_max_left - len(k), ' ')}"
+        #      for k, v in self.__dict__.items()])
 
     def show_stats(self):
         name = f'{self.quality} {self.type}'
@@ -247,6 +291,7 @@ class Weapon(Equipment):
                    crit_chance, crit_multiplier,
                    attack_name, attack_setup)
 
+
     def show_stats(self):
         name = f'{self.quality} {self.type}'
         slot = f'{self.equipable_slot.title():>9}'
@@ -288,6 +333,7 @@ class Armor(Equipment):
                    max_durability, strength, dexterity, intelligence,
                    max_hp, defense, att_dmg_min, att_dmg_max, damage,
                    crit_chance, crit_multiplier)
+
 
     def show_stats(self):
         name = f'{self.quality} {self.type}'

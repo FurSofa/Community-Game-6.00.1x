@@ -1,0 +1,53 @@
+{
+    "wpn_dmg": 5,
+    "b_dmg_wpn_dmg_factor": 50,
+    "wpn_dmg_growth_per_lvl": 10,
+    "vit_to_hp": {
+        "start": 100,
+        "hp_per_vit": 15,
+        "hp_per_lvl": 20
+    },
+    "str_to_dmg": {
+        "start": 5,
+        "dmg_per_level": 0.6,
+        "dmg_per_str": 0.7
+    },
+    "toughness_to_armor": {
+        "armor_per_toughness": 2
+    },
+    "int_to_dmg": {
+        "start": 5,
+        "dmg_per_level": 0.6,
+        "dmg_per_int": 0.9
+    },
+    "dex_to_dmg": {
+        "start": 5,
+        "dmg_per_level": 0.6,
+        "dmg_per_dex": 0.7
+    },
+    "str_to_armor": {
+        "start": 0,
+        "armor_per_level": 0.5,
+        "armor_per_str": 0.5
+    },
+    "dex_speed_to_dodge": {
+        "start": 3,
+        "dodge_per_speed": 0.3,
+        "dodge_per_dex": 0.2
+    },
+    "dex_to_crit": {
+        "chance_start": 5,
+        "crit_chan_per_level": 0.25,
+        "crit_chan_per_dex": 0.25,
+        "dmg_start": 125,
+        "crit_dmg_per_level": 1,
+        "crit_dmg_per_dex": 3
+    },
+    "dex_to_speed": {
+        "speed_per_dex": 0.03,
+        "speed_per_agility": 0.2,
+        "speed_factor": 0.1,
+        "speed_start": 9
+    }
+}
+

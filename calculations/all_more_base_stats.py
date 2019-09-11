@@ -533,8 +533,8 @@ def derive_stats(df_list, vit_to_hp, str_to_dmg, toughness_to_armor, int_to_dmg,
         c_vit_to_hp(cl_df, **vit_to_hp)
         c_str_to_dmg(cl_df, wpn_dmg, b_dmg_wpn_dmg_factor, **str_to_dmg)
         c_dex_to_dmg(cl_df, wpn_dmg, b_dmg_wpn_dmg_factor, **dex_to_dmg)
-        c_dex_to_crit(cl_df, **dex_to_crit)
         c_int_to_dmg(cl_df, wpn_dmg, b_dmg_wpn_dmg_factor, **int_to_dmg)
+        c_dex_to_crit(cl_df, **dex_to_crit)
         c_set_dmg(cl_df)
         c_avg_dmg(cl_df)
         c_avg_dmg_p_ticks(cl_df)
@@ -580,9 +580,9 @@ def mk_class_dfs(level, start, classes):
     return class_list
 
 
-def create_cl_stats(cl_base_stats, growth_ratios):
+def create_cl_stats(cl_base_stats, conversion_ratios):
     class_list = mk_class_dfs(**cl_base_stats)
-    cls_dfs_list = derive_stats(class_list, **growth_ratios)
+    cls_dfs_list = derive_stats(class_list, **conversion_ratios)
     return cls_dfs_list
 
 
@@ -674,7 +674,7 @@ low_start = {
         }
     },
     # ratios for derived stats
-    'growth_ratios': {
+    'conversion_ratios': {
         'wpn_dmg': 20,                      # base weapon dmg
         'b_dmg_wpn_dmg_factor': 50,         # percent of base dmg * weapon dmg
         'wpn_dmg_growth_per_lvl': 20,       # percent the weapon dmg grows per level
@@ -728,92 +728,96 @@ char_creation_setup = {
         'start': 4,                         # ignore this
         'classes': {                        # set the stat growth of each class here
             'dex_class': {
-                'vit_start': 10,
+                'vit_start': 4,
                 'vit_p_lvl': 2,
 
-                'dex_start': 18,
-                'dex_p_lvl': 3,
+                'dex_start': 9,
+                'dex_p_lvl': 4,
 
-                'str_start': 10,
+                'str_start': 2,
                 'str_p_lvl': 1,
 
-                'int_start': 4,
-                'int_p_lvl': 2,
-
-                'agility_start': 8,
-                'agility_p_lvl': 2,
-
-                'toughness_start': 8,
-                'toughness_p_lvl': 2,
-            },
-            'str_class': {
-                'vit_start': 14,
-                'vit_p_lvl': 3,
-
-                'dex_start': 8,
-                'dex_p_lvl': 1,
-
-                'str_start': 15,
-                'str_p_lvl': 4,
-
-                'int_start': 4,
+                'int_start': 2,
                 'int_p_lvl': 1,
 
                 'agility_start': 8,
+                'agility_p_lvl': 3,
+
+                'toughness_start': 1,
+                'toughness_p_lvl': 2,
+            },
+            'str_class': {
+                'vit_start': 6,
+                'vit_p_lvl': 3,
+
+                'dex_start': 4,
+                'dex_p_lvl': 1,
+
+                'str_start': 8,
+                'str_p_lvl': 4,
+
+                'int_start': 1,
+                'int_p_lvl': 1,
+
+                'agility_start': 5,
                 'agility_p_lvl': 1,
 
-                'toughness_start': 9,
+                'toughness_start': 2,
                 'toughness_p_lvl': 2,
             },
             'int_class': {
-                'vit_start': 8,
+                'vit_start': 4,
                 'vit_p_lvl': 1,
 
-                'dex_start': 8,
-                'dex_p_lvl': 2,
+                'dex_start': 1,
+                'dex_p_lvl': 0,
 
-                'str_start': 4,
+                'str_start': 2,
                 'str_p_lvl': 1,
 
-                'int_start': 22,
+                'int_start': 10,
                 'int_p_lvl': 5,
 
-                'agility_start': 8,
+                'agility_start': 5,
                 'agility_p_lvl': 2,
 
-                'toughness_start': 8,
+                'toughness_start': 1,
                 'toughness_p_lvl': 1,
             },
         }
     },
     # ratios for derived stats
-    'growth_ratios': {
-        'wpn_dmg': 5,                      # base weapon dmg
+    'conversion_ratios': {
+        'wpn_dmg': 10,                      # base weapon dmg
         'b_dmg_wpn_dmg_factor': 50,         # percent of base dmg * weapon dmg
-        'wpn_dmg_growth_per_lvl': 10,       # percent the weapon dmg grows per level
+        'wpn_dmg_growth_per_lvl': 50,       # percent the weapon dmg grows per level
+
         'vit_to_hp': {
-            'start': 250,
+            'start': 50,
             'hp_per_vit': 15,
-            'hp_per_lvl': 10,
+            'hp_per_lvl': 20,
         },
+
         'str_to_dmg': {
             'start': 5,
             'dmg_per_level': 0.6,
             'dmg_per_str': 0.7,
-        },
-        'toughness_to_armor': {
-            'armor_per_toughness': 2,
-        },
-        'int_to_dmg': {
-            'start': 5,
-            'dmg_per_level': 0.6,
-            'dmg_per_int': 0.9,
         },
         'dex_to_dmg': {
             'start': 5,
             'dmg_per_level': 0.6,
             'dmg_per_dex': 0.7,
         },
+        'int_to_dmg': {
+            'start': 5,
+            'dmg_per_level': 0.6,
+            'dmg_per_int': 0.7,
+        },
+
+        'toughness_to_armor': {
+            'armor_per_toughness': 1,
+        },
+
         'str_to_armor': {
             'start': 0,
             'armor_per_level': 0.5,
@@ -834,7 +838,7 @@ char_creation_setup = {
             'crit_dmg_per_dex': 3,
         },
         'dex_to_speed': {
-            'speed_per_dex': 0.03,
+            'speed_per_dex': 0.1,
             'speed_per_agility': 0.2,
             'speed_factor': 0.1,
             'speed_start': 9,
@@ -869,16 +873,16 @@ cl_df_list = create_cl_stats(**char_creation_setup)
 full_setup_d3 = {
     'target_num': 1,
     'primary': True,
-    'primary_percent': 100,
+    'primary_pct': 100,
     'rnd_target': True,
     'splash_dmg': 0,
     'elemental': 'physical',
     'vamp': 0,
     'can_crit': True,
     'dmg_base': 'magic',
-    'wpn_dmg_perc': 100,
-    'max_hp_perc_dmg': 0,
-    'c_hp_perc_dmg': 0,
+    'wpn_dmg_pct': 100,
+    'max_hp_pct_dmg': 0,
+    'c_hp_pct_dmg': 0,
     'can_dodge': True,
     'reduction_calc': 'd3'
 }
@@ -886,16 +890,16 @@ full_setup_d3 = {
 full_setup_lol = {
     'target_num': 1,
     'primary': True,
-    'primary_percent': 100,
+    'primary_pct': 100,
     'rnd_target': True,
     'splash_dmg': 0,
     'elemental': 'physical',
     'vamp': 0,
     'can_crit': True,
     'dmg_base': 'magic',
-    'wpn_dmg_perc': 100,
-    'max_hp_perc_dmg': 0,
-    'c_hp_perc_dmg': 0,
+    'wpn_dmg_pct': 100,
+    'max_hp_pct_dmg': 0,
+    'c_hp_pct_dmg': 0,
     'can_dodge': True,
     'reduction_calc': 'lol'
 }

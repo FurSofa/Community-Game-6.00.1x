@@ -1,0 +1,26 @@
+{
+  "weapons": {
+    "thief_dagger": {
+      "stats": {
+        "vit": 0,
+        "dex": 2,
+        "str": 0,
+        "int": 0,
+        "agility": 1,
+        "toughness": 0,
+        "max_hp": 0,
+        "max_mana": 0,
+        "armor": 0,
+        "magic_resistance": 0,
+        "speed": 0,
+        "dodge": 1,
+        "crit_chance": 2.5,
+        "crit_dmg": 5,
+        "elemental_resistance": 0,
+        "wpn_dmg": 2
+      },
+      "name": "thiefs dagger",
+      "attack_setup": "weapons/basic_attack_dex"
+    }
+  }
+}

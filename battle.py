@@ -1,81 +1,102 @@
-import random
 from itertools import zip_longest
 from x_Attack_Setups import weapon_setups
+from data_src import *
 from combat_funcs import *
 import random
 
 
 def battle_menu(attacker, enemy_party):
-    possible_actions = ['Attack', 'Heal', 'Show Hero Stats', 'Skip turn']
+    # generate option lists
+    attack_options = [{'name': item.attack_name, 'attack_setup': item.attack_setup} for item in
+                      [attacker.equip_slots['Main Hand'], attacker.equip_slots['Off Hand']] if item]
+
+    spell_options = []
+    on_cd = []
+    low_mana = []
+    for spell in attacker.spell_book:
+        if spell['cd_timer'] > 0:
+            on_cd.append(spell)
+        elif spell['mana_cost'] > attacker.mana:
+            low_mana.append(spell)
+        else:
+            spell_options.append(spell)
+
+    possible_actions = ['Attack']
+    possible_actions += ['Spell']
+    possible_actions += ['Show Hero Stats', 'Skip turn']
+    possible_actions += ['Flee Battle']
+
     action = attacker.choose_battle_action(possible_actions).lower()
     if action == 'attack':
-        # TODO: make this independent of setup file! (get the setup from the weapon)
-        attack_options = [item['attack_name'] for item in
-                          [attacker.equip_slots['Main Hand'], attacker.equip_slots['Off Hand']] if item]
         setup_key = attacker.choose_attack(attack_options)
-        setup = weapon_setups[setup_key]
+        setup = attack_options[setup_key]['attack_setup']
         dmg_done = run_attack(attacker, enemy_party, **setup)
+
+    elif action == 'spell':
+        if len(spell_options) < 1:
+            print(f'You have no spells to use this turn!')
+            action = battle_menu(attacker, enemy_party)
+        else:
+            setup_key = attacker.choose_attack(spell_options)
+            setup = spell_options[setup_key]['attack_setup']
+            dmg_done = run_attack(attacker, enemy_party, **setup)
+            attacker.set_mana(-spell_options[setup_key]['mana_cost'])
+            spell_options[setup_key]['cd_timer'] = spell_options[setup_key]['cool_down']
+
     elif action == 'show hero stats':
         attacker.party.display_single_member_item_card(attacker)
-        battle_menu(attacker, enemy_party)
+        action = battle_menu(attacker, enemy_party)
+
     elif action == 'heal':
         # TODO: make heal a spell, fix this!
         attacker.set_hp(attacker.stats['int'] + random.randint(-2, 3))
     elif action == 'skip turn':
         pass
+    elif action == 'flee battle':
+        pass
     return action
 
 
 def check_dodge(target, can_dodge):
-    return (random.randrange(100) < target.stats['dodge']) if can_dodge else False
+    return (random.randrange(100) < target.dodge) if can_dodge else False
 
 
 def check_crit(attacker, can_crit):
-    return (random.randrange(100) < attacker.stats['crit_chance']) if can_crit else False
+    return (random.randrange(100) < attacker.crit_chance) if can_crit else False
 
 
-def generate_dmg(attacker, target, dmg_base='str_based', is_crit=False,
+def generate_dmg(attacker, target, dmg_base='str', is_crit=False,
                  wpn_dmg_perc=100, c_hp_perc_dmg=0, max_hp_perc_dmg=0):
 
-    c_hp_dmg = target.tracked_values['hp'] / 100 * c_hp_perc_dmg
-    max_hp_dmg = target.stats['max_hp'] / 100 * max_hp_perc_dmg
+    c_hp_dmg = target.hp / 100 * c_hp_perc_dmg
+    max_hp_dmg = target.max_hp / 100 * max_hp_perc_dmg
 
-    dmg_key = dmg_base[:3]
+    dmg_calc = data.conversion_ratios[dmg_base+'_to_dmg']
 
-    with open('char_creation_setup.json') as f:
-        growths_ratios = json.load(f)['growth_ratios']
-    dmg_calc = growths_ratios[dmg_key+'_to_dmg']
-
-    dmg_wo_wpn = (attacker.stats[dmg_key] * dmg_calc['dmg_per_'+dmg_key]) + (attacker.level * dmg_calc['dmg_per_level'])
-    wpn_dmg = round((dmg_wo_wpn / 100) * growths_ratios['b_dmg_wpn_dmg_factor'] * attacker.stats['wpn_dmg']) + attacker.stats['wpn_dmg'] + dmg_calc['start']
+    dmg_wo_wpn = (attacker.__getattribute__(dmg_base) * dmg_calc['dmg_per_'+dmg_base]) + (attacker.level * dmg_calc['dmg_per_level'])
+    wpn_dmg = round((dmg_wo_wpn / 100) * data.conversion_ratios['b_dmg_wpn_dmg_factor'] * attacker.__getattribute__('wpn_dmg')) + attacker.__getattribute__('wpn_dmg') + dmg_calc['start']
 
     wpn_dmg = wpn_dmg / 100 * wpn_dmg_perc
 
     dmg = sum([c_hp_dmg, max_hp_dmg, wpn_dmg])
     if is_crit:
-        dmg = (dmg * attacker.stats["crit_dmg"]) // 100
+        dmg = (dmg * attacker.crit_dmg) // 100
     return round(dmg)
 
 
 def defense_calc(dmg, target, elemental):
     # TODO: generalise resistances
-    # if not elemental == 'physical':
-    #     dmg_multi = dmg / (dmg + target.__dict__[elemental + '_res'])
-    # else:
-    #     dmg_multi = dmg / (dmg + target.defense)
-    # dmg_done = round(dmg * dmg_multi)
+
     if elemental == 'physical':  # untill we have the new npc
-        defense = target.stats['armor']
+        defense = target.armor
     elif elemental == 'magic':
-        defense = target.stats['magic_resistance']
+        defense = target.magic_resistance
     elif elemental == 'elemental':
-        defense = target.stats['elemental_resistance']
+        defense = target.elemental_resistance
     else:
         defense = 0  # TODO: heal reduction/multi?
     # TODO: armor piercing calc here
-    # if defense > dmg:
-    #     dmg_done = 0
-    # else:
+
     if defense < 0:
         lol_dmg_multi = 2 - (100 / (100 - defense))
     else:
@@ -110,27 +131,29 @@ def get_target(attacker, primary, forced_primary_target,
 
 
 # TODO: add a function to modify setup based on player stats and percs once we have that before running attack?
-def run_attack(attacker, target_party, target_num=1, primary=True, primary_percent=100,
+def run_attack(attacker, target_party, target_num=1, primary=True, primary_pct=100,
                rnd_target=True, forced_primary_target=None, splash_dmg=0,
                elemental='physical', vamp=0, can_crit=True, dmg_base='str_based',
-               wpn_dmg_perc=100, c_hp_perc_dmg=0, max_hp_perc_dmg=0, can_dodge=True, reduction_calc='d3'):
+               wpn_dmg_pct=100, c_hp_pct_dmg=0, max_hp_pct_dmg=0, can_dodge=True, status_effect=None, p=True):
     """
 
+    :param status_effect: status effects applied to the target on hit
+    :param can_dodge:  bool:
     :param attacker: npc or subclass
     :param target_party: party
     :param target_num: int: number of targets including primary / 'all' for full target party
     :param primary: bool: is there a primary target hit for primary percent
-    :param primary_percent: percent of full dmg the primary target is hit for
+    :param primary_pct: percent of full dmg the primary target is hit for
     :param rnd_target: bool: chooses non primary targets randomly
     :param forced_primary_target: npc or subclass: used as primary target
     :param splash_dmg: dmg to non primary targets
     :param elemental: dmg type used to calculate and apply dmg / special for 'heal'(inverts dmg) and 'true'(ignores defense)
     :param vamp: int: percentage of dmg dealt affecting attacker hp. can be negative
     :param can_crit: bool:
-    :param dmg_base: 'str_based' or 'int_based'. for dmg generation
-    :param max_hp_perc_dmg: int: percent of target max hp as dmg
-    :param c_hp_perc_dmg: int: percent of target current hp as dmg
-    :param wpn_dmg_perc: int: percentage modifier for weapon dmg / set to 0 if you want only target hp pool based dmg
+    :param dmg_base: 'str_based' or 'int_based' or 'dex_bases'. for dmg generation
+    :param max_hp_pct_dmg: int: percent of target max hp as dmg
+    :param c_hp_pct_dmg: int: percent of target current hp as dmg
+    :param wpn_dmg_pct: int: percentage modifier for weapon dmg / set to 0 if you want only target hp pool based dmg
     :return: int: overall dmg done
     """
     members_list = attacker.party.members[:] if elemental == 'heal' else target_party.members[:]
@@ -140,13 +163,13 @@ def run_attack(attacker, target_party, target_num=1, primary=True, primary_perce
 
     dmg_combined = 0
     while target_num > 0:
-        dmg_mod = primary_percent if primary else splash_dmg
+        dmg_mod = primary_pct if primary else splash_dmg
         target = get_target(attacker, primary, forced_primary_target, target_num,
                             members_list, rnd_target)
         primary = False
         is_crit = check_crit(attacker, can_crit)
-        raw_dmg = generate_dmg(attacker, target, dmg_base, is_crit, wpn_dmg_perc,
-                               c_hp_perc_dmg, max_hp_perc_dmg, )  # value for full dmg before and mod or reduction
+        raw_dmg = generate_dmg(attacker, target, dmg_base, is_crit, wpn_dmg_pct,
+                               c_hp_pct_dmg, max_hp_pct_dmg, )  # value for full dmg before and mod or reduction
 
         #  other modification, not really generation, not really defense reduction
         dmg_dealt = raw_dmg * dmg_mod // 100  # modify for splash or primary dmg factor
@@ -157,17 +180,20 @@ def run_attack(attacker, target_party, target_num=1, primary=True, primary_perce
         else:
             dmg_received = defense_calc(dmg_dealt, target, elemental,)
             target.set_hp(-dmg_received)
+            if target.is_alive and status_effect:
+                status_effect['caster'] = attacker  # TODO: this seems a bit dirty
+                target.add_status_effect(status_effect)
 
             if not vamp == 0:
                 run_attack(attacker, attacker.party, 1, forced_primary_target=attacker,
-                           primary_percent=vamp, dmg_base=dmg_base, elemental='heal',
-                           reduction_calc=reduction_calc, can_dodge=False)
+                           primary_pct=vamp, dmg_base=dmg_base, elemental='heal',
+                           can_dodge=False)
 
             dmg_combined += dmg_received
-
-            verb = 'healed' if dmg_received < 0 else 'hit'
-            crit_str = ' with a crit!' if is_crit else '.'
-            print(f'{attacker.name} {verb} {target.name} for {abs(dmg_dealt)} pts{crit_str} {dmg_received} stuck.')
+            if p:
+                verb = 'healed' if dmg_received < 0 else 'hit'
+                crit_str = ' with a crit!' if is_crit else '.'
+                print(f'{attacker.name} {verb} {target.name} for {abs(dmg_dealt)} pts{crit_str} {abs(dmg_received)} stuck.')
         members_list.remove(target)
         target_num -= 1
     return dmg_combined
@@ -181,8 +207,10 @@ def print_combat_status(party_1, party_2):
             stat_list.append(member.profession)
             stat_list.append(member.hp)
             stat_list.append(member.max_hp)
-            stat_list.append(member.att_dmg_min)
-            stat_list.append(member.att_dmg_max)
+            stat_list.append(member.wpn_dmg)
+            stat_list.append(member.attack_dmg)
+            stat_list.append(member.hp_bar(length=20))
+            stat_list.append(member.mana_bar(length=10))
         else:
             return None
         return stat_list
@@ -193,20 +221,40 @@ def print_combat_status(party_1, party_2):
             hero_name = f'{h[0]}, the {h[1]}'
             hero_hp = f'Hp: {h[2]:>2}/{h[3]:<2}'
             hero_dmg = f'Dmg: {h[4]:>2}/{h[5]:<2}'
-            print(f'+ {hero_name:^23} '
+
+            print(f'+ {hero_name:^20} '
                   f'{hero_hp:<8} '
-                  f'{hero_dmg:<13} ', end='\t')
+                  f'{hero_dmg:<12} ', end='\t')
         else:
             print(f"{' ':<50}", end="   ")
         if e:
             enemy_name = f'{e[0]}, the {e[1]}'
             enemy_hp = f'Hp: {e[2]:>2}/{e[3]:<2}'
             enemy_dmg = f'Dmg: {e[4]:>2}/{e[5]:<2}'
-            print(f'- {enemy_name:^23} '
+            print(f'- {enemy_name:^20} '
                   f'{enemy_hp:<8} '
-                  f'{enemy_dmg:<13} ', end='    \n')
+                  f'{enemy_dmg:<12} ', end='    \n')
         else:
             print()
+
+        if h:
+            hero_hp_bar = f'HP {h[6]}'
+            hero_mana_bar = f'Mana: {h[7]}'
+
+            print(f' {hero_hp_bar:^40}'
+                  f' {hero_mana_bar:<15}', end='\t')
+        else:
+            print(f"{' ':<50}", end="   ")
+
+        if e:
+            enemy_hp_bar = f'HP {e[6]}'
+            enemy_mana_bar = f'Mana: {e[7]}'
+
+            print(f' {enemy_hp_bar:^40}'
+                  f' {enemy_mana_bar:<15}', end='    \n')
+        else:
+            print()
+
 
     print('=' * 17, end=' ')
     print('Hero Party', end=' ')
@@ -292,12 +340,30 @@ def whole_party_turn_battle(party_1, party_2):
 def clock_tick(party_1, party_2):
     all_members = party_1.members + party_2.members
     for member in all_members:
-        member.tracked_values['c'] += member.stats['speed']
+        member.tracked_values['c'] += member.speed
     all_members = sorted(all_members, key=lambda m: m.tracked_values['c'], reverse=True)
 
     # [print(f'c: {member.tracked_values["c"]} - name: {member.name}') for member in all_members]
     return all_members
 
+
+def tick_cool_downs(unit):
+    for spell in unit.spell_book:
+        if spell['cd_timer'] > 0:
+            spell['cd_timer'] -= 1
+
+
+def tick_status_effects(unit):
+    for se in unit.get_status_effects():
+        attack = se.get('attack_setup', None)
+        if attack:
+            run_attack(attacker=se['caster'], target_party=unit.party, forced_primary_target=unit, **attack)
+        se['ticks'] -= 1
+        if se['ticks'] < 1:
+            unit.remove_status_effect(se)
+
+def check_fleeing():
+    return 25 < random.randint(0,100)
 
 def clock_tick_battle(party_1, party_2):
     parties = [party_1, party_2]
@@ -306,33 +372,49 @@ def clock_tick_battle(party_1, party_2):
     for member in party_1.members + party_2.members:
         member.tracked_values['ct'] = 1000
         member.tracked_values['c'] = 0
-
-    while party_1.has_units_left and party_2.has_units_left:
+    is_fleeing = False
+    while party_1.has_units_left and party_2.has_units_left and not is_fleeing:
         all_members = clock_tick(party_1, party_2)
         c_ticks += 1
         # print(f'ticks: {c_ticks}')
         for member in all_members:
             if member.tracked_values['c'] > member.tracked_values['ct']:
+                if member.type == 'Hero':
+                    print(f'Clock Ticks: {c_ticks}')
+                    print_combat_status(party_1, party_2)
                 print(f'its {member.name}\'s turn!')
                 both_parties = parties.copy()
                 both_parties.remove(member.party)
                 enemy_party = both_parties[0]
                 action_taken = single_unit_turn(member, enemy_party)
+
+                member.set_mana(+member.mana_regen)
+
                 if action_taken == 'attack':
                     member.tracked_values['c'] = 0
                     member.tracked_values['ct'] = 1000
-                elif action_taken == 'heal':
+                elif action_taken == 'spell':
                     member.tracked_values['c'] = 0
-                    member.tracked_values['ct'] = 800
+                    member.tracked_values['ct'] = 1000
                 elif action_taken == 'skip turn':
                     pass
+                if action_taken == 'flee battle':
+                    is_fleeing = check_fleeing()
+                    if is_fleeing:
+                        break
                 if not enemy_party.has_units_left:
                     break
-    if party_1.has_units_left:
-        print('Party 1 has won the battle!')
-    else:
-        print('Party 2 has won the battle!')
-    return party_1.has_units_left
+                tick_cool_downs(member)
+                tick_status_effects(member)
+
+    # if party_1.has_units_left:
+    #     party_1.party_members_info()
+    #     print('Party 1 has won the battle!')
+    #     input('Congrats! Press Enter!')
+    #
+    # else:
+    #     print('Party 2 has won the battle!')
+    return party_2.has_units_left
 
 
 def initiative_battle(party_1, party_2):
