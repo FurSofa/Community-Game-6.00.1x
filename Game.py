@@ -24,8 +24,8 @@ class Game:
         self.lvl_map = Map.generate(self)
         self.difficulty = ''
         self.kill_count = {
-            'trash_mob': 0,
-            'elite_mob': 0,
+            'trash': 0,
+            'elite': 0,
             'boss': 0,
         }
 
@@ -160,7 +160,7 @@ class Game:
         """
         print('*' * 100)
         choice_list = ['Adventure', 'Camp']
-        if self.kill_count['trash_mob'] > 5:
+        if self.kill_count['trash'] > 5:
             choice_list.append('Boss Fight')
         choice_list.append('Party Info')
         choice = select_from_list(choice_list, f'\nWhat would you like to do\n ', index_pos=False, horizontal=True)
