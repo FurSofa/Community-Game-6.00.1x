@@ -9,7 +9,7 @@ from Class_Hero import *
 from helper_functions import *
 from battle import *
 from data_src import get_save_games, data
-from vfx import camp_fire
+import vfx
 
 project_path = os.getcwd()
 save_file_extention = '.json'
@@ -177,7 +177,7 @@ class Game:
                     self.adventure()
             elif event_loc_str == 'Camp':
                 print('\n' * 20)
-                print(camp_fire + '\n')
+                print(vfx.camp_fire + '\n')
                 print('  You build a beautiful camp fire.\n')
                 self.camp()
             else:
@@ -188,7 +188,7 @@ class Game:
                 self.event_handler(event)
         elif choice == 'Camp':
             print('\n' * 20)
-            print(camp_fire + '\n')
+            print(vfx.camp_fire + '\n')
             print('  You build a beautiful camp fire.\n')
             self.camp()
         elif choice == 'Party Info':
@@ -227,33 +227,27 @@ class Game:
         return keys
 
     def event_handler(self, event):
-        #  clear screen
+        clear_screen()
         print(f'{event["texts"]["start"]}')
         input('Press enter.')
         if event['enemies']:
             enemy_party = Party(self)
             for enemy_loc_str in event['enemies']:
                 #  generate enemy
-                level = 1  # self.party.hero.level
+                level = self.party.hero.level
                 enemy_keys = self.get_keys_from_loc_str(data.enemies, enemy_loc_str)
-                # e_type, e_unit = enemy.split('/')
-                # # handle rng
-                # random_trigger = 'rng'
-                # if e_type == random_trigger:
-                #     e_type = random.choice(list(data.enemys.keys()))
-                # if e_unit == random_trigger:
-                #     e_unit = random.choice(list(data.enemys[e_type].keys()))
-                #
-                # enemy_data = data.enemys[e_type][e_unit]
                 enemy_party.add_member(NPC.generate_enemy(enemy_keys, level), p=False)
 
             print(f'enemy party: {enemy_party}')
             player_won = clock_tick_battle(self.party, enemy_party)
+            vfx.clear_screen()
             if player_won:
                 xp = event['loot']['xp'] + enemy_party.party_worth_xp()
                 for member in self.party.members:
                     member.add_xp(xp)
                 self.count_kills(enemy_party)
+            input('Press enter.')
+            vfx.clear_screen()
             # award loot here
             print(f'{event["texts"]["end"]}')
             input('Press enter.')

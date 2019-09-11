@@ -67,7 +67,7 @@ class NPC:
         for stat in class_data['base'].keys():
             self.base_stats[stat[:-6]] = class_data['base'][stat]
 
-        self.spell_book = [x_Spell_Setups.heal.copy(), x_Spell_Setups.base_spell.copy()]
+        self.spell_book = [data.spells['heal'].copy(), data.spells['base_spell'].copy()]
 
         self.equip_slots = {'Main Hand': Weapon.generate(quality='Common', quality_val=1, etype='Weapon',
                                                          equipable_slot='Main Hand',
