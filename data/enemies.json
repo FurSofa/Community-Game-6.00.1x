@@ -4,7 +4,12 @@
       "names": [
         "Geoge",
         "Jim",
-        "Frank"
+        "Frank",
+        "Bob",
+        "Otto",
+        "Lisa",
+        "Sarah",
+        "Anna"
     ],
       "meta": {
         "low_lvl": -1,
@@ -31,9 +36,26 @@
     },
     "goblin": {
       "names": [
-        "xul",
-        "xan",
-        "xip"
+          "sruc",
+          "cirt",
+          "jozz",
+          "eerx",
+          "kliarx",
+          "prolkiel",
+          "zrikluilk",
+          "xaareaz",
+          "slerbord",
+          "gaalsot",
+          "roc",
+          "worx",
+          "briak",
+          "zeasz",
+          "grearx",
+          "zrilags",
+          "giorzegs",
+          "uiskeeld",
+          "raastelb",
+          "poviart"
     ],
       "meta": {
         "low_lvl": -1,
@@ -60,11 +82,11 @@
     }
   },
   "elite": {
-    "elite1": {
+    "ninja": {
       "names": [
-        "xul",
-        "xan",
-        "xip"
+        "ryu",
+        "sub zero",
+        "katsumi"
         ],
       "meta": {
         "low_lvl": -1,
@@ -119,6 +141,36 @@
         "int_start": 2,
         "agility_start": 6,
         "toughness_start": 1
+      }
+    },
+    "high_boss_test": {
+      "meta": {
+        "flat_lvl": 1,
+        "low_lvl": -1,
+        "high_lvl": 0,
+        "player_min_lvl": 5,
+        "xp": 20
+      },
+      "names": [
+        "Minky",
+        "Colin",
+        "Skeletor"
+        ],
+      "per_lvl": {
+        "vit_p_lvl": 2,
+        "dex_p_lvl": 3,
+        "str_p_lvl": 1,
+        "int_p_lvl": 2,
+        "agility_p_lvl": 2,
+        "toughness_p_lvl": 2
+      },
+      "base": {
+        "vit_start": 20,
+        "dex_start": 20,
+        "str_start": 20,
+        "int_start": 20,
+        "agility_start": 20,
+        "toughness_start": 6
       }
     }
   }

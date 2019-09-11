@@ -1,7 +1,6 @@
-import random
 from itertools import zip_longest
 from x_Attack_Setups import weapon_setups
-from data_src import data
+from data_src import *
 from combat_funcs import *
 import random
 
@@ -25,6 +24,7 @@ def battle_menu(attacker, enemy_party):
     possible_actions = ['Attack']
     possible_actions += ['Spell']
     possible_actions += ['Show Hero Stats', 'Skip turn']
+    possible_actions += ['Flee Battle']
 
     action = attacker.choose_battle_action(possible_actions).lower()
     if action == 'attack':
@@ -51,6 +51,8 @@ def battle_menu(attacker, enemy_party):
         # TODO: make heal a spell, fix this!
         attacker.set_hp(attacker.stats['int'] + random.randint(-2, 3))
     elif action == 'skip turn':
+        pass
+    elif action == 'flee battle':
         pass
     return action
 
@@ -360,6 +362,8 @@ def tick_status_effects(unit):
         if se['ticks'] < 1:
             unit.remove_status_effect(se)
 
+def check_fleeing():
+    return 25 < random.randint(0,100)
 
 def clock_tick_battle(party_1, party_2):
     parties = [party_1, party_2]
@@ -368,8 +372,8 @@ def clock_tick_battle(party_1, party_2):
     for member in party_1.members + party_2.members:
         member.tracked_values['ct'] = 1000
         member.tracked_values['c'] = 0
-
-    while party_1.has_units_left and party_2.has_units_left:
+    is_fleeing = False
+    while party_1.has_units_left and party_2.has_units_left and not is_fleeing:
         all_members = clock_tick(party_1, party_2)
         c_ticks += 1
         # print(f'ticks: {c_ticks}')
@@ -394,19 +398,23 @@ def clock_tick_battle(party_1, party_2):
                     member.tracked_values['ct'] = 1000
                 elif action_taken == 'skip turn':
                     pass
+                if action_taken == 'flee battle':
+                    is_fleeing = check_fleeing()
+                    if is_fleeing:
+                        break
                 if not enemy_party.has_units_left:
                     break
                 tick_cool_downs(member)
                 tick_status_effects(member)
 
-    if party_1.has_units_left:
-        party_1.party_members_info()
-        print('Party 1 has won the battle!')
-        input('Congrats! Press Enter!')
-
-    else:
-        print('Party 2 has won the battle!')
-    return party_1.has_units_left
+    # if party_1.has_units_left:
+    #     party_1.party_members_info()
+    #     print('Party 1 has won the battle!')
+    #     input('Congrats! Press Enter!')
+    #
+    # else:
+    #     print('Party 2 has won the battle!')
+    return party_2.has_units_left
 
 
 def initiative_battle(party_1, party_2):

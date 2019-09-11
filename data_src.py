@@ -3,7 +3,7 @@ import os
 from types import SimpleNamespace
 import random
 
-from Class_NPC import *
+
 
 project_root = os.getcwd()
 

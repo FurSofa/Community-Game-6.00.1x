@@ -236,21 +236,26 @@ class Game:
                 #  generate enemy
                 level = self.party.hero.level
                 enemy_keys = self.get_keys_from_loc_str(data.enemies, enemy_loc_str)
-                enemy_party.add_member(NPC.generate_enemy(enemy_keys, level), p=False)
+                enemy_party.add_member(NPC.generate_enemy(enemy_keys, level), p=False)  # TODO: pass xp from json to unit
 
             print(f'enemy party: {enemy_party}')
-            player_won = clock_tick_battle(self.party, enemy_party)
+            enemy_units_lef = clock_tick_battle(self.party, enemy_party)
             vfx.clear_screen()
-            if player_won:
+            if not enemy_units_lef:
                 xp = event['loot']['xp'] + enemy_party.party_worth_xp()
                 for member in self.party.members:
                     member.add_xp(xp)
-                self.count_kills(enemy_party)
+                input('Press enter.')
+                vfx.clear_screen()
+                # award loot here
+                print(f'{event["texts"]["end"]}')
+                input('Press enter.')
+            else:
+                if self.party.has_units_left:
+                    print(f'You got away.')
+            self.count_kills(enemy_party)
             input('Press enter.')
-            vfx.clear_screen()
-            # award loot here
-            print(f'{event["texts"]["end"]}')
-            input('Press enter.')
+
 
     def serialize(self):
         dummy = self.__dict__.copy()
