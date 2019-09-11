@@ -1,0 +1,127 @@
+{
+  "weapons": {
+    "single_attack_setup": {
+      "meta": {
+        "name": "Basic Attack",
+        "description": "The standard attack."
+      },
+      "setup": {
+        "target_num": 1,
+        "splash_dmg": 0,
+        "primary": true,
+        "primary_pct": 100,
+        "rnd_target": true,
+        "dmg_base": "dex",
+        "can_crit": true,
+        "can_dodge": true,
+        "vamp": 0,
+        "elemental": "physical"
+      },
+      "multi_attack_setup": {
+        "meta": {
+          "name": "Multi Target Attack",
+          "description": "Hits multiple targets."
+        },
+        "setup": {
+          "target_num": 3,
+          "splash_dmg": 50,
+          "primary": false,
+          "primary_pct": 100,
+          "rnd_target": true,
+          "dmg_base": "str",
+          "can_crit": true,
+          "vamp": 0,
+          "elemental": "physical"
+        }
+      },
+      "multi_attack_setup_prim_true": {
+        "meta": {
+          "name": "Multi Target Attack",
+          "description": "Hits multiple targets."
+        },
+        "setup": {
+            "target_num": 2,
+            "splash_dmg": 10,
+            "primary": true,
+            "primary_pct": 100,
+            "rnd_target": true,
+            "dmg_base": "dex",
+            "vamp": 0,
+            "can_crit": true,
+            "elemental": "true"
+          },
+        "single_attack_vamp": {
+            "meta": {
+              "name": "Single Target Spell Vamp",
+              "description": "Hits a single target and heals for a portion of the dmg"
+            },
+            "setup": {
+              "target_num": 1,
+              "splash_dmg": 0,
+              "primary": true,
+              "primary_pct": 100,
+              "rnd_target": true,
+              "dmg_base": "int",
+              "can_crit": true,
+              "vamp": 25,
+              "elemental": "physical"
+            }
+          }
+      }
+    }
+  },
+  "spells": {
+    "heal": {
+      "meta": {
+      },
+      "setup": {
+        "target_num": 1,
+        "primary": true,
+        "primary_pct": 100,
+        "rnd_target": true,
+        "splash_dmg": 0,
+        "elemental": "heal",
+        "vamp": 0,
+        "can_crit": true,
+        "dmg_base": "int",
+        "wpn_dmg_pct": 100,
+        "max_hp_pct_dmg": 0,
+        "c_hp_pct_dmg": 0,
+        "can_dodge": false
+      },
+      "base_spell": {
+        "meta": {
+        },
+        "setup": {
+          "target_num": 1,
+          "primary": true,
+          "primary_pct": 100,
+          "rnd_target": true,
+          "splash_dmg": 0,
+          "elemental": "physical",
+          "vamp": 0,
+          "can_crit": true,
+          "dmg_base": "int",
+          "wpn_dmg_pct": 100,
+          "max_hp_pct_dmg": 0,
+          "c_hp_pct_dmg": 0,
+          "can_dodge": true
+        }
+      }
+    }
+  },
+  "dots": {
+    "bleed": {
+      "meta": {
+      },
+      "setup": {
+        "target_num": 1,
+        "max_hp_pct_dmg": 3,
+        "can_dodge": "False",
+        "dmg_base": "dex",
+        "wpn_dmg_pct": 0,
+        "elemental": "physical"
+      }
+    }
+  }
+}

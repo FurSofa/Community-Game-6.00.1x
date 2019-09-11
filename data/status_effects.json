@@ -1,0 +1,18 @@
+{
+  "dex_buff": {
+    "name": "dex buff",
+    "description": "10% dex buff for 5 rounds",
+    "msg": "raises his power level",
+    "pct_dex": 10,
+    "flat_dex": 0,
+    "ticks": 5,
+    "attack_setup": "None"
+  },
+  "bleed": {
+    "name": "bleed",
+    "description": "dot effect",
+    "msg": "is bleeding all over the flor",
+    "ticks": 4,
+    "attack_setup": "dots/bleed"
+  }
+}
