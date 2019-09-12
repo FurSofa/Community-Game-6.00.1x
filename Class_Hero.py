@@ -1,5 +1,6 @@
 from Class_NPC import *
 from helper_functions import *
+from data_src import *
 
 
 class Hero(NPC):
@@ -58,7 +59,7 @@ class Hero(NPC):
         return action
 
     def get_data(self):
-        return data.hero_classes
+        return get_data_from_keys(data, ['hero_classes'])
 
     def get_class_data(self):
         class_key = self.profession

@@ -39,7 +39,9 @@ def battle_menu(attacker, enemy_party):
         else:
             setup_key = attacker.choose_attack(spell_options)
             setup = spell_options[setup_key]['attack_setup']
-            dmg_done = run_attack(attacker, enemy_party, **setup)
+            spell_keys = get_keys_from_loc_str(data, setup)
+            attack = get_data_from_keys(data, spell_keys)
+            dmg_done = run_attack(attacker, enemy_party, **attack['setup'])
             attacker.set_mana(-spell_options[setup_key]['mana_cost'])
             spell_options[setup_key]['cd_timer'] = spell_options[setup_key]['cool_down']
 
@@ -71,10 +73,10 @@ def generate_dmg(attacker, target, dmg_base='str', is_crit=False,
     c_hp_dmg = target.hp / 100 * c_hp_perc_dmg
     max_hp_dmg = target.max_hp / 100 * max_hp_perc_dmg
 
-    dmg_calc = data.conversion_ratios[dmg_base+'_to_dmg']
+    dmg_calc = get_data_from_keys(data, ['conversion_ratios', dmg_base+'_to_dmg'])
 
     dmg_wo_wpn = (attacker.__getattribute__(dmg_base) * dmg_calc['dmg_per_'+dmg_base]) + (attacker.level * dmg_calc['dmg_per_level'])
-    wpn_dmg = round((dmg_wo_wpn / 100) * data.conversion_ratios['b_dmg_wpn_dmg_factor'] * attacker.__getattribute__('wpn_dmg')) + attacker.__getattribute__('wpn_dmg') + dmg_calc['start']
+    wpn_dmg = round((dmg_wo_wpn / 100) * get_data_from_keys(data, ['conversion_ratios', 'b_dmg_wpn_dmg_factor']) * attacker.__getattribute__('wpn_dmg')) + attacker.__getattribute__('wpn_dmg') + dmg_calc['start']
 
     wpn_dmg = wpn_dmg / 100 * wpn_dmg_perc
 

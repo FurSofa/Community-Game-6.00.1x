@@ -8,7 +8,7 @@ from Class_Party import Party
 dummy_game = SimpleNamespace(difficulty='Easy')
 
 
-npc1 = Hero('h1', 'thief', 1)
+npc1 = Hero('h1', 'Thief', 1)
 npc2 = NPC()
 p1 = Party(dummy_game)
 p2 = Party(dummy_game)

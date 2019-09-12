@@ -56,7 +56,7 @@ class Game:
                 print('Ah, the quiet type huh? I\'ll just call you Steve.')
                 hero_name = 'Steve'
 
-            hero_profession = select_from_list([k for k in data.hero_classes.keys()],
+            hero_profession = select_from_list([k for k in data['hero_classes'].keys()],
                                                q=f'Now, {hero_name}, What is your profession?:\n')
             print(f'You look like a great {hero_profession}, {hero_name}. I should have guessed.')
             our_hero = self.create_character(hero_name, hero_profession)
@@ -170,9 +170,9 @@ class Game:
             if event_loc_str == 'random':
                 is_fight_trash = 50 < random.randint(0, 100)
                 if is_fight_trash:
-                    event_loc_str = 'default/rng'
-                    event_keys = self.get_keys_from_loc_str(data.events, event_loc_str)
-                    event = data.events[event_keys[0]][event_keys[1]]
+                    event_loc_str = 'events/default/rng'
+                    event_keys = get_keys_from_loc_str(data, event_loc_str)
+                    event = get_data_from_keys(data, event_keys)
                     self.event_handler(event)
                 else:
                     self.adventure()
@@ -184,8 +184,8 @@ class Game:
             else:
                 print(f'This will trigger a specific event once it is implemented')
 
-                event_keys = self.get_keys_from_loc_str(data.events, event_loc_str)
-                event = data.events[event_keys[0]][event_keys[1]]
+                event_keys = get_keys_from_loc_str(data, event_loc_str)
+                event = get_data_from_keys(data, event_keys)
                 self.event_handler(event)
         elif choice == 'Camp':
             print('\n' * 20)
@@ -217,16 +217,6 @@ class Game:
         self.game_over()
 
 
-    def get_keys_from_loc_str(self, data, key_str):
-        key_list = key_str.split('/')
-        keys = []
-        for key in key_list:
-            if key == 'rng':
-                key = random.choice(list(data.keys()))
-            keys.append(key)
-            data = data[key]
-        return keys
-
     def event_handler(self, event):
         clear_screen()
         for line in event["texts"]["start"]:
@@ -239,7 +229,7 @@ class Game:
             for enemy_loc_str in event['enemies']:
                 #  generate enemy
                 level = self.party.hero.level
-                enemy_keys = self.get_keys_from_loc_str(data.enemies, enemy_loc_str)
+                enemy_keys = get_keys_from_loc_str(data, enemy_loc_str)
                 enemy_party.add_member(NPC.generate_enemy(enemy_keys, level), p=False)  # TODO: pass xp from json to unit
 
             print(f'enemy party: {enemy_party}')

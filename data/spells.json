@@ -4,7 +4,7 @@
         "description": "this is just an example for testing. a basic attack.",
         "mana_cost": 5,
         "cool_down": 2,
-        "attack_setup": "spells/base_spell",
+        "attack_setup": "attack_setups/spells/base_spell",
         "cd_timer": 0
     },
     "heal": {
@@ -12,7 +12,7 @@
         "description": "Heals the target.",
         "mana_cost": 5,
         "cool_down": 2,
-        "attack_setup": "spells/heal",
+        "attack_setup": "attack_setups/spells/heal",
         "cd_timer": 0
     }
 }
