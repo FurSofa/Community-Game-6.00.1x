@@ -35,7 +35,8 @@ class Game:
          Create new character
          Allows selection of char and reroll of stats
          """
-        return Hero.generate(name, profession, level)
+        unit_loc_str = 'heroes/bases/'+profession
+        return Hero.generate_unit(unit_loc_str, level, name)
 
     def create_random_character(self, cls=NPC):
         """
@@ -56,7 +57,7 @@ class Game:
                 print('Ah, the quiet type huh? I\'ll just call you Steve.')
                 hero_name = 'Steve'
 
-            hero_profession = select_from_list([k for k in data['hero_classes'].keys()],
+            hero_profession = select_from_list(list(get_data_from_loc_str(data, 'heroes/bases').keys()),
                                                q=f'Now, {hero_name}, What is your profession?:\n')
             print(f'You look like a great {hero_profession}, {hero_name}. I should have guessed.')
             our_hero = self.create_character(hero_name, hero_profession)
@@ -75,7 +76,7 @@ class Game:
 
     def count_kills(self, enemy_party):
         for dead_enemy in enemy_party.dead_members:
-            self.kill_count[dead_enemy.type] += 1
+            self.kill_count[dead_enemy.u_type] += 1
 
     def adventure(self):
         event = randrange(3)
@@ -198,7 +199,7 @@ class Game:
         elif choice == 'Boss Fight':
             enemy_party = Party.generate(self)
             enemy_party.add_member(
-                NPC.generate_random(level=randint(self.party.hero.level - 1, self.party.hero.level), type='boss'),
+                NPC.generate_random(level=randint(self.party.hero.level - 1, self.party.hero.level), u_type='boss'),
                 p=False)
             player_won = clock_tick_battle(self.party, enemy_party)
             if player_won:
@@ -230,10 +231,15 @@ class Game:
             for enemy_loc_str in event['enemies']:
                 #  generate enemy
                 level = self.party.hero.level
-                enemy_keys = get_keys_from_loc_str(data, enemy_loc_str)
-                enemy_party.add_member(NPC.generate_enemy(enemy_keys, level), p=False)  # TODO: pass xp from json to unit
+                # enemy = get_data_from_loc_str(data, enemy_loc_str)
+                #
+                #
+                # enemy_keys = get_keys_from_loc_str(data, enemy_loc_str)
+                enemy_party.add_member(
+                    NPC.generate_unit(enemy_loc_str, level),
+                    p=False)
 
-            print(f'enemy party: {enemy_party}')
+            # print(f'enemy party: {enemy_party}')
             enemy_units_lef = clock_tick_battle(self.party, enemy_party)
             vfx.clear_screen()
             if not enemy_units_lef:

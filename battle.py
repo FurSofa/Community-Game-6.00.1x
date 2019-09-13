@@ -364,8 +364,10 @@ def tick_status_effects(unit):
         if se['ticks'] < 1:
             unit.remove_status_effect(se)
 
+
 def check_fleeing():
     return 25 < random.randint(0,100)
+
 
 def clock_tick_battle(party_1, party_2):
     parties = [party_1, party_2]
@@ -381,7 +383,7 @@ def clock_tick_battle(party_1, party_2):
         # print(f'ticks: {c_ticks}')
         for member in all_members:
             if member.tracked_values['c'] > member.tracked_values['ct']:
-                if member.type == 'Hero':
+                if member.party.has_hero:
                     print(f'Clock Ticks: {c_ticks}')
                     print_combat_status(party_1, party_2)
                 print(f'its {member.name}\'s turn!')
@@ -408,14 +410,6 @@ def clock_tick_battle(party_1, party_2):
                     break
                 tick_cool_downs(member)
                 tick_status_effects(member)
-
-    # if party_1.has_units_left:
-    #     party_1.party_members_info()
-    #     print('Party 1 has won the battle!')
-    #     input('Congrats! Press Enter!')
-    #
-    # else:
-    #     print('Party 2 has won the battle!')
     return party_2.has_units_left
 
 

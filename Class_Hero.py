@@ -4,14 +4,21 @@ from data_src import *
 
 
 class Hero(NPC):
-    def __init__(self, name, profession, level, new_char=True, type='Hero'):
-        super().__init__(name, profession, level)
-        _ = type
-        self.type = 'Hero'
+    def __init__(self, name, profession, u_type, worth_xp,
+                 base_stats,
+                 spell_book, equip_slots, tracked_values,
+                 hero=True, level=1, xp=0, next_level=20):
+        super().__init__(name, profession, u_type, worth_xp,
+                         base_stats,
+                         spell_book, equip_slots, tracked_values,
+                         hero, level, xp, next_level)
+        # _ = unit_type
+        # self.type = 'Hero'
 
     @classmethod
-    def generate(cls, name='Mr. Lazy', profession='Warrior', level=1, new_char=True, type='Hero'):
+    def generate(cls, name='Mr. Lazy', profession='Warrior', level=1, type='Hero'):
         return cls(name, profession, level, new_char, type=type)
+
 
     @classmethod
     def generate_random(cls, level=1, type='Hero'):
@@ -59,11 +66,11 @@ class Hero(NPC):
         return action
 
     def get_data(self):
-        return get_data_from_keys(data, ['hero_classes'])
+        return get_data_from_keys(data, ['heroes'])
 
-    def get_class_data(self):
-        class_key = self.profession
-        return self.get_data()[class_key]
+    # def get_class_data(self):
+    #     class_key = self.profession
+    #     return self.get_data()[class_key]
 
 # Testing Code!
 if __name__ == '__main__':

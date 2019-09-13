@@ -9,96 +9,31 @@ import battle
 from types import SimpleNamespace
 from data_src import *
 
-test_weapon = {
-            'base_stats': {
-                'vit': 1,
-                'dex': 2,
-                'str': 0,
-                'int': 0,
-                'agility': 1,
-                'toughness': 1,
-            },
-            'stats': {
-                'max_hp': 13,
-                'max_mana': 10,
-                'armor': 0,
-                'magic_resistance': 0,
-                'speed': 0,
-                'dodge': 0,
-                'crit_chance': 2,
-                'crit_dmg': 20,
-                'elemental_resistance': 10,
-                'wpn_dmg': 5,
-            },
-            'attack_name': 'single_attack_setup',
-            'attack_setup': weapon_setups['single_attack_setup'],
-        }
-
 
 class NPC:
 
-    def __init__(self, name='Mr. Lazy', profession='goblin', level=1, new_char=True, type='trash'):
-        """
-        Create new person """
-
-        self.hero = False
+    def __init__(self, name, profession, u_type, worth_xp,
+                 base_stats,
+                 spell_book, equip_slots, tracked_values,
+                 hero=False, level=1, xp=0, next_level=20):
+        self.hero = hero
         self.name = name
         self.profession = profession
         self.party = None  # Only one party at a time
-        self.type = type
+        self.u_type = u_type
 
-        self.level = 1
-        self.xp = 0
-        self.next_level = 20
-        self.worth_xp = 5
+        self.level = level
+        self.xp = xp
+        self.next_level = next_level
+        self.worth_xp = worth_xp
 
-        self.base_stats = {
-                            'vit': 1,
-                            'dex': 1,
-                            'str': 1,
-                            'int': 1,
-                            'agility': 1,
-                            'toughness': 1,
-                        }
+        self.base_stats = base_stats
 
-        # rewrite base stats for class_type from setup file TODO: move to generator
-        class_data = self.get_class_data()
-
-        for stat in class_data['base'].keys():
-            self.base_stats[stat[:-6]] = class_data['base'][stat]
-
-        self.spell_book = [get_data_from_keys(data, ['spells', 'heal']).copy()]
-
-        self.equip_slots = {'Main Hand': Weapon.generate(quality='Common', quality_val=1, etype='Weapon',
-                                                         equipable_slot='Main Hand',
-                                                         att_dmg_min=1, att_dmg_max=3),
-                            'Off Hand': None,
-                            'Head': None,
-                            'Chest': None,
-                            'Legs': None,
-                            'Feet': None,
-                            'Ring': None,
-                            'Necklace': None,
-                            }
+        self.spell_book = spell_book
+        self.equip_slots = equip_slots
 
         # self.tracked_values = 'test'
-        self.tracked_values = {
-            'ct': 1000,
-            'c': 0, 'status_effects': [],
-            'hp': 1,
-            'mana': 1
-        }
-
-        if new_char:
-            level_up_counter = 1
-            while level_up_counter < level:
-                self.level_up(p=False)
-                level_up_counter += 1
-        # self.calculate_stats_with_equipment()
-
-        # TODO: why is this? fix mana and hp init
-        self.tracked_values['hp'] = self.max_hp
-        self.tracked_values['mana'] = self.max_mana
+        self.tracked_values = tracked_values
 
     def get_conversion_ratios(self):
         return get_data_from_keys(data, ['conversion_ratios'])
@@ -109,8 +44,9 @@ class NPC:
     def get_class_data(self):
         # TODO: make get_class_data work for enemy stats and move tho to hero
         class_key = self.profession
-        mob_type = self.type
-        return self.get_data()[mob_type][class_key]
+        mob_type = self.u_type
+        return get_data_from_loc_str(self.get_data(), f'{mob_type}/{class_key}')
+        # return self.get_data()[mob_type][class_key]
 
     def get_stat_from_equipment(self, stat, base_stat=True):
         gear = self.get_equipped_items()
@@ -516,7 +452,7 @@ class NPC:
     def show_stats(self):
         print(f'\n{self.name},the {self.profession}\n'
               f'Level:\t{self.level:>4}  XP: {self.xp:>6}/{self.next_level}\n'
-              f'HP:\t   {self.tracked_values["hp"]}/{self.max_hp:<4}\n'
+              f'HP:\t   {self.hp}/{self.max_hp:<4}\n'
               f'Str:\t   {self.str:<3}Damage: {self.wpn_dmg:>3}/{self.attack_dmg:<3}\n' 
               f'Dex:\t   {self.dex:<3}Crit:  {self.crit_chance}%/{self.crit_dmg}%\n'
               f'Int:\t   {self.int:<3}Defence: {self.armor:>5}\n')
@@ -623,22 +559,87 @@ class NPC:
         #     profession = 'Bard of Bass'
         return cls(name, profession, level, type=e_type)
 
+    # @classmethod
+    # def generate_unit(cls, enemy_keys, level):
+    #     e_type = enemy_keys[1]
+    #     e_unit = enemy_keys[2]
+    #     enemy_data = get_data_from_keys(data, enemy_keys)
+    #     name = random.choice(enemy_data['names'])
+    #     flat_level = enemy_data.get('flat_lvl', None)
+    #     if flat_level:
+    #         level = flat_level
+    #     else:
+    #         low_lvl = enemy_data['meta'].get('low_lvl', level)
+    #         high_lvl = enemy_data['meta'].get('high_lvl', level)
+    #         lvl_mod = random.randint(low_lvl, high_lvl)
+    #         level += lvl_mod
+    #     return NPC(name, e_unit, level, type=e_type)
+
     @classmethod
-    def generate_enemy(cls, enemy_keys, level):
-        e_type = enemy_keys[1]
-        e_unit = enemy_keys[2]
-        enemy_data = get_data_from_keys(data, enemy_keys)
-        name = random.choice(enemy_data['names'])
-        flat_level = enemy_data.get('flat_lvl', None)
+    def generate_unit(cls, unit_loc_str, level, name=''):
+        keys = get_keys_from_loc_str(data, unit_loc_str)
+        cls_type, unit_class, unit_type = keys
+        # if cls_type == 'enemies':
+        #     cls = NPC
+        # elif cls_type == 'hero_class':
+        #     cls = Hero
+        unit_data = get_data_from_keys(data, keys)
+        if not name:
+            name = random.choice(unit_data['names'])
+        meta_data = unit_data.get('meta', {})
+
+        profession = unit_type
+        u_type = unit_class
+        base_data = unit_data['base']
+        xp_worth = meta_data.get('xp', 0)
+        base_stats = {
+            'vit': base_data['vit_start'],
+            'dex': base_data['dex_start'],
+            'str': base_data['str_start'],
+            'int': base_data['int_start'],
+            'agility': base_data['agility_start'],
+            'toughness': base_data['toughness_start'],
+        }
+        spell_book = []
+
+        equip_slots = {
+            'Main Hand': Weapon.generate(quality='Common', quality_val=1, etype='Weapon',
+                                         equipable_slot='Main Hand',
+                                         att_dmg_min=1, att_dmg_max=3),
+            'Off Hand': None,
+            'Head': None,
+            'Chest': None,
+            'Legs': None,
+            'Feet': None,
+            'Ring': None,
+            'Necklace': None,
+        }
+
+        tracked_values = {
+            'ct': 1000,
+            'c': 0,
+            'status_effects': [],
+            'hp': 100,
+            'mana': 100
+        }
+
+        unit = cls(name, profession, u_type, xp_worth,
+                   base_stats,
+                   spell_book, equip_slots, tracked_values)
+        flat_level = meta_data.get('flat_lvl', None)
         if flat_level:
             level = flat_level
         else:
-            low_lvl = enemy_data['meta'].get('low_lvl', level)
-            high_lvl = enemy_data['meta'].get('high_lvl', level)
+            low_lvl = meta_data.get('low_lvl', level)
+            high_lvl = meta_data.get('high_lvl', level)
             lvl_mod = random.randint(low_lvl, high_lvl)
             level += lvl_mod
-        return NPC(name, e_unit, level, type=e_type)
 
+        while unit.level < level:
+            unit.level_up(p=False)
+        unit.set_hp(full=True)
+        unit.set_mana(full=True)
+        return unit
 
     def serialize(self):
         dummy = copy.deepcopy(self.__dict__)
@@ -650,8 +651,10 @@ class NPC:
 
     @classmethod
     def deserialize(cls, save_data):
-        dummy = cls.generate(new_char=False)
-        dummy.__dict__ = save_data.copy()
+        # dummy = cls.generate(new_char=False)
+        # dummy.__dict__ = save_data.copy()
+        save_data.pop('party')
+        dummy = cls(**save_data)
         for key, item in dummy.equip_slots.items():
             if item:
                 dummy.equip_slots[key] = Equipment.deserialize(item)
