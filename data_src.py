@@ -20,6 +20,8 @@ data_file_ext = '.json'
 saves_path = os.path.join(project_root, save_folder)
 data_path = os.path.join(project_root, data_folder)
 
+if save_folder not in os.listdir(project_root):
+    os.mkdir(save_folder)
 
 def get_save_games():
     return [fn[:-len(save_file_ext)] for fn in os.listdir(os.path.join(project_root, save_folder))
@@ -27,11 +29,11 @@ def get_save_games():
 
 
 def get_data():
-    f_data = SimpleNamespace()
+    f_data = {}
     for fn in os.listdir(data_path):
         if fn[-len(data_file_ext):] == data_file_ext:
             with open(os.path.join(data_path, fn), 'r') as f:
-                f_data.__setattr__(fn[:-len(data_file_ext)], json.load(f))
+                f_data[fn[:-len(data_file_ext)]] = json.load(f)
     return f_data
 
 
@@ -48,3 +50,19 @@ def get_attack_setup(item):
     atks_loc = item.get('attack_setup').split('/')
     return data.attack_setups[atks_loc[0]][atks_loc[1]]
 
+
+def get_keys_from_loc_str(data, key_str):
+    key_list = key_str.split('/')
+    keys = []
+    for key in key_list:
+        if key == 'rng':
+            key = random.choice(list(data.keys()))
+        keys.append(key)
+        data = data[key]
+    return keys
+
+
+def get_data_from_keys(data, keys):
+    for key in keys:
+        data = data[key]
+    return data

@@ -3,7 +3,7 @@ import random
 
 from helper_functions import select_from_list
 from vfx import clear_screen
-from data_src import data
+from data_src import *
 
 rand_event_chance = 30
 
@@ -172,7 +172,7 @@ class Map:
                 },
                 'char': 'x',
                 'description': f'Event Nr {num + 1}',
-                'event_key': 'elite/' + random.choice(list(data.events['elite'].keys()))
+                'event_key': 'events/elite/' + random.choice(list(data['events']['elite'].keys()))
             } for num in range(event_num)
         ]
 

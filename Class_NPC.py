@@ -7,7 +7,7 @@ import x_Spell_Setups
 from Item_Bases import *
 import battle
 from types import SimpleNamespace
-from data_src import data
+from data_src import *
 
 test_weapon = {
             'base_stats': {
@@ -37,7 +37,7 @@ test_weapon = {
 
 class NPC:
 
-    def __init__(self, name='Mr. Lazy', profession='str_class', level=1, new_char=True, type='trash_mob'):
+    def __init__(self, name='Mr. Lazy', profession='goblin', level=1, new_char=True, type='trash'):
         """
         Create new person """
 
@@ -67,7 +67,7 @@ class NPC:
         for stat in class_data['base'].keys():
             self.base_stats[stat[:-6]] = class_data['base'][stat]
 
-        self.spell_book = [data.spells['heal'].copy(), data.spells['base_spell'].copy()]
+        self.spell_book = [get_data_from_keys(data, ['spells', 'heal']).copy()]
 
         self.equip_slots = {'Main Hand': Weapon.generate(quality='Common', quality_val=1, etype='Weapon',
                                                          equipable_slot='Main Hand',
@@ -101,10 +101,10 @@ class NPC:
         self.tracked_values['mana'] = self.max_mana
 
     def get_conversion_ratios(self):
-        return data.conversion_ratios
+        return get_data_from_keys(data, ['conversion_ratios'])
 
     def get_data(self):
-        return data.enemies
+        return get_data_from_keys(data, ['enemies'])
 
     def get_class_data(self):
         # TODO: make get_class_data work for enemy stats and move tho to hero
@@ -625,9 +625,9 @@ class NPC:
 
     @classmethod
     def generate_enemy(cls, enemy_keys, level):
-        e_type = enemy_keys[0]
-        e_unit = enemy_keys[1]
-        enemy_data = data.enemies[e_type][e_unit]
+        e_type = enemy_keys[1]
+        e_unit = enemy_keys[2]
+        enemy_data = get_data_from_keys(data, enemy_keys)
         name = random.choice(enemy_data['names'])
         flat_level = enemy_data.get('flat_lvl', None)
         if flat_level:
