@@ -1,5 +1,5 @@
 from itertools import zip_longest
-from x_Attack_Setups import weapon_setups
+
 from data_src import *
 from combat_funcs import *
 import random
@@ -23,7 +23,7 @@ def battle_menu(attacker, enemy_party):
 
     possible_actions = ['Attack']
     possible_actions += ['Spell']
-    possible_actions += ['Show Hero Stats', 'Skip turn']
+    possible_actions += ['Show Hero Stats']  # , 'Skip turn']
     possible_actions += ['Flee Battle']
 
     action = attacker.choose_battle_action(possible_actions).lower()
@@ -48,10 +48,6 @@ def battle_menu(attacker, enemy_party):
     elif action == 'show hero stats':
         attacker.party.display_single_member_item_card(attacker)
         action = battle_menu(attacker, enemy_party)
-
-    elif action == 'heal':
-        # TODO: make heal a spell, fix this!
-        attacker.set_hp(attacker.stats['int'] + random.randint(-2, 3))
     elif action == 'skip turn':
         pass
     elif action == 'flee battle':
@@ -383,7 +379,7 @@ def clock_tick_battle(party_1, party_2):
         # print(f'ticks: {c_ticks}')
         for member in all_members:
             if member.tracked_values['c'] > member.tracked_values['ct']:
-                if member.party.has_hero:
+                if member.hero:
                     print(f'Clock Ticks: {c_ticks}')
                     print_combat_status(party_1, party_2)
                 print(f'its {member.name}\'s turn!')

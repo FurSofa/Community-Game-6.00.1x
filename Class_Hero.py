@@ -21,7 +21,7 @@ class Hero(NPC):
 
 
     @classmethod
-    def generate_random(cls, level=1, type='Hero'):
+    def generate_random(cls, level=1):
         """
         Create new random character at level 1
         """
@@ -30,14 +30,14 @@ class Hero(NPC):
         #                       'Leo', 'Phylis', 'Lindsay', 'Tongo', 'Paku', ])
         # profession = random.choice(['Warrior', 'Archer', 'Mage', 'Blacksmith', 'Thief', 'Bard'])
         _ = type
-        profession = random.choice([p for p in data.hero_classes.keys()])
+        profession = random.choice(list(get_data_from_loc_str(data, 'heroes/bases').keys()))
         name = random.choice(data.hero_classes[profession]['names'])
 
         # if name == 'Minky':
         #     profession = 'Miffy Muffin'
         # if name == 'Colin':
         #     profession = 'Bard of Bass'
-        return cls(name, profession, level, type='Hero')
+        return cls.generate_unit(name, 'heroes/bases/rng', level)
 
 
     def __str__(self):

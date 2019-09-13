@@ -15,18 +15,19 @@
                 "toughness_p_lvl": 2
             },
             "base": {
-                "vit_start": 4,
-                "dex_start": 9,
-                "str_start": 4,
-                "int_start": 2,
-                "agility_start": 6,
-                "toughness_start": 1
+                "vit": 4,
+                "dex": 9,
+                "str": 4,
+                "int": 2,
+                "agility": 6,
+                "toughness": 1
             }
         },
         "Warrior": {
             "names": [
                 "Conan",
                 "He Man",
+                "She Ra",
                 "Highlander"
             ],
             "per_lvl": {
@@ -38,12 +39,12 @@
                 "toughness_p_lvl": 2
             },
             "base": {
-                "vit_start": 6,
-                "dex_start": 4,
-                "str_start": 8,
-                "int_start": 1,
-                "agility_start": 5,
-                "toughness_start": 2
+                "vit": 6,
+                "dex": 4,
+                "str": 8,
+                "int": 1,
+                "agility": 5,
+                "toughness": 2
             }
         },
         "Mage": {
@@ -61,12 +62,12 @@
                 "toughness_p_lvl": 1
             },
             "base": {
-                "vit_start": 4,
-                "dex_start": 4,
-                "str_start": 2,
-                "int_start": 10,
-                "agility_start": 5,
-                "toughness_start": 1
+                "vit": 4,
+                "dex": 4,
+                "str": 2,
+                "int": 10,
+                "agility": 5,
+                "toughness": 1
             }
         }
     }

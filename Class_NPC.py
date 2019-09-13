@@ -289,7 +289,6 @@ class NPC:
     def attack_dmg(self):
         dmg_base = self.equip_slots['Main Hand'].attack_setup['dmg_base']
         dummy_target = SimpleNamespace(hp=1, max_hp=1)
-        # TODO: get dot notation for the dummy going
         return battle.generate_dmg(self, dummy_target, dmg_base=dmg_base)
 
     def stat_growth(self):
@@ -435,7 +434,7 @@ class NPC:
         stats_int = f'Int: {self.int}'
 
         dmg_w = 'DMG: '
-        dmg_stat = f'{self.wpn_dmg}/{self.attack_dmg}'  # 11  # TODO: get calculated dmg?
+        dmg_stat = f'{self.wpn_dmg}/{self.attack_dmg}'  # 11
         crit_w = f'Crit %: '
         crit_stat = f'{self.crit_chance:>2}/{self.crit_dmg:<3}'  # 15
 
@@ -460,7 +459,7 @@ class NPC:
     def show_combat_stats(self):
         name = f'{self.name}, the {self.profession}'
         hp = f'Hp: {self.hp:>2}/{self.max_hp:<2}'
-        dmg = f'Dmg: {self.wpn_dmg:>2}/{self.attack_dmg:<2}'  # TODO: get calculated stats?
+        dmg = f'Dmg: {self.wpn_dmg:>2}/{self.attack_dmg:<2}'
         return f'{name:^23} ' \
                f'{hp:<8} ' \
                f'{dmg:<13}'
@@ -590,16 +589,18 @@ class NPC:
 
         profession = unit_type
         u_type = unit_class
-        base_data = unit_data['base']
+
         xp_worth = meta_data.get('xp', 0)
-        base_stats = {
-            'vit': base_data['vit_start'],
-            'dex': base_data['dex_start'],
-            'str': base_data['str_start'],
-            'int': base_data['int_start'],
-            'agility': base_data['agility_start'],
-            'toughness': base_data['toughness_start'],
-        }
+        # base_data = unit_data['base']
+        # base_stats = {
+        #     'vit': base_data['vit_start'],
+        #     'dex': base_data['dex_start'],
+        #     'str': base_data['str_start'],
+        #     'int': base_data['int_start'],
+        #     'agility': base_data['agility_start'],
+        #     'toughness': base_data['toughness_start'],
+        # }
+        base_stats = unit_data['base']
         spell_book = []
 
         equip_slots = {
