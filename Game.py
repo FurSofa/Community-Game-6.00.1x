@@ -171,8 +171,9 @@ class Game:
                 is_fight_trash = 50 < random.randint(0, 100)
                 if is_fight_trash:
                     event_loc_str = 'events/default/rng'
-                    event_keys = get_keys_from_loc_str(data, event_loc_str)
-                    event = get_data_from_keys(data, event_keys)
+                    event = get_data_from_loc_str(data, event_loc_str)
+                    # event_keys = get_keys_from_loc_str(data, event_loc_str)
+                    # event = get_data_from_keys(data, event_keys)
                     self.event_handler(event)
                 else:
                     self.adventure()
