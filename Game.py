@@ -224,18 +224,28 @@ class Game:
                 xp = event['loot']['xp'] + enemy_party.party_worth_xp()
                 for member in self.party.members:
                     member.add_xp(xp)
-                # award loot here
-                input('Press enter.')
-                vfx.clear_screen()
-                for line in event["texts"]["end"]:
-                    print(f'{line:^80}')  # end='\n')
-                    sleep(0.5)
+
+                # TODO: award loot here? would mean only loot for fights
                 input('Press enter.')
             else:
                 if self.party.has_units_left:
                     print(f'You got away.')
             self.count_kills(enemy_party)
-            input('Press enter.')
+        for char_loc_str in event.get('party_add', []):
+            new_member = Hero.generate_unit(char_loc_str, self.party.members[0].level)
+            print(f'{new_member.name}, the {new_member.profession}, lvl: {new_member.level}')
+
+            add_choice = select_from_list(['Yes', 'No'], q=f'Do you want {new_member.name} to join your Party?',
+                                          index_pos=False, horizontal=True)
+            if add_choice == 'Yes':
+                self.party.add_member(new_member)
+        vfx.clear_screen()
+        for line in event["texts"]["end"]:
+            print(f'{line:^80}')  # end='\n')
+            sleep(0.5)
+        input('Press enter.')
+
+
 
     def serialize(self):
         dummy = self.__dict__.copy()

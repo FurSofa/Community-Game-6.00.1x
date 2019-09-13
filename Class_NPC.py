@@ -298,7 +298,7 @@ class NPC:
 
     def level_up(self, p=True):
         self.level += 1
-        self.xp -= self.next_level
+        self.xp = 0
         self.next_level = round(4 * (self.level ** 3) / 5) + 20
         if p:
             print(f'{self.name} is now level {self.level}!')
@@ -631,8 +631,8 @@ class NPC:
         if flat_level:
             level = flat_level
         else:
-            low_lvl = meta_data.get('low_lvl', level)
-            high_lvl = meta_data.get('high_lvl', level)
+            low_lvl = meta_data.get('low_lvl', 0)
+            high_lvl = meta_data.get('high_lvl', 0)
             lvl_mod = random.randint(low_lvl, high_lvl)
             level += lvl_mod
 

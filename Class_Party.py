@@ -177,10 +177,20 @@ class Party:
         :param member: NPC or Hero class object
         :return:
         """
+
         member.party = self
         self.members.append(member)
         if p:
             print(f'{member.name}, the {member.profession} joins the party!')
+        if len(self.members) > 3:
+            print(f'Your party is to big!')
+            m_index = select_from_list([f'{m.name} the {m.profession}' for m in self.members],
+                                       q='Whom do you want to leave behind?', index_pos=True, horizontal=True)
+            self.remove_member(self.members[m_index])
+
+    def remove_member(self, member):
+        print(f'{member.name} the {member.profession} (level: {member.level}) is leaving the party.')
+        self.members.remove(member)
 
     #  inventory and trading
     def inventory_menu(self):
