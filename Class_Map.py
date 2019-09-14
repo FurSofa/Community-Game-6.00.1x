@@ -153,12 +153,12 @@ class Map:
                 if random.randint(0, 100) < rand_event_chance:
                     return 'random'
 
-
-    @classmethod
-    def generate(cls, game, tile_width=8, tile_rows=8, event_num=30, world_w=2, world_r=2, party_loc_x=0, party_loc_y=0):
-        base_map = Map.generate_new_level(world_w, world_r, tile_width, tile_rows)
-
-        events = [
+    def generate_and_place_events(self, event_loc_str, event_num, event_char='x'):
+        world_r = len(self.base_map)
+        world_w = len(self.base_map[0])
+        tile_rows = len(self.base_map[0][0])
+        tile_width = len(self.base_map[0][0][0])
+        new_events = [
             {
                 'pos': {
                     't': {
@@ -170,13 +170,39 @@ class Map:
                         'y': random.randint(0, world_r - 1),
                     }
                 },
-                'char': 'x',
+                'char': event_char,
                 'description': f'Event Nr {num + 1}',
-                'event_key': 'events/elite/' + random.choice(list(data['events']['elite'].keys()))
+                'event_key': event_loc_str
             } for num in range(event_num)
         ]
+        self.events += new_events
 
-        return cls(game=game, base_map=base_map, events=events, p_loc_tx=party_loc_x, p_loc_ty=party_loc_y)
+    @classmethod
+    def generate(cls, game, tile_width=8, tile_rows=8, elite_events=30, world_w=2, world_r=2, party_loc_x=0, party_loc_y=0):
+        base_map = Map.generate_new_level(world_w, world_r, tile_width, tile_rows)
+        events = []
+        # events = [
+        #     {
+        #         'pos': {
+        #             't': {
+        #                 'x': random.randint(0, tile_width - 1),
+        #                 'y': random.randint(0, tile_rows - 1)
+        #             },
+        #             'w': {
+        #                 'x': random.randint(0, world_w - 1),
+        #                 'y': random.randint(0, world_r - 1),
+        #             }
+        #         },
+        #         'char': 'x',
+        #         'description': f'Event Nr {num + 1}',
+        #         'event_key': 'events/default/new random member'
+        #     } for num in range(elite_events)
+        # ]
+        map_cls = cls(game=game, base_map=base_map, events=events, p_loc_tx=party_loc_x, p_loc_ty=party_loc_y)
+        map_cls.generate_and_place_events('events/default/new random member', 5, 'M')
+        map_cls.generate_and_place_events('events/elite/rng', 25, 'E')
+        map_cls.generate_and_place_events('events/test/high_boss', 1, 'B')
+        return map_cls
 
     @classmethod
     def generate_new_level(cls, world_width=3, world_rows=3, tile_width=3, tile_rows=3):

@@ -35,7 +35,8 @@ class Game:
          Create new character
          Allows selection of char and reroll of stats
          """
-        return Hero.generate(name, profession, level)
+        unit_loc_str = 'heroes/bases/'+profession
+        return Hero.generate_unit(unit_loc_str, level, name)
 
     def create_random_character(self, cls=NPC):
         """
@@ -56,7 +57,7 @@ class Game:
                 print('Ah, the quiet type huh? I\'ll just call you Steve.')
                 hero_name = 'Steve'
 
-            hero_profession = select_from_list([k for k in data['hero_classes'].keys()],
+            hero_profession = select_from_list(list(get_data_from_loc_str(data, 'heroes/bases').keys()),
                                                q=f'Now, {hero_name}, What is your profession?:\n')
             print(f'You look like a great {hero_profession}, {hero_name}. I should have guessed.')
             our_hero = self.create_character(hero_name, hero_profession)
@@ -75,43 +76,23 @@ class Game:
 
     def count_kills(self, enemy_party):
         for dead_enemy in enemy_party.dead_members:
-            self.kill_count[dead_enemy.type] += 1
+            self.kill_count[dead_enemy.u_type] += 1
 
     def adventure(self):
         event = randrange(3)
         print(event)
         if event == 0:
             print(f'You found another traveler You talk for a while and have a great time!')
+            traveler = Hero.generate_unit('heroes/bases/rng', self.party.hero.level)
+            # TODO: print traveler item card here
             choice = select_from_list(['Yes', 'No'],
                                       'The traveler offers to join your party, what do you say?', False, True)
-            traveler = self.create_random_character(cls=Hero)
+            # traveler = self.create_random_character(cls=Hero)
             if choice == 'Yes':
                 self.party.add_member(traveler)
             elif choice == 'No':
                 print('You bid the traveler farewell and continue on your way.\n')
-        # elif event == 1:
-        #     # Battle
-        #     enemy_party = Party.generate(self)
-        #     for x in range(randrange(max(1, len(self.party.members) - 1), len(self.party.members) + 1)):
-        #         enemy_party.add_member(
-        #             NPC.generate_random(randint(self.party.hero.level - 1, self.party.hero.level)), p=False)
-        #     player_won = clock_tick_battle(self.party, enemy_party)
-        #     if player_won:
-        #         for member in self.party.members:
-        #             member.add_xp(enemy_party.party_worth_xp())
-        #         self.count_kills(enemy_party)
-        # elif event == 2:
-        #     # Battle
-        #     enemy_party = Party.generate(self)
-        #     for x in range(randrange(max(1, len(self.party.members) - 1), len(self.party.members) + 1)):
-        #         enemy_party.add_member(
-        #             NPC.generate_random(randint(max([1, self.party.hero.level - 1]), self.party.hero.level)), p=False)
-        #     clock_tick_battle(self.party, enemy_party)
-        #     player_won = clock_tick_battle(self.party, enemy_party)
-        #     if player_won:
-        #         for member in self.party.members:
-        #             member.add_xp(enemy_party.party_worth_xp())
-        #         self.count_kills(enemy_party)
+
         elif event == 1:
             p1 = create_random_item(2)
             self.party.display_single_item_card(p1)
@@ -171,8 +152,8 @@ class Game:
                 is_fight_trash = 50 < random.randint(0, 100)
                 if is_fight_trash:
                     event_loc_str = 'events/default/rng'
-                    event_keys = get_keys_from_loc_str(data, event_loc_str)
-                    event = get_data_from_keys(data, event_keys)
+                    event = get_data_from_loc_str(data, event_loc_str)
+
                     self.event_handler(event)
                 else:
                     self.adventure()
@@ -197,7 +178,7 @@ class Game:
         elif choice == 'Boss Fight':
             enemy_party = Party.generate(self)
             enemy_party.add_member(
-                NPC.generate_random(level=randint(self.party.hero.level - 1, self.party.hero.level), type='boss'),
+                NPC.generate_unit('enemies/boss/rng', self.party.hero.level),
                 p=False)
             player_won = clock_tick_battle(self.party, enemy_party)
             if player_won:
@@ -216,7 +197,6 @@ class Game:
 
         self.game_over()
 
-
     def event_handler(self, event):
         clear_screen()
         for line in event["texts"]["start"]:
@@ -229,28 +209,43 @@ class Game:
             for enemy_loc_str in event['enemies']:
                 #  generate enemy
                 level = self.party.hero.level
-                enemy_keys = get_keys_from_loc_str(data, enemy_loc_str)
-                enemy_party.add_member(NPC.generate_enemy(enemy_keys, level), p=False)  # TODO: pass xp from json to unit
+                # enemy = get_data_from_loc_str(data, enemy_loc_str)
+                #
+                #
+                # enemy_keys = get_keys_from_loc_str(data, enemy_loc_str)
+                enemy_party.add_member(
+                    NPC.generate_unit(enemy_loc_str, level),
+                    p=False)
 
-            print(f'enemy party: {enemy_party}')
+            # print(f'enemy party: {enemy_party}')
             enemy_units_lef = clock_tick_battle(self.party, enemy_party)
             vfx.clear_screen()
             if not enemy_units_lef:
                 xp = event['loot']['xp'] + enemy_party.party_worth_xp()
                 for member in self.party.members:
                     member.add_xp(xp)
-                input('Press enter.')
-                vfx.clear_screen()
-                # award loot here
-                for line in event["texts"]["end"]:
-                    print(f'{line:^80}')  # end='\n')
-                    sleep(0.5)
+
+                # TODO: award loot here? would mean only loot for fights
                 input('Press enter.')
             else:
                 if self.party.has_units_left:
                     print(f'You got away.')
             self.count_kills(enemy_party)
-            input('Press enter.')
+        for char_loc_str in event.get('party_add', []):
+            new_member = Hero.generate_unit(char_loc_str, self.party.members[0].level)
+            print(f'{new_member.name}, the {new_member.profession}, lvl: {new_member.level}')
+
+            add_choice = select_from_list(['Yes', 'No'], q=f'Do you want {new_member.name} to join your Party?',
+                                          index_pos=False, horizontal=True)
+            if add_choice == 'Yes':
+                self.party.add_member(new_member)
+        vfx.clear_screen()
+        for line in event["texts"]["end"]:
+            print(f'{line:^80}')  # end='\n')
+            sleep(0.5)
+        input('Press enter.')
+
+
 
     def serialize(self):
         dummy = self.__dict__.copy()

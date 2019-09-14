@@ -43,8 +43,10 @@ class Party:
     def deserialize(cls, save_data):
         dummy = cls.generate(None)
         dummy.__dict__ = save_data.copy()
-        dummy.members = [Hero.deserialize(m) if m['type'] == 'Hero' else NPC.deserialize(m) for m in dummy.members]
-        dummy.dead_members = [Hero.deserialize(m) if m['type'] == 'Hero' else NPC.deserialize(m) for m in dummy.dead_members]
+        dummy.members = [Hero.deserialize(m) if m['profession'] in get_data_from_loc_str(data, 'heroes/bases').keys()
+                         else NPC.deserialize(m) for m in dummy.members]
+        dummy.dead_members = [Hero.deserialize(m) if m['profession'] in get_data_from_loc_str(data, 'heroes/bases').keys()
+                              else NPC.deserialize(m) for m in dummy.dead_members]
         dummy.equipment = [Equipment.deserialize(i) for i in dummy.equipment]
         dummy.inventory = [Equipment.deserialize(i) for i in dummy.inventory]
         for m in dummy.members + dummy.dead_members:
@@ -175,10 +177,20 @@ class Party:
         :param member: NPC or Hero class object
         :return:
         """
+
         member.party = self
         self.members.append(member)
         if p:
             print(f'{member.name}, the {member.profession} joins the party!')
+        if len(self.members) > 3:
+            print(f'Your party is to big!')
+            m_index = select_from_list([f'{m.name} the {m.profession}' for m in self.members],
+                                       q='Whom do you want to leave behind?', index_pos=True, horizontal=True)
+            self.remove_member(self.members[m_index])
+
+    def remove_member(self, member):
+        print(f'{member.name} the {member.profession} (level: {member.level}) is leaving the party.')
+        self.members.remove(member)
 
     #  inventory and trading
     def inventory_menu(self):

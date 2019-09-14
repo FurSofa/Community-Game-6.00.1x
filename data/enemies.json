@@ -26,12 +26,12 @@
         "toughness_p_lvl": 2
       },
       "base": {
-        "vit_start": 4,
-        "dex_start": 1,
-        "str_start": 4,
-        "int_start": 1,
-        "agility_start": 2,
-        "toughness_start": 2
+        "vit": 4,
+        "dex": 1,
+        "str": 4,
+        "int": 1,
+        "agility": 2,
+        "toughness": 2
       }
     },
     "goblin": {
@@ -72,12 +72,12 @@
         "toughness_p_lvl": 0
       },
       "base": {
-        "vit_start": 3,
-        "dex_start": 4,
-        "str_start": 2,
-        "int_start": 3,
-        "agility_start": 5,
-        "toughness_start": 1
+        "vit": 3,
+        "dex": 4,
+        "str": 2,
+        "int": 3,
+        "agility": 5,
+        "toughness": 1
       }
     }
   },
@@ -103,12 +103,12 @@
         "toughness_p_lvl": 1
       },
       "base": {
-        "vit_start": 3,
-        "dex_start": 6,
-        "str_start": 3,
-        "int_start": 2,
-        "agility_start": 5,
-        "toughness_start": 1
+        "vit": 3,
+        "dex": 6,
+        "str": 3,
+        "int": 2,
+        "agility": 5,
+        "toughness": 1
       }
     },
     "orc": {
@@ -149,12 +149,12 @@
         "toughness_p_lvl": 2
       },
       "base": {
-        "vit_start": 4,
-        "dex_start": 2,
-        "str_start": 5,
-        "int_start": 1,
-        "agility_start": 3,
-        "toughness_start": 2
+        "vit": 4,
+        "dex": 2,
+        "str": 5,
+        "int": 1,
+        "agility": 3,
+        "toughness": 2
       }
     }
   },
@@ -181,12 +181,12 @@
         "toughness_p_lvl": 2
       },
       "base": {
-        "vit_start": 4,
-        "dex_start": 9,
-        "str_start": 4,
-        "int_start": 2,
-        "agility_start": 6,
-        "toughness_start": 1
+        "vit": 4,
+        "dex": 9,
+        "str": 4,
+        "int": 2,
+        "agility": 6,
+        "toughness": 1
       }
     },
     "high_boss_test": {
@@ -211,12 +211,12 @@
         "toughness_p_lvl": 2
       },
       "base": {
-        "vit_start": 20,
-        "dex_start": 20,
-        "str_start": 20,
-        "int_start": 20,
-        "agility_start": 20,
-        "toughness_start": 6
+        "vit": 20,
+        "dex": 20,
+        "str": 20,
+        "int": 20,
+        "agility": 20,
+        "toughness": 6
       }
     }
   }

@@ -1,0 +1,74 @@
+{
+    "bases": {
+        "Thief": {
+            "names": [
+                "Cat Woman",
+                "4 Finger Joe",
+                "Anon"
+            ],
+            "per_lvl": {
+                "vit_p_lvl": 2,
+                "dex_p_lvl": 3,
+                "str_p_lvl": 1,
+                "int_p_lvl": 2,
+                "agility_p_lvl": 2,
+                "toughness_p_lvl": 2
+            },
+            "base": {
+                "vit": 4,
+                "dex": 9,
+                "str": 4,
+                "int": 2,
+                "agility": 6,
+                "toughness": 1
+            }
+        },
+        "Warrior": {
+            "names": [
+                "Conan",
+                "He Man",
+                "She Ra",
+                "Highlander"
+            ],
+            "per_lvl": {
+                "vit_p_lvl": 3,
+                "dex_p_lvl": 1,
+                "str_p_lvl": 4,
+                "int_p_lvl": 1,
+                "agility_p_lvl": 1,
+                "toughness_p_lvl": 2
+            },
+            "base": {
+                "vit": 6,
+                "dex": 4,
+                "str": 8,
+                "int": 1,
+                "agility": 5,
+                "toughness": 2
+            }
+        },
+        "Mage": {
+            "names": [
+                "Merlin",
+                "Pen",
+                "Teller"
+            ],
+            "per_lvl": {
+                "vit_p_lvl": 1,
+                "dex_p_lvl": 2,
+                "str_p_lvl": 1,
+                "int_p_lvl": 5,
+                "agility_p_lvl": 2,
+                "toughness_p_lvl": 1
+            },
+            "base": {
+                "vit": 4,
+                "dex": 4,
+                "str": 2,
+                "int": 10,
+                "agility": 5,
+                "toughness": 1
+            }
+        }
+    }
+}
